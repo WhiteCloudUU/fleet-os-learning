@@ -1,0 +1,1400 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Learning Roadmap</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M4 20 C 4 15, 11 15, 11 11 C 11 7, 16 7, 17 5' fill='none' stroke='%23D97757' stroke-width='2' stroke-linecap='round' stroke-dasharray='0.5 4'/><circle cx='4' cy='20' r='2.3' fill='%23788C5D'/><circle cx='11' cy='11' r='2' fill='%23D97757'/><path d='M17 4 L17 12' stroke='%23141413' stroke-width='1.6' stroke-linecap='round'/><path d='M17 4.4 L21.5 6 L17 7.6 Z' fill='%23141413'/></svg>">
+<style>
+  :root {
+    --ivory:    #FAF9F5;
+    --slate:    #141413;
+    --clay:     #D97757;
+    --olive:    #788C5D;
+    --gray-150: #F0EEE6;
+    --gray-300: #D1CFC5;
+    --gray-500: #87867F;
+    --gray-700: #3D3D3A;
+    --white:    #FFFFFF;
+    --serif: ui-serif, Georgia, "Times New Roman", serif;
+    --sans:  system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --mono:  ui-monospace, "SF Mono", Menlo, Monaco, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: var(--sans);
+    background: var(--ivory);
+    color: var(--slate);
+    -webkit-font-smoothing: antialiased;
+    padding: 64px 6vw 96px;
+  }
+  .page { max-width: 1080px; margin: 0 auto; }
+
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    margin-bottom: 14px;
+  }
+  .logo { width: 34px; height: 34px; flex-shrink: 0; }
+  h1 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 40px;
+    letter-spacing: -0.01em;
+  }
+
+  /* references / search seeds — collapsible */
+  .refs {
+    margin-bottom: 22px;
+    border: 1px solid var(--gray-300);
+    border-radius: 10px;
+    background: var(--white);
+  }
+  .refs-head {
+    width: 100%;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.03em;
+    color: var(--gray-700);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 12px 16px;
+  }
+  .refs-head:hover { color: var(--clay); }
+  .refs-caret { color: var(--clay); font-size: 11px; width: 12px; display: inline-block; }
+  .refs-count { color: var(--gray-500); margin-left: auto; }
+  .refs-body { padding: 0 16px 14px; border-top: 1px solid var(--gray-150); }
+  .refs-hint { font-size: 12px; color: var(--gray-500); line-height: 1.5; margin: 11px 0 12px; }
+  .refs-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+  .ref-row { display: flex; align-items: center; gap: 8px; position: relative; padding-right: 22px; }
+  .ref-text {
+    flex: 1;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--gray-700);
+    outline: none;
+    line-height: 1.5;
+    word-break: break-all;
+  }
+  .ref-text:empty::before { content: "url / keyword…"; color: var(--gray-300); }
+  .ref-text[data-kind="site"]:empty::before { content: "domain / url…"; color: var(--gray-300); }
+  .ref-text[data-kind="keyword"]:empty::before { content: "keyword / buzzword…"; color: var(--gray-300); }
+  .ref-row .row-delete { opacity: 0; }
+  .ref-row:hover .row-delete { opacity: 0.55; }
+  .ref-add { align-self: flex-start; margin-top: -2px; }
+  .refs-list .divider:first-child { margin-top: 2px; }
+
+  /* small UI button — matches toolbar, used for in-card adds */
+  .mini-btn {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    padding: 5px 11px;
+    border: 1px solid var(--gray-300);
+    background: var(--white);
+    border-radius: 6px;
+    color: var(--gray-700);
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s, color 0.12s;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .mini-btn:hover { background: var(--gray-150); border-color: var(--gray-500); }
+  .mini-btn.clay { color: var(--clay); }
+  .mini-btn.clay:hover { border-color: var(--clay); background: rgba(217,119,87,0.06); }
+  .updated-row {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 24px;
+  }
+  .updated {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--gray-500);
+  }
+  .refresh-date {
+    font-size: 14px;
+    background: transparent;
+    border: none;
+    color: var(--clay);
+    cursor: pointer;
+    padding: 0 2px;
+    line-height: 1;
+    transition: color 0.12s, transform 0.2s;
+  }
+  .refresh-date:hover { color: var(--slate); transform: rotate(180deg); }
+
+  /* toolbar */
+  .toolbar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .btn {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: 0.04em;
+    padding: 7px 12px;
+    border: 1px solid var(--gray-300);
+    background: var(--white);
+    border-radius: 6px;
+    color: var(--gray-700);
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s;
+  }
+  .btn:hover { background: var(--gray-150); border-color: var(--gray-500); }
+  .btn.primary { border-color: var(--clay); color: var(--clay); }
+  .btn.primary:hover { background: rgba(217,119,87,0.08); }
+  .btn.ghost { border-color: transparent; background: transparent; }
+  .btn.ghost:hover { background: var(--gray-150); }
+  .btn.push-right { margin-left: auto; }
+
+  .legend {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--gray-500);
+    margin-bottom: 26px;
+    align-items: center;
+  }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .key-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--white); border: 2px solid var(--gray-300); flex-shrink: 0;
+  }
+  .key-dot.reading { background: var(--clay);  border-color: var(--clay); }
+  .key-dot.read    { background: var(--olive); border-color: var(--olive); }
+
+  /* ---- pager ---- */
+  .pager {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 26px;
+  }
+  .pager-tabs { display: flex; gap: 6px; flex: 1; flex-wrap: wrap; }
+  .tab {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.03em;
+    padding: 8px 14px;
+    border: 1px solid var(--gray-300);
+    background: var(--white);
+    border-radius: 8px;
+    color: var(--gray-700);
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+  .tab:hover { background: var(--gray-150); }
+  .tab.active { border-color: var(--clay); color: var(--clay); background: rgba(217,119,87,0.06); }
+  .tab .tab-idx { color: var(--gray-500); margin-right: 7px; }
+  .tab.active .tab-idx { color: var(--clay); }
+  .pager-arrow {
+    font-size: 18px;
+    width: 38px; height: 38px;
+    border: 1px solid var(--gray-300);
+    background: var(--white);
+    border-radius: 8px;
+    color: var(--gray-700);
+    cursor: pointer;
+    line-height: 1;
+    flex-shrink: 0;
+    transition: all 0.12s;
+  }
+  .pager-arrow:hover:not(:disabled) { background: var(--gray-150); border-color: var(--gray-500); }
+  .pager-arrow:disabled { opacity: 0.3; cursor: default; }
+
+  /* ---- deck / pages ---- */
+  .deck { animation: fade 0.18s ease; }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+  .pair-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    align-items: start;
+  }
+  @media (max-width: 760px) { .pair-grid { grid-template-columns: 1fr; } }
+
+  /* single card per page — centered, readable width */
+  .single-stage { max-width: 640px; margin: 0 auto; }
+
+  /* ---- carousel (weekly page) ---- */
+  .car-cap {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--gray-500);
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  .car-cap b { color: var(--clay); font-weight: 500; }
+  .carousel { display: flex; align-items: flex-start; gap: 14px; justify-content: center; }
+  .car-stage { flex: 1; max-width: 600px; min-width: 0; }
+  .car-arrow {
+    font-size: 22px;
+    width: 42px; height: 42px;
+    flex-shrink: 0;
+    border: 1px solid var(--gray-300);
+    background: var(--white);
+    border-radius: 10px;
+    cursor: pointer;
+    color: var(--gray-700);
+    margin-top: 8px;
+    transition: all 0.12s;
+  }
+  .car-arrow:hover:not(:disabled) { background: var(--gray-150); border-color: var(--gray-500); }
+  .car-arrow:disabled { opacity: 0.25; cursor: default; }
+  .car-dots { display: flex; gap: 8px; justify-content: center; margin-top: 20px; }
+  .car-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--gray-300);
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.12s;
+  }
+  .car-dot.active { background: var(--clay); transform: scale(1.25); }
+  .week-actions { display: flex; justify-content: center; margin-top: 22px; }
+  .car-empty {
+    text-align: center;
+    color: var(--gray-500);
+    font-size: 13.5px;
+    line-height: 1.6;
+    padding: 56px 20px;
+    border: 1px dashed var(--gray-300);
+    border-radius: 12px;
+  }
+
+  /* ---- domain card ---- */
+  .domain {
+    border: 1px solid var(--gray-300);
+    border-radius: 12px;
+    background: var(--white);
+    padding: 22px 22px 14px;
+    position: relative;
+    transition: border-color 0.12s, box-shadow 0.12s;
+  }
+  .domain:hover { border-color: var(--gray-500); box-shadow: 0 1px 0 rgba(20,20,19,0.03); }
+
+  /* loop-generated dated card — subtly distinct */
+  .domain.dated {
+    background: linear-gradient(180deg, rgba(217,119,87,0.05), var(--white) 70px);
+    border-color: var(--clay);
+  }
+  .domain.dated .domain-head h2 { color: var(--clay); }
+
+  .domain-head {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+  .domain-head h2 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 21px;
+    letter-spacing: -0.01em;
+    outline: none;
+    flex: 1;
+  }
+  .count {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--gray-500);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .domain-desc {
+    font-size: 13.5px;
+    color: var(--gray-500);
+    line-height: 1.5;
+    margin-bottom: 16px;
+    outline: none;
+  }
+
+  .items { display: flex; flex-direction: column; gap: 16px; }
+
+  /* sub-layer divider — unobtrusive section header inside a card */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 8px 0 -2px;
+    position: relative;
+    padding-right: 22px;
+  }
+  .divider:first-child { margin-top: 0; }
+  .divider-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--gray-500);
+    white-space: nowrap;
+    outline: none;
+  }
+  .divider-line { height: 1px; background: var(--gray-300); flex: 1; }
+  .divider:hover .row-delete { opacity: 0.55; }
+
+  .item {
+    display: grid;
+    grid-template-columns: 14px 1fr;
+    gap: 11px;
+    align-items: start;
+    position: relative;
+    padding-right: 22px;
+  }
+  .item-dot {
+    width: 11px; height: 11px;
+    border-radius: 50%;
+    background: var(--white);
+    border: 2px solid var(--gray-300);
+    margin-top: 5px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: transform 0.1s;
+  }
+  .item-dot:hover { transform: scale(1.25); }
+  .item-dot.reading { background: var(--clay);  border-color: var(--clay); box-shadow: 0 0 0 4px rgba(217,119,87,0.12); }
+  .item-dot.read    { background: var(--olive); border-color: var(--olive); }
+
+  /* drag-to-reorder */
+  .item-grip {
+    position: absolute;
+    left: -18px; top: 3px;
+    font-size: 12px;
+    line-height: 1;
+    color: var(--gray-300);
+    cursor: grab;
+    opacity: 0;
+    user-select: none;
+    transition: opacity 0.12s, color 0.12s;
+  }
+  .item:hover .item-grip { opacity: 0.7; }
+  .item-grip:hover { color: var(--gray-500); }
+  .item-grip:active { cursor: grabbing; }
+  .item.dragging { opacity: 0.4; }
+  .item.drag-over, .divider.drag-over { background: rgba(217,119,87,0.08); border-radius: 6px; }
+
+  .item-main { min-width: 0; }
+  .item-title {
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--gray-700);
+    font-weight: 500;
+    outline: none;
+  }
+  .item.read .item-title { color: var(--gray-500); font-weight: 400; }
+  .item-note {
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--gray-500);
+    margin-top: 3px;
+    outline: none;
+  }
+  .item-note:empty::before {
+    content: "add a note…";
+    color: var(--gray-300);
+  }
+  .item-row2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .item-url {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--gray-500);
+    outline: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+    flex: 1;
+    min-width: 0;
+  }
+  .item-url:empty::before {
+    content: "add link…";
+    color: var(--gray-300);
+  }
+  .item-go {
+    font-size: 12px;
+    color: var(--clay);
+    text-decoration: none;
+    flex-shrink: 0;
+    opacity: 0.75;
+    transition: opacity 0.12s, transform 0.1s;
+  }
+  .item-go:hover { opacity: 1; transform: translate(1px, -1px); }
+  .item-go.hidden { display: none; }
+
+  [contenteditable]:focus {
+    background: var(--gray-150);
+    border-radius: 4px;
+    padding: 0 4px;
+    margin: 0 -4px;
+  }
+
+  .row-delete {
+    position: absolute;
+    top: -2px; right: -2px;
+    opacity: 0;
+    transition: opacity 0.12s;
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--gray-500);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 2px 6px;
+    line-height: 1;
+  }
+  .item:hover .row-delete, .domain:hover .domain-delete { opacity: 0.55; }
+  .row-delete:hover { opacity: 1 !important; color: var(--clay); }
+  .domain-delete {
+    position: absolute;
+    top: 14px; right: 14px;
+    opacity: 0;
+  }
+
+  .add-row { display: flex; gap: 10px; padding-top: 14px; }
+  .add-in-section {
+    align-self: flex-start;
+    margin-left: 25px;
+    margin-top: -6px;
+  }
+
+  @media (max-width: 520px) {
+    body { padding: 48px 5vw 80px; }
+    .carousel { gap: 6px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="title-row">
+    <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 20 C 4 15, 11 15, 11 11 C 11 7, 16 7, 17 5" fill="none" stroke="#D97757" stroke-width="2" stroke-linecap="round" stroke-dasharray="0.5 4"/>
+      <circle cx="4" cy="20" r="2.3" fill="#788C5D"/>
+      <circle cx="11" cy="11" r="2" fill="#D97757"/>
+      <path d="M17 4 L17 12" stroke="#141413" stroke-width="1.6" stroke-linecap="round"/>
+      <path d="M17 4.4 L21.5 6 L17 7.6 Z" fill="#141413"/>
+    </svg>
+    <h1>Learning Roadmap</h1>
+  </div>
+
+  <div class="updated-row">
+    <div class="updated" id="updated" contenteditable="true">Last updated · 2026-06-20</div>
+    <button class="refresh-date" id="refresh-date" type="button" title="set to today">↻</button>
+  </div>
+
+  <div class="refs">
+    <button class="refs-head" id="refs-toggle" type="button">
+      <span class="refs-caret" id="refs-caret">▸</span>
+      Prioritized sources &amp; search seeds
+      <span class="refs-count" id="refs-count"></span>
+    </button>
+    <div class="refs-body" id="refs-body" hidden>
+      <p class="refs-hint">来源优先级与 search seeds(<b>Orgs</b> / <b>Sites</b> / <b>Keywords</b>)——只读,镜像自 <b>learning_roadmap_instruction.md §3</b>;改动请编辑该文件。</p>
+      <div class="refs-list" id="refs-list"></div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn" id="reset">Reset</button>
+    <button class="btn" id="export">Export JSON</button>
+  </div>
+
+  <div class="legend">
+    <span><i class="key-dot"></i> to-read</span>
+    <span><i class="key-dot reading"></i> reading</span>
+    <span><i class="key-dot read"></i> read</span>
+    <span style="color:var(--gray-300)">·</span>
+    <span>click a dot to cycle · click text to edit · ← → flips pages</span>
+  </div>
+
+  <div class="pager">
+    <button class="pager-arrow" id="prev-page" title="previous page">‹</button>
+    <div class="pager-tabs" id="pager-tabs"></div>
+    <button class="pager-arrow" id="next-page" title="next page">›</button>
+  </div>
+
+  <div class="deck" id="deck"></div>
+</div>
+
+<script id="seed" type="application/json">
+{
+  "updated": "Last updated · 2026-06-20",
+  "refsOpen": false,
+  "references": [
+    {
+      "id": "org1",
+      "kind": "org",
+      "text": "OpenAI · Anthropic · Google DeepMind"
+    },
+    {
+      "id": "org2",
+      "kind": "org",
+      "text": "Meta / Purple Llama · UK AISI / US AISI"
+    },
+    {
+      "id": "org3",
+      "kind": "org",
+      "text": "Braintrust · Arize · Datadog · LangSmith · Langfuse · Galileo"
+    },
+    {
+      "id": "org4",
+      "kind": "org",
+      "text": "Academic / OSS: HELM · OpenAI Evals · lm-eval-harness · AgentDojo"
+    },
+    {
+      "id": "ref1",
+      "kind": "site",
+      "text": "anthropic.com/research · openai.com/index · deepmind.google/blog"
+    },
+    {
+      "id": "ref2",
+      "kind": "site",
+      "text": "arxiv.org (cs.AI / cs.CR) · metr.org/blog · inspect.aisi.org.uk"
+    },
+    {
+      "id": "ref3",
+      "kind": "keyword",
+      "text": "agentic eval · LLM-as-judge · jailbreak robustness · refusal eval · guardrail benchmark"
+    },
+    {
+      "id": "ref4",
+      "kind": "keyword",
+      "text": "agentic AI containment · red-team automation · alignment eval"
+    }
+  ],
+  "domains": [
+    {
+      "id": "d-eval-general",
+      "title": "Eval Infra",
+      "desc": "评测系统本身怎么建——打分、数据集、统计严谨性、生产期 tracing。挑业界(OpenAI / Anthropic / DeepMind…)讲方法论与工程的 post。",
+      "items": [
+        {
+          "id": "eg-div-c",
+          "type": "divider",
+          "label": "Canonical"
+        },
+        {
+          "id": "eg1",
+          "title": "Challenges in evaluating AI systems — Anthropic",
+          "url": "https://www.anthropic.com/news/evaluating-ai-systems",
+          "note": "为什么评测 AI 这么难——各类 eval 方法的取舍、陷阱与局限,理解 eval harness 该怎么设计。",
+          "status": "to-read"
+        },
+        {
+          "id": "eg2",
+          "title": "A statistical approach to model evaluations — Anthropic",
+          "url": "https://www.anthropic.com/research/statistical-approach-to-model-evals",
+          "note": "用统计严谨性(置信区间、配对差异、方差来源)做 eval 的方法论,讲清分数背后的可信度。",
+          "status": "to-read"
+        },
+        {
+          "id": "eg3",
+          "title": "OpenAI Evals — open-source eval framework",
+          "url": "https://github.com/openai/evals",
+          "note": "OpenAI 开源的 eval harness:registry + 自定义 eval 的组织方式,看通用评测框架的工程结构。",
+          "status": "to-read"
+        },
+        {
+          "id": "eg4",
+          "title": "HELM — Holistic Evaluation of Language Models (Stanford CRFM)",
+          "url": "https://crfm.stanford.edu/helm/",
+          "note": "多指标、多场景的 holistic benchmark 设计——覆盖度与可比性怎么平衡。",
+          "status": "to-read"
+        },
+        {
+          "id": "eg5",
+          "title": "LLM Observability — Datadog",
+          "url": "https://www.datadoghq.com/blog/datadog-llm-observability/",
+          "note": "把 eval 做成生产常在线产品:end-to-end tracing + 内置 evaluations(quality / toxicity / failure-to-answer)。",
+          "status": "to-read"
+        },
+        {
+          "id": "eg-div-e",
+          "type": "divider",
+          "label": "Emerging · last 6 months"
+        },
+        {
+          "id": "eg6",
+          "title": "Inspect — open eval framework (UK AI Safety Institute)",
+          "url": "https://inspect.aisi.org.uk/",
+          "note": "AISI 的通用评测框架,solver / scorer / dataset 抽象正在成为业界 harness 的事实标准之一;也是 safety eval 的主力工具。",
+          "status": "to-read"
+        },
+        {
+          "id": "eg7",
+          "title": "Evaluating LLM-based 0→1 software generation in E2E CLI scenarios",
+          "url": "https://arxiv.org/abs/2604.06742",
+          "note": "⚠️ 标题为准。新型 task-based eval:在端到端 CLI 工具场景里评 agent 的 0→1 代码生成,代表 agentic eval 的设计趋势。",
+          "status": "to-read"
+        }
+      ]
+    },
+    {
+      "id": "d-eval-safety",
+      "title": "Eval Infra - Safety",
+      "desc": "主战场:为 safety / guardrail 搭 harness——jailbreak、refusal、alignment check、red-team。Eval Infra 的通用底座在这里专精到安全。",
+      "items": [
+        {
+          "id": "es-div-c",
+          "type": "divider",
+          "label": "Canonical"
+        },
+        {
+          "id": "es1",
+          "title": "LlamaFirewall: open-source guardrail system for AI agents — Meta",
+          "url": "https://arxiv.org/abs/2505.03574",
+          "note": "Meta 的 safety harness:PromptGuard / AlignmentCheck / CodeShield 三层防护的动机与 agent 场景应用范围。",
+          "status": "to-read"
+        },
+        {
+          "id": "es2",
+          "title": "Llama Guard: LLM-based input-output safeguard — Meta",
+          "url": "https://ai.meta.com/research/publications/llama-guard-llm-based-input-output-safeguard-for-human-ai-conversations/",
+          "note": "用一个 LLM 做输入/输出安全分类器,含可定制 safety taxonomy 与人机对话场景。",
+          "status": "to-read"
+        },
+        {
+          "id": "es3",
+          "title": "CyberSecEval: benchmark for LLM cybersecurity risks — Meta",
+          "url": "https://ai.meta.com/research/publications/cyberseceval-a-comprehensive-benchmark-for-evaluating-the-cybersecurity-risks-of-large-language-models/",
+          "note": "评测 LLM 网络安全风险(不安全代码生成、协助攻击)的 benchmark 设计与覆盖范围。",
+          "status": "to-read"
+        },
+        {
+          "id": "es4",
+          "title": "Updated Preparedness Framework — OpenAI",
+          "url": "https://openai.com/index/updating-our-preparedness-framework/",
+          "note": "以 tracked capability categories 与能力阈值管理 frontier 风险——何时触发更强缓解的判定逻辑。",
+          "status": "to-read"
+        },
+        {
+          "id": "es5",
+          "title": "Updated Responsible Scaling Policy — Anthropic",
+          "url": "https://www.anthropic.com/news/announcing-our-updated-responsible-scaling-policy",
+          "note": "用 ASL / capability thresholds 决定何时触发更强 safeguards 的治理框架及其落地逻辑。",
+          "status": "to-read"
+        },
+        {
+          "id": "es6",
+          "title": "Frontier Threats Red Teaming for AI Safety — Anthropic",
+          "url": "https://www.anthropic.com/news/frontier-threats-red-teaming-for-ai-safety",
+          "note": "面向前沿能力(如生物风险)的 red-team 方法论——怎么系统化地设计与执行安全压测。",
+          "status": "to-read"
+        },
+        {
+          "id": "es-div-e",
+          "type": "divider",
+          "label": "Emerging · last 6 months"
+        },
+        {
+          "id": "es7",
+          "title": "Red-Teaming Anthropic's Internal Agent Monitoring Systems — METR",
+          "url": "https://metr.org/blog/2026-03-25-red-teaming-anthropic-agent-monitoring/",
+          "note": "第三方红队对内部 agent 监控系统的实测(2026-03)——监控/检测类 safety infra 怎么被绕过,直接关乎 harness 的盲区。",
+          "status": "to-read"
+        },
+        {
+          "id": "es8",
+          "title": "Securing the future of AI agents — Google DeepMind",
+          "url": "https://deepmind.google/blog/securing-the-future-of-ai-agents/",
+          "note": "对抗未对齐 agent 的安全控制与 containment 工程要求,定义了 agentic safety eval 要覆盖的威胁面。",
+          "status": "to-read"
+        },
+        {
+          "id": "es9",
+          "title": "When the Agent Is the Adversary: architectural requirements for agentic AI containment",
+          "url": "https://arxiv.org/abs/2604.23425",
+          "note": "⚠️ 标题为准(2026-04)。把 agent 当对手来设计 containment 架构——为 safety eval infra 提供威胁模型。",
+          "status": "to-read"
+        },
+        {
+          "id": "es10",
+          "title": "Distributional AGI Safety",
+          "url": "https://arxiv.org/abs/2512.16856",
+          "note": "⚠️ 标题为准(2025-12)。从分布视角谈 AGI 安全——影响安全评测该度量什么、怎么聚合风险。",
+          "status": "to-read"
+        }
+      ]
+    },
+    {
+      "id": "d-frontier",
+      "title": "AI Frontier",
+      "desc": "前沿打法——agent framework、context / loop engineering、interpretability、新训练方法。保持视野,不深挖。",
+      "items": [
+        {
+          "id": "ft-div-c",
+          "type": "divider",
+          "label": "Canonical"
+        },
+        {
+          "id": "ft1",
+          "title": "Building effective agents — Anthropic",
+          "url": "https://www.anthropic.com/research/building-effective-agents",
+          "note": "agent 设计的基本盘:workflow vs agent、何时用 loop、常见 pattern——loop / context engineering 的源头读物。",
+          "status": "to-read"
+        },
+        {
+          "id": "ft2",
+          "title": "ReAct: Synergizing Reasoning and Acting in LLMs",
+          "url": "https://arxiv.org/abs/2210.03629",
+          "note": "reasoning + acting 交替的范式,几乎所有 agent loop 的雏形。",
+          "status": "to-read"
+        },
+        {
+          "id": "ft3",
+          "title": "Mapping the Mind of a Large Language Model — Anthropic",
+          "url": "https://www.anthropic.com/research/mapping-mind-language-model",
+          "note": "用 sparse autoencoder 提取可解释 features,interpretability 的动机与在 safety 监控/steering 的应用。",
+          "status": "to-read"
+        },
+        {
+          "id": "ft-div-e",
+          "type": "divider",
+          "label": "Emerging · last 6 months"
+        }
+      ]
+    }
+  ],
+  "weeklies": [
+    {
+      "id": "d-week-20260620",
+      "dated": true,
+      "date": "2026-06-20",
+      "title": "📅 Weekly · 2026-06-20",
+      "desc": "",
+      "items": [
+        {
+          "id": "wk-g",
+          "type": "divider",
+          "label": "Eval Infra"
+        },
+        {
+          "id": "wk-s",
+          "type": "divider",
+          "label": "Eval Infra - Safety"
+        },
+        {
+          "id": "wk-s2",
+          "title": "Predicting model behavior before release by simulating deployment — OpenAI",
+          "url": "https://openai.com/index/deployment-simulation/",
+          "note": "用真实 conversation context 做 pre-deployment simulation,更接近线上分布并降低 evaluation awareness,可直接启发 release-gate safety eval。",
+          "status": "to-read"
+        },
+        {
+          "id": "wk-s1",
+          "title": "Securing the future of AI agents — Google DeepMind",
+          "url": "https://deepmind.google/blog/securing-the-future-of-ai-agents/",
+          "note": "DeepMind 谈如何为日益强大、可能未对齐的 agent 设计安全控制——agent containment / monitoring 的工程要求,正是 safety eval infra 要覆盖的威胁面。",
+          "status": "to-read"
+        },
+        {
+          "id": "wk-t",
+          "type": "divider",
+          "label": "AI Frontier"
+        }
+      ]
+    },
+    {
+      "id": "d-week-20260628",
+      "dated": true,
+      "date": "2026-06-28",
+      "title": "📅 Weekly · 2026-06-28",
+      "desc": "",
+      "items": [
+        {
+          "id": "wk-20260628-ei",
+          "type": "divider",
+          "label": "Eval Infra"
+        },
+        {
+          "id": "wk-20260628-ei2",
+          "title": "How to eval stateful agents",
+          "url": "https://www.braintrust.dev/blog/stateful-agent-evals",
+          "note": "把 stateful agent eval 从单轮 prompt-score 推到 trajectory/side effects/external state,可映射真实 release-gate 回放。",
+          "status": "to-read"
+        },
+        {
+          "id": "wk-20260628-ei3",
+          "title": "Designing the runtime for Langfuse code evaluators",
+          "url": "https://langfuse.com/blog/2026-06-22-code-evaluators-execution-model",
+          "note": "code evaluator 的 sandbox/runtime 设计,对把 deterministic policy checks 安全跑在 traces 上有直接参考。",
+          "status": "to-read"
+        },
+        {
+          "id": "wk-20260628-es",
+          "type": "divider",
+          "label": "Eval Infra - Safety"
+        },
+        {
+          "id": "wk-20260628-es1",
+          "title": "Previewing GPT-5.6 Sol: a next-generation model",
+          "url": "https://openai.com/index/previewing-gpt-5-6-sol/",
+          "note": "limited preview 配套 layered safeguards/automated red-teaming/cyber thresholds,是 capability-tiered release gate 的近例。",
+          "status": "to-read"
+        },
+        {
+          "id": "wk-20260628-af",
+          "type": "divider",
+          "label": "AI Frontier"
+        },
+        {
+          "id": "wk-20260628-af1",
+          "title": "How agents are transforming work",
+          "url": "https://openai.com/index/how-agents-are-transforming-work/",
+          "note": "Codex usage 显示 delegated long-horizon tasks/parallel agents 成主形态,提示 eval infra 要覆盖小时级 agent turns。",
+          "status": "to-read"
+        },
+        {
+          "id": "wk-20260628-af2",
+          "title": "Anthropic Economic Index report: Cadences",
+          "url": "https://www.anthropic.com/research/economic-index-june-2026-report",
+          "note": "privacy-preserving telemetry 升到 hourly/daily + artifact classifier,对 online monitoring→eval feedback loop 有启发。",
+          "status": "to-read"
+        }
+      ]
+    },
+    {
+      "id": "d-week-20260703",
+      "dated": true,
+      "date": "2026-07-03",
+      "title": "📅 Weekly · 2026-07-03",
+      "desc": "",
+      "items": [
+        {
+          "id": "wk-20260703-ei",
+          "type": "divider",
+          "label": "Eval Infra"
+        },
+        {
+          "id": "wk-20260703-ei1",
+          "title": "Inspect AI 0.3.242-0.3.244 changelog",
+          "url": "https://inspect.aisi.org.uk/CHANGELOG.html",
+          "note": "06/29-07/01 更新强化 remote eval logs、control channel、checkpoint/sandbox 安全,利于大规模可靠 eval harness。",
+          "status": "to-read"
+        },
+        {
+          "id": "wk-20260703-ei2",
+          "title": "Arize Phoenix Alternatives 2026: Top 7 for Agent Observability",
+          "url": "https://laminar.sh/article/arize-phoenix-alternatives-2026",
+          "note": "agent traces 从 span-tree 转向 OTel-native/trace compression/Signals/code-first eval SDK,指向 online monitoring→eval loop。",
+          "status": "to-read"
+        },
+        {
+          "id": "wk-20260703-es",
+          "type": "divider",
+          "label": "Eval Infra - Safety"
+        },
+        {
+          "id": "wk-20260703-es1",
+          "title": "More details on Fable 5’s cyber safeguards and our jailbreak framework — Anthropic",
+          "url": "https://www.anthropic.com/news/fable-safeguards-jailbreak-framework",
+          "note": "公开 cyber classifier taxonomy、safety margin 与 jailbreak severity framework,可直接借鉴 policy-grounded release gate。",
+          "status": "to-read"
+        },
+        {
+          "id": "wk-20260703-af",
+          "type": "divider",
+          "label": "AI Frontier"
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+<script>
+(function () {
+  const KEY = 'fleet-os.learning-roadmap.v6';
+  const SEED_SYNC = '2026-07-05-empty-weekly-desc';
+  const SEED = JSON.parse(document.getElementById('seed').textContent);
+  const $deck = document.getElementById('deck');
+  const $updated = document.getElementById('updated');
+  const $tabs = document.getElementById('pager-tabs');
+  const $prevPage = document.getElementById('prev-page');
+  const $nextPage = document.getElementById('next-page');
+  const $export = document.getElementById('export');
+  const $reset = document.getElementById('reset');
+  const $refresh = document.getElementById('refresh-date');
+  const $refsToggle = document.getElementById('refs-toggle');
+  const $refsCaret = document.getElementById('refs-caret');
+  const $refsCount = document.getElementById('refs-count');
+  const $refsBody = document.getElementById('refs-body');
+  const $refsList = document.getElementById('refs-list');
+
+  const PAGES = [
+    { name: 'Weekly',              kind: 'weekly' },
+    { name: 'Eval Infra',          kind: 'single', id: 'd-eval-general' },
+    { name: 'Eval Infra - Safety', kind: 'single', id: 'd-eval-safety' },
+    { name: 'AI Frontier',         kind: 'single', id: 'd-frontier' }
+  ];
+
+  let state = load();
+  let pageIdx = 0;
+  let weekIdx = 0; // index into date-desc-sorted weeklies; 0 = latest
+  let dragInfo = null; // { cardId, iid } while dragging a reading
+
+  function load() {
+    try {
+      const stored = localStorage.getItem(KEY);
+      if (stored) {
+        const s = JSON.parse(stored);
+        if (!s.weeklies) s.weeklies = [];
+        if (!s.domains) s.domains = [];
+        if (!s.references) s.references = [];
+        if (typeof s.refsOpen !== 'boolean') s.refsOpen = false;
+        if (s.seedSync !== SEED_SYNC) {
+          const existingWeeklyIds = new Set(s.weeklies.map(w => w.id));
+          (SEED.weeklies || []).forEach((w) => {
+            if (!existingWeeklyIds.has(w.id)) {
+              s.weeklies.push(JSON.parse(JSON.stringify(w)));
+            }
+          });
+          s.weeklies.forEach((w) => {
+            if (w && w.dated) w.desc = '';
+          });
+          s.seedSync = SEED_SYNC;
+          localStorage.setItem(KEY, JSON.stringify(s));
+        }
+        // refs are read-only and rendered from SEED, so stored references are ignored
+        return s;
+      }
+    } catch (e) {}
+    return JSON.parse(JSON.stringify(SEED));
+  }
+  function save() { localStorage.setItem(KEY, JSON.stringify(state)); }
+  function uid() { return 'x' + Math.random().toString(36).slice(2, 9); }
+  function findCard(cid) { return state.domains.concat(state.weeklies).find(x => x.id === cid); }
+  function sortedWeeklies() {
+    return state.weeklies.slice().sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
+  }
+  function todayYMD() {
+    const dt = new Date();
+    return dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
+  }
+
+  // parallel statuses — cycling one never touches the others
+  const CYCLE = ['to-read', 'reading', 'read'];
+  function cycleItem(cid, iid) {
+    const d = findCard(cid);
+    const it = d && d.items.find(x => x.id === iid);
+    if (!it) return;
+    it.status = CYCLE[(CYCLE.indexOf(it.status) + 1) % CYCLE.length];
+    save(); renderDeck();
+  }
+
+  function newItem() {
+    return { id: uid(), title: 'New reading — one line.', url: '', note: '', status: 'to-read' };
+  }
+  // insert a reading at the END of the section that starts with dividerId
+  // (dividerId === null means the leading, divider-less section)
+  function addItemInSection(cid, dividerId) {
+    const d = findCard(cid);
+    if (!d) return;
+    let start = 0;
+    if (dividerId != null) {
+      const di = d.items.findIndex(x => x.id === dividerId);
+      if (di < 0) { d.items.push(newItem()); save(); renderDeck(); return; }
+      start = di + 1;
+    }
+    let end = start;
+    while (end < d.items.length && d.items[end].type !== 'divider') end++;
+    d.items.splice(end, 0, newItem());
+    save(); renderDeck();
+  }
+  function addDivider(cid) {
+    const d = findCard(cid);
+    if (!d) return;
+    d.items.push({ id: uid(), type: 'divider', label: 'New section' });
+    save(); renderDeck();
+  }
+  function deleteItem(cid, iid) {
+    const d = findCard(cid);
+    if (!d) return;
+    d.items = d.items.filter(x => x.id !== iid);
+    save(); renderDeck();
+  }
+  // move reading `draggedIid` to sit before/after `targetId` within the same card
+  function reorderItem(cid, draggedIid, targetId, placeAfter) {
+    const d = findCard(cid);
+    if (!d || draggedIid === targetId) return;
+    const di = d.items.findIndex(x => x.id === draggedIid);
+    if (di < 0) return;
+    const [moved] = d.items.splice(di, 1);
+    const ti = d.items.findIndex(x => x.id === targetId);
+    if (ti < 0) d.items.push(moved);
+    else d.items.splice(placeAfter ? ti + 1 : ti, 0, moved);
+    save(); renderDeck();
+  }
+  function deleteCard(cid) {
+    if (!confirm('Delete this whole card?')) return;
+    state.domains = state.domains.filter(x => x.id !== cid);
+    state.weeklies = state.weeklies.filter(x => x.id !== cid);
+    save(); renderDeck();
+  }
+  function addWeek() {
+    const ymd = todayYMD();
+    state.weeklies.unshift({
+      id: uid(), dated: true, date: ymd, title: '📅 Weekly · ' + ymd,
+      desc: '',
+      items: [
+        { id: uid(), type: 'divider', label: 'Eval Infra' },
+        { id: uid(), type: 'divider', label: 'Eval Infra - Safety' },
+        { id: uid(), type: 'divider', label: 'AI Frontier' }
+      ]
+    });
+    pageIdx = PAGES.length - 1; weekIdx = 0;
+    save(); renderDeck();
+  }
+
+  function exportJSON() {
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'learning-roadmap.json'; a.click();
+    URL.revokeObjectURL(url);
+  }
+  function reset() {
+    if (!confirm('Reset to seed and lose all edits?')) return;
+    state = JSON.parse(JSON.stringify(SEED));
+    pageIdx = 0; weekIdx = 0;
+    save(); renderRefs(); renderDeck();
+  }
+
+  function bindEdit(el, getter, setter, opts) {
+    opts = opts || {};
+    el.addEventListener('blur', () => {
+      const v = el.textContent.trim();
+      const obj = getter();
+      if (obj) { setter(obj, v); save(); if (opts.rerender) renderDeck(); }
+    });
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !opts.multiline) { e.preventDefault(); el.blur(); }
+    });
+  }
+
+  // build one domain/weekly card element
+  function renderCard(d) {
+    const realItems = d.items.filter(i => i.type !== 'divider');
+    const readCount = realItems.filter(i => i.status === 'read').length;
+    const card = document.createElement('div');
+    card.className = 'domain' + (d.dated ? ' dated' : '');
+    card.innerHTML = `
+      <button class="row-delete domain-delete" title="delete card">×</button>
+      <div class="domain-head">
+        <h2 contenteditable="true">${escape(d.title)}</h2>
+        <span class="count">${readCount}/${realItems.length} read</span>
+      </div>
+      <div class="domain-desc" contenteditable="true">${escape(d.desc)}</div>
+      <div class="items"></div>
+      <div class="add-row">
+        <button class="mini-btn add-div" type="button" title="add divider">➕</button>
+      </div>
+    `;
+
+    bindEdit(card.querySelector('h2'), () => d, (o, v) => o.title = v);
+    bindEdit(card.querySelector('.domain-desc'), () => d, (o, v) => o.desc = v);
+    card.querySelector('.domain-delete').addEventListener('click', () => deleteCard(d.id));
+    card.querySelector('.add-div').addEventListener('click', () => addDivider(d.id));
+
+    const itemsEl = card.querySelector('.items');
+
+    function buildDivider(it) {
+      const dv = document.createElement('div');
+      dv.className = 'divider';
+      dv.innerHTML = `
+        <span class="divider-label" contenteditable="true">${escape(it.label || '')}</span>
+        <i class="divider-line"></i>
+        <button class="row-delete" title="delete">×</button>
+      `;
+      bindEdit(dv.querySelector('.divider-label'), () => it, (o, v) => o.label = v);
+      dv.querySelector('.row-delete').addEventListener('click', () => deleteItem(d.id, it.id));
+      // drop onto a divider → move the reading to the top of that section
+      dv.addEventListener('dragover', (e) => {
+        if (!dragInfo || dragInfo.cardId !== d.id) return;
+        e.preventDefault();
+        dv.classList.add('drag-over');
+      });
+      dv.addEventListener('dragleave', () => dv.classList.remove('drag-over'));
+      dv.addEventListener('drop', (e) => {
+        if (!dragInfo || dragInfo.cardId !== d.id) return;
+        e.preventDefault();
+        dv.classList.remove('drag-over');
+        reorderItem(d.id, dragInfo.iid, it.id, true);
+      });
+      return dv;
+    }
+    function buildRow(it) {
+      const row = document.createElement('div');
+      row.className = 'item ' + it.status;
+      const hasUrl = !!(it.url && it.url.trim());
+      row.innerHTML = `
+        <div class="item-dot ${it.status === 'read' ? 'read' : (it.status === 'reading' ? 'reading' : '')}" title="click to cycle"></div>
+        <div class="item-main">
+          <div class="item-title" contenteditable="true">${escape(it.title)}</div>
+          <div class="item-note" contenteditable="true">${escape(it.note || '')}</div>
+          <div class="item-row2">
+            <span class="item-url" contenteditable="true">${escape(it.url || '')}</span>
+            <a class="item-go ${hasUrl ? '' : 'hidden'}" target="_blank" rel="noopener" href="${escapeAttr(it.url || '')}">↗</a>
+          </div>
+        </div>
+        <button class="row-delete" title="delete">×</button>
+      `;
+      row.querySelector('.item-dot').addEventListener('click', () => cycleItem(d.id, it.id));
+      bindEdit(row.querySelector('.item-title'), () => it, (o, v) => o.title = v);
+      bindEdit(row.querySelector('.item-note'), () => it, (o, v) => o.note = v, { multiline: true });
+      bindEdit(row.querySelector('.item-url'), () => it, (o, v) => o.url = v, { rerender: true });
+      row.querySelector('.row-delete').addEventListener('click', () => deleteItem(d.id, it.id));
+
+      // drag handle — only the grip starts a drag, so text editing stays intact
+      const grip = document.createElement('span');
+      grip.className = 'item-grip';
+      grip.textContent = '⠿';
+      grip.title = 'drag to reorder';
+      grip.setAttribute('draggable', 'true');
+      grip.addEventListener('dragstart', (e) => {
+        dragInfo = { cardId: d.id, iid: it.id };
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', it.id);
+        if (e.dataTransfer.setDragImage) e.dataTransfer.setDragImage(row, 12, 12);
+        row.classList.add('dragging');
+      });
+      grip.addEventListener('dragend', () => {
+        dragInfo = null;
+        row.classList.remove('dragging');
+        document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+      });
+      row.appendChild(grip);
+
+      // drop target — reorder before/after by pointer position
+      row.addEventListener('dragover', (e) => {
+        if (!dragInfo || dragInfo.cardId !== d.id || dragInfo.iid === it.id) return;
+        e.preventDefault();
+        row.classList.add('drag-over');
+      });
+      row.addEventListener('dragleave', () => row.classList.remove('drag-over'));
+      row.addEventListener('drop', (e) => {
+        if (!dragInfo || dragInfo.cardId !== d.id) return;
+        e.preventDefault();
+        row.classList.remove('drag-over');
+        const rect = row.getBoundingClientRect();
+        const after = (e.clientY - rect.top) > rect.height / 2;
+        reorderItem(d.id, dragInfo.iid, it.id, after);
+      });
+      return row;
+    }
+    function buildAdd(dividerId) {
+      const b = document.createElement('button');
+      b.className = 'mini-btn add-in-section';
+      b.type = 'button';
+      b.title = 'add reading';
+      b.textContent = '➕';
+      b.addEventListener('click', () => addItemInSection(d.id, dividerId));
+      return b;
+    }
+
+    // group into sections: a leading (divider-less) section, then one per divider
+    const hasDivider = d.items.some(i => i.type === 'divider');
+    const sections = [];
+    let cur = { dividerId: null, divider: null, items: [] };
+    d.items.forEach((it) => {
+      if (it.type === 'divider') {
+        sections.push(cur);
+        cur = { dividerId: it.id, divider: it, items: [] };
+      } else {
+        cur.items.push(it);
+      }
+    });
+    sections.push(cur);
+
+    sections.forEach((sec) => {
+      // skip an empty leading section only when the card uses dividers
+      if (sec.dividerId === null && sec.items.length === 0 && hasDivider) return;
+      if (sec.divider) itemsEl.appendChild(buildDivider(sec.divider));
+      sec.items.forEach((it) => itemsEl.appendChild(buildRow(it)));
+      itemsEl.appendChild(buildAdd(sec.dividerId));
+    });
+
+    return card;
+  }
+
+  function renderTabs() {
+    $tabs.innerHTML = '';
+    PAGES.forEach((p, i) => {
+      const t = document.createElement('button');
+      t.className = 'tab' + (i === pageIdx ? ' active' : '');
+      t.textContent = p.name;
+      t.addEventListener('click', () => { pageIdx = i; renderDeck(); });
+      $tabs.appendChild(t);
+    });
+    $prevPage.disabled = pageIdx === 0;
+    $nextPage.disabled = pageIdx === PAGES.length - 1;
+  }
+
+  function renderWeekly() {
+    const weeks = sortedWeeklies();
+    if (!weeks.length) {
+      const empty = document.createElement('div');
+      empty.className = 'car-empty';
+      empty.innerHTML = '还没有周卡 — 新建一张,或等 daily/weekly loop 自动生成。';
+      $deck.appendChild(empty);
+      const acts0 = document.createElement('div');
+      acts0.className = 'week-actions';
+      const add0 = document.createElement('button');
+      add0.className = 'btn primary';
+      add0.textContent = '+ Week';
+      add0.addEventListener('click', addWeek);
+      acts0.appendChild(add0);
+      $deck.appendChild(acts0);
+      return;
+    }
+    if (weekIdx >= weeks.length) weekIdx = 0;
+    const w = weeks[weekIdx];
+
+    const cap = document.createElement('div');
+    cap.className = 'car-cap';
+    cap.innerHTML = (weekIdx === 0 ? '<b>最新 latest</b> · ' : '') + escape(w.date || '') + '　(' + (weekIdx + 1) + '/' + weeks.length + ')';
+    $deck.appendChild(cap);
+
+    const car = document.createElement('div');
+    car.className = 'carousel';
+    const prev = document.createElement('button');
+    prev.className = 'car-arrow'; prev.textContent = '‹'; prev.disabled = weeks.length <= 1;
+    prev.addEventListener('click', () => { weekIdx = (weekIdx - 1 + weeks.length) % weeks.length; renderDeck(); });
+    const stage = document.createElement('div');
+    stage.className = 'car-stage';
+    stage.appendChild(renderCard(w));
+    const next = document.createElement('button');
+    next.className = 'car-arrow'; next.textContent = '›'; next.disabled = weeks.length <= 1;
+    next.addEventListener('click', () => { weekIdx = (weekIdx + 1) % weeks.length; renderDeck(); });
+    car.appendChild(prev); car.appendChild(stage); car.appendChild(next);
+    $deck.appendChild(car);
+
+    const dots = document.createElement('div');
+    dots.className = 'car-dots';
+    weeks.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.className = 'car-dot' + (i === weekIdx ? ' active' : '');
+      dot.addEventListener('click', () => { weekIdx = i; renderDeck(); });
+      dots.appendChild(dot);
+    });
+    $deck.appendChild(dots);
+
+    const acts = document.createElement('div');
+    acts.className = 'week-actions';
+    const add = document.createElement('button');
+    add.className = 'btn primary';
+    add.textContent = '+ Week';
+    add.addEventListener('click', addWeek);
+    acts.appendChild(add);
+    $deck.appendChild(acts);
+  }
+
+  // read-only: prioritized sources mirror learning_roadmap_instruction.md (§3),
+  // always rendered from SEED so the panel stays in sync with the source file.
+  const REF_KINDS = [{ key: 'org', label: 'Orgs' }, { key: 'site', label: 'Sites' }, { key: 'keyword', label: 'Keywords' }];
+  function renderRefs() {
+    const refs = SEED.references || [];
+    $refsCaret.textContent = state.refsOpen ? '▾' : '▸';
+    $refsCount.textContent = '(' + refs.length + ')';
+    $refsBody.hidden = !state.refsOpen;
+    $refsList.innerHTML = '';
+
+    REF_KINDS.forEach((k) => {
+      const rows = refs.filter(r => r.kind === k.key);
+      if (!rows.length) return;
+      const dv = document.createElement('div');
+      dv.className = 'divider';
+      dv.innerHTML = `<span class="divider-label">${escape(k.label)}</span><i class="divider-line"></i>`;
+      $refsList.appendChild(dv);
+
+      rows.forEach((r) => {
+        const row = document.createElement('div');
+        row.className = 'ref-row';
+        row.innerHTML = `<span class="ref-text">${escape(r.text)}</span>`;
+        $refsList.appendChild(row);
+      });
+    });
+  }
+
+  function renderDeck() {
+    renderTabs();
+    // restart fade
+    $deck.style.animation = 'none';
+    void $deck.offsetWidth;
+    $deck.style.animation = '';
+    $deck.innerHTML = '';
+
+    const page = PAGES[pageIdx];
+    if (page.kind === 'single') {
+      const wrap = document.createElement('div');
+      wrap.className = 'single-stage';
+      const d = state.domains.find(x => x.id === page.id);
+      if (d) wrap.appendChild(renderCard(d));
+      $deck.appendChild(wrap);
+    } else {
+      renderWeekly();
+    }
+  }
+
+  function goPage(delta) {
+    const n = Math.min(PAGES.length - 1, Math.max(0, pageIdx + delta));
+    if (n !== pageIdx) { pageIdx = n; renderDeck(); }
+  }
+
+  // top-of-page init (bind once)
+  $updated.textContent = state.updated;
+  bindEdit($updated, () => state, (o, v) => o.updated = v);
+
+  $refsToggle.addEventListener('click', () => { state.refsOpen = !state.refsOpen; save(); renderRefs(); });
+
+  $prevPage.addEventListener('click', () => goPage(-1));
+  $nextPage.addEventListener('click', () => goPage(1));
+  $export.addEventListener('click', exportJSON);
+  $reset.addEventListener('click', reset);
+  $refresh.addEventListener('click', () => {
+    state.updated = 'Last updated · ' + todayYMD();
+    $updated.textContent = state.updated;
+    save();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    const ae = document.activeElement;
+    if (ae && ae.isContentEditable) return; // don't hijack arrows while editing
+    if (e.key === 'ArrowLeft') goPage(-1);
+    else if (e.key === 'ArrowRight') goPage(1);
+  });
+
+  function escape(s) {
+    return String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]);
+  }
+  function escapeAttr(s) {
+    return escape(s).replace(/"/g, '&quot;');
+  }
+
+  renderRefs();
+  renderDeck();
+})();
+</script>
+</body>
+</html>
