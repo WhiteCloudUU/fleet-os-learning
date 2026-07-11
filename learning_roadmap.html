@@ -1049,17 +1049,22 @@
         if (!s.domains) s.domains = [];
         if (!s.references) s.references = [];
         if (typeof s.refsOpen !== 'boolean') s.refsOpen = false;
+        const existingWeeklyIds = new Set(s.weeklies.map(w => w.id));
+        let changed = false;
+        (SEED.weeklies || []).forEach((w) => {
+          if (!existingWeeklyIds.has(w.id)) {
+            s.weeklies.push(JSON.parse(JSON.stringify(w)));
+            changed = true;
+          }
+        });
         if (s.seedSync !== SEED_SYNC) {
-          const existingWeeklyIds = new Set(s.weeklies.map(w => w.id));
-          (SEED.weeklies || []).forEach((w) => {
-            if (!existingWeeklyIds.has(w.id)) {
-              s.weeklies.push(JSON.parse(JSON.stringify(w)));
-            }
-          });
           s.weeklies.forEach((w) => {
             if (w && w.dated) w.desc = '';
           });
           s.seedSync = SEED_SYNC;
+          changed = true;
+        }
+        if (changed) {
           localStorage.setItem(KEY, JSON.stringify(s));
         }
         // refs are read-only and rendered from SEED, so stored references are ignored
