@@ -82,6 +82,14 @@
     line-height: 1.5;
     word-break: break-all;
   }
+  .ref-link {
+    color: var(--gray-700);
+    text-decoration: underline;
+    text-decoration-color: var(--gray-300);
+    text-underline-offset: 3px;
+    transition: color 0.12s, text-decoration-color 0.12s;
+  }
+  .ref-link:hover { color: var(--clay); text-decoration-color: var(--clay); }
   .ref-text:empty::before { content: "url / keyword…"; color: var(--gray-300); }
   .ref-text[data-kind="site"]:empty::before { content: "domain / url…"; color: var(--gray-300); }
   .ref-text[data-kind="keyword"]:empty::before { content: "keyword / buzzword…"; color: var(--gray-300); }
@@ -524,8 +532,6 @@
     <span><i class="key-dot"></i> to-read</span>
     <span><i class="key-dot reading"></i> reading</span>
     <span><i class="key-dot read"></i> read</span>
-    <span style="color:var(--gray-300)">·</span>
-    <span>click a dot to cycle · click text to edit · ← → flips pages</span>
   </div>
 
   <div class="pager">
@@ -545,22 +551,43 @@
     {
       "id": "org1",
       "kind": "org",
-      "text": "OpenAI · Anthropic · Google DeepMind"
+      "parts": [
+        { "label": "OpenAI", "url": "https://developers.openai.com/api/docs/guides/evals" },
+        { "label": "Anthropic", "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents" },
+        { "label": "Google DeepMind", "url": "https://deepmind.google/blog/strengthening-our-frontier-safety-framework/" }
+      ]
     },
     {
       "id": "org2",
       "kind": "org",
-      "text": "Meta / Purple Llama · UK AISI / US AISI"
+      "parts": [
+        { "label": "Meta / Purple Llama", "url": "https://github.com/meta-llama/PurpleLlama" },
+        { "label": "UK AISI", "url": "https://inspect.aisi.org.uk/" },
+        { "label": "US AISI" }
+      ]
     },
     {
       "id": "org3",
       "kind": "org",
-      "text": "Braintrust · Arize · Datadog · LangSmith · Langfuse · Galileo"
+      "parts": [
+        { "label": "Braintrust", "url": "https://www.braintrust.dev/articles/llm-evaluation-guide" },
+        { "label": "Arize", "url": "https://arize.com/blog/" },
+        { "label": "Datadog", "url": "https://docs.datadoghq.com/llm_observability/evaluations/" },
+        { "label": "LangSmith", "url": "https://docs.langchain.com/langsmith/evaluation" },
+        { "label": "Langfuse", "url": "https://langfuse.com/docs/evaluation/overview" },
+        { "label": "Galileo", "url": "https://docs.galileo.ai/what-is-galileo" }
+      ]
     },
     {
       "id": "org4",
       "kind": "org",
-      "text": "Academic / OSS: HELM · OpenAI Evals · lm-eval-harness · AgentDojo"
+      "parts": [
+        { "label": "Academic / OSS:" },
+        { "label": "HELM", "url": "https://crfm.stanford.edu/helm/" },
+        { "label": "OpenAI Evals", "url": "https://github.com/openai/evals" },
+        { "label": "lm-eval-harness", "url": "https://github.com/EleutherAI/lm-evaluation-harness" },
+        { "label": "AgentDojo", "url": "https://github.com/ethz-spylab/agentdojo" }
+      ]
     },
     {
       "id": "ref1",
@@ -918,6 +945,65 @@
           "label": "AI Frontier"
         }
       ]
+    },
+    {
+      "id": "d-week-20260711",
+      "dated": true,
+      "date": "2026-07-11",
+      "title": "📅 Weekly · 2026-07-11",
+      "desc": "",
+      "items": [
+        {
+          "id": "wk-20260711-ei",
+          "type": "divider",
+          "label": "Eval Infra"
+        },
+        {
+          "id": "wk-20260711-ei1",
+          "title": "Separating signal from noise in coding evaluations — OpenAI",
+          "url": "https://openai.com/index/separating-signal-from-noise-coding-evaluations/",
+          "note": "SWE-Bench Pro 审计发现约 30% broken tasks,提醒 release-gate eval 必须做 dataset QA 与 human adjudication。",
+          "status": "to-read"
+        },
+        {
+          "id": "wk-20260711-ei2",
+          "title": "Inspect AI 0.3.245-0.3.246 changelog",
+          "url": "https://inspect.aisi.org.uk/CHANGELOG.html",
+          "note": "新增 GPT-5.6 support、reasoning_mode、checkpoint veto 与 control channel retry,利于低延迟可恢复 eval orchestration。",
+          "status": "to-read"
+        },
+        {
+          "id": "wk-20260711-ei3",
+          "title": "3 production patterns for AI agents and how to evaluate each one — Arize",
+          "url": "https://arize.com/blog/3-production-patterns-ai-agents-how-to-evaluate-each-one/",
+          "note": "把 agent eval 明确分成 span/trace/session 三层,可直接映射 product harness 的 regression gate 与 online monitoring。",
+          "status": "to-read"
+        },
+        {
+          "id": "wk-20260711-es",
+          "type": "divider",
+          "label": "Eval Infra - Safety"
+        },
+        {
+          "id": "wk-20260711-es1",
+          "title": "GPT-5.6: Frontier intelligence that scales with your ambition — OpenAI",
+          "url": "https://openai.com/index/gpt-5-6/",
+          "note": "发布含 cyber/bio capability eval、70 万 A100e 小时 automated red-teaming 与 continuous monitoring,是高强度 release safety gate 样板。",
+          "status": "to-read"
+        },
+        {
+          "id": "wk-20260711-af",
+          "type": "divider",
+          "label": "AI Frontier"
+        },
+        {
+          "id": "wk-20260711-af1",
+          "title": "An off switch for dual-use knowledge in AI models — Anthropic",
+          "url": "https://www.anthropic.com/research/off-switch-dual-use",
+          "note": "GRAM 尝试在训练层面关闭 dual-use knowledge,虽非生产 eval,但会影响未来 safety scoring 与 capability suppression 设计。",
+          "status": "to-read"
+        }
+      ]
     }
   ]
 }
@@ -926,7 +1012,7 @@
 <script>
 (function () {
   const KEY = 'fleet-os.learning-roadmap.v6';
-  const SEED_SYNC = '2026-07-05-empty-weekly-desc';
+  const SEED_SYNC = '2026-07-11-weekly';
   const SEED = JSON.parse(document.getElementById('seed').textContent);
   const $deck = document.getElementById('deck');
   const $updated = document.getElementById('updated');
@@ -1331,7 +1417,27 @@
       rows.forEach((r) => {
         const row = document.createElement('div');
         row.className = 'ref-row';
-        row.innerHTML = `<span class="ref-text">${escape(r.text)}</span>`;
+        const text = document.createElement('span');
+        text.className = 'ref-text';
+        if (Array.isArray(r.parts)) {
+          r.parts.forEach((part, i) => {
+            if (i > 0) text.appendChild(document.createTextNode(' · '));
+            if (part.url) {
+              const a = document.createElement('a');
+              a.className = 'ref-link';
+              a.href = part.url;
+              a.target = '_blank';
+              a.rel = 'noopener';
+              a.textContent = part.label || part.url;
+              text.appendChild(a);
+            } else {
+              text.appendChild(document.createTextNode(part.label || ''));
+            }
+          });
+        } else {
+          text.textContent = r.text || '';
+        }
+        row.appendChild(text);
         $refsList.appendChild(row);
       });
     });
