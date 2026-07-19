@@ -137,15 +137,21 @@
           "note": "用统计严谨性(置信区间、配对差异、方差来源)做 eval 的方法论,讲清分数背后的可信度。"
         },
         {
-          "id": "eg4",
-          "title": "HELM — Holistic Evaluation of Language Models (Stanford CRFM)",
-          "url": "https://crfm.stanford.edu/helm/",
-          "note": "多指标、多场景的 holistic benchmark 设计——覆盖度与可比性怎么平衡。"
+          "id": "xm6eros9",
+          "title": "What is an evaluation harness - Arize",
+          "url": "https://arize.com/blog/what-is-an-evaluation-harness/",
+          "note": "对比了 benchmark runner 和 eval harness in prod。简单而言 benchmark runner是一套固定流程 (load a model- > run against static standards -> compare results)，主要给researchers offline用的"
         },
         {
           "id": "eg-div-harness",
           "type": "divider",
           "label": "Eval Harness"
+        },
+        {
+          "id": "eg4",
+          "title": "HELM — Holistic Evaluation of Language Models (Stanford CRFM)",
+          "url": "https://crfm.stanford.edu/helm/",
+          "note": "多指标、多场景的 holistic benchmark 设计——覆盖度与可比性怎么平衡。"
         },
         {
           "id": "eg3",
