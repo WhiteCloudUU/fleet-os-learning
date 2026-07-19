@@ -485,12 +485,6 @@
           "label": "Eval Infra"
         },
         {
-          "id": "wk-20260717-ei1",
-          "title": "Inspect AI 0.3.247 changelog",
-          "url": "https://inspect.aisi.org.uk/CHANGELOG.html",
-          "note": "atomic eval logs、turn_count/token_limit usage 与 checkpoint 隐蔽性增强,直接提升大规模 eval harness 可靠性。"
-        },
-        {
           "id": "wk-20260717-ei2",
           "title": "How we chose the model behind Topics with Baseten — Braintrust",
           "url": "https://www.braintrust.dev/blog/model-behind-topics-baseten",
