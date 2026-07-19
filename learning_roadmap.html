@@ -101,26 +101,34 @@
   /* small UI button — matches toolbar, used for in-card adds */
   .mini-btn {
     font-family: var(--mono);
-    font-size: 10.5px;
+    font-size: 10px;
     letter-spacing: 0.04em;
-    padding: 5px 11px;
-    border: 1px solid var(--gray-300);
-    background: var(--white);
+    padding: 3px 7px;
+    min-height: 28px;
+    justify-content: center;
+    border: 1px solid transparent;
+    background: transparent;
     border-radius: 6px;
-    color: var(--gray-700);
+    color: var(--gray-500);
     cursor: pointer;
-    transition: background 0.12s, border-color 0.12s, color 0.12s;
+    opacity: 0;
+    transition: background 0.12s, border-color 0.12s, color 0.12s, opacity 0.12s;
     display: inline-flex;
     align-items: center;
     gap: 5px;
   }
-  .mini-btn:hover { background: var(--gray-150); border-color: var(--gray-500); }
+  .mini-btn:hover, .mini-btn:focus-visible {
+    background: var(--gray-150);
+    border-color: var(--gray-300);
+    color: var(--gray-700);
+    opacity: 1;
+  }
   .mini-btn.clay { color: var(--clay); }
   .mini-btn.clay:hover { border-color: var(--clay); background: rgba(217,119,87,0.06); }
   .updated-row {
     display: flex;
     align-items: baseline;
-    gap: 6px;
+    gap: 8px;
     margin-bottom: 24px;
   }
   .updated {
@@ -129,12 +137,12 @@
     color: var(--gray-500);
   }
   .refresh-date {
-    font-size: 14px;
+    font-size: 18px;
     background: transparent;
     border: none;
     color: var(--clay);
     cursor: pointer;
-    padding: 0 2px;
+    padding: 0 3px;
     line-height: 1;
     transition: color 0.12s, transform 0.2s;
   }
@@ -147,6 +155,7 @@
     margin-bottom: 18px;
     flex-wrap: wrap;
     justify-content: flex-end;
+    align-items: center;
   }
   .btn {
     font-family: var(--mono);
@@ -163,27 +172,75 @@
   .btn:hover { background: var(--gray-150); border-color: var(--gray-500); }
   .btn.primary { border-color: var(--clay); color: var(--clay); }
   .btn.primary:hover { background: rgba(217,119,87,0.08); }
+  .btn.dirty {
+    border-color: var(--clay);
+    color: var(--clay);
+    font-weight: 700;
+  }
+  .btn.dirty:hover { background: rgba(217,119,87,0.08); }
   .btn.ghost { border-color: transparent; background: transparent; }
   .btn.ghost:hover { background: var(--gray-150); }
   .btn.push-right { margin-left: auto; }
-
-  .legend {
-    display: flex;
-    gap: 18px;
-    flex-wrap: wrap;
+  .sync-status {
     font-family: var(--mono);
     font-size: 11px;
     color: var(--gray-500);
-    margin-bottom: 26px;
+    margin-right: auto;
+  }
+  .sync-status.warn { color: var(--clay); }
+  .token-tools {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-left: auto;
+  }
+  .token-toggle {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    color: var(--gray-500);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 4px 7px;
+    cursor: pointer;
+    opacity: 0.62;
+    transition: opacity 0.12s, background 0.12s, border-color 0.12s, color 0.12s;
+  }
+  .token-toggle:hover { opacity: 1; background: var(--gray-150); border-color: var(--gray-300); color: var(--gray-700); }
+  .token-panel {
+    display: flex;
+    gap: 5px;
     align-items: center;
   }
-  .legend span { display: inline-flex; align-items: center; gap: 6px; }
-  .key-dot {
-    width: 10px; height: 10px; border-radius: 50%;
-    background: var(--white); border: 2px solid var(--gray-300); flex-shrink: 0;
+  .token-panel[hidden] { display: none; }
+  .token-input {
+    width: min(340px, 42vw);
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 5px 8px;
+    border: 1px solid var(--gray-300);
+    border-radius: 6px;
+    background: var(--white);
+    color: var(--gray-700);
+    outline: none;
   }
-  .key-dot.reading { background: var(--clay);  border-color: var(--clay); }
-  .key-dot.read    { background: var(--olive); border-color: var(--olive); }
+  .token-input:focus { border-color: var(--gray-500); background: var(--gray-150); }
+  .icon-btn {
+    width: 26px;
+    height: 26px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--gray-300);
+    background: var(--white);
+    border-radius: 6px;
+    color: var(--gray-700);
+    cursor: pointer;
+    font-size: 13px;
+    line-height: 1;
+  }
+  .icon-btn:hover { background: var(--gray-150); border-color: var(--gray-500); }
 
   /* ---- pager ---- */
   .pager {
@@ -359,25 +416,48 @@
 
   .item {
     display: grid;
-    grid-template-columns: 14px 1fr;
+    grid-template-columns: 18px 1fr;
     gap: 11px;
     align-items: start;
     position: relative;
     padding-right: 22px;
   }
-  .item-dot {
-    width: 11px; height: 11px;
-    border-radius: 50%;
-    background: var(--white);
-    border: 2px solid var(--gray-300);
-    margin-top: 5px;
+  .favorite-btn {
+    width: 20px;
+    height: 22px;
+    margin-top: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    color: var(--gray-300);
     cursor: pointer;
-    flex-shrink: 0;
-    transition: transform 0.1s;
+    line-height: 1;
+    transition: color 0.12s, transform 0.1s, opacity 0.12s;
   }
-  .item-dot:hover { transform: scale(1.25); }
-  .item-dot.reading { background: var(--clay);  border-color: var(--clay); box-shadow: 0 0 0 4px rgba(217,119,87,0.12); }
-  .item-dot.read    { background: var(--olive); border-color: var(--olive); }
+  .favorite-btn:hover { color: var(--clay); transform: scale(1.12); }
+  .favorite-btn.favorited { color: var(--clay); opacity: 0.9; }
+  .favorite-btn svg {
+    width: 17px;
+    height: 17px;
+    display: block;
+    stroke: currentColor;
+    stroke-width: 2.25;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: transparent;
+  }
+  .favorite-btn.favorited svg { fill: currentColor; }
+  .item-bullet {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid var(--gray-300);
+    background: var(--white);
+    margin: 5px 0 0 4px;
+    display: block;
+  }
 
   /* drag-to-reorder */
   .item-grip {
@@ -479,11 +559,16 @@
     opacity: 0;
   }
 
-  .add-row { display: flex; gap: 10px; padding-top: 14px; }
+  .add-row { display: flex; padding-top: 12px; padding-right: 22px; }
+  .add-div {
+    width: 100%;
+    min-height: 26px;
+  }
   .add-in-section {
+    width: calc(100% - 25px - 22px);
     align-self: flex-start;
     margin-left: 25px;
-    margin-top: -6px;
+    margin-top: -8px;
   }
 
   @media (max-width: 520px) {
@@ -508,30 +593,33 @@
 
   <div class="updated-row">
     <div class="updated" id="updated" contenteditable="true">Last updated · 2026-06-20</div>
-    <button class="refresh-date" id="refresh-date" type="button" title="set to today">↻</button>
+    <button class="refresh-date" id="refresh-date" type="button" title="load latest">↻</button>
+    <div class="token-tools">
+      <button class="token-toggle" id="set-token" type="button">Token</button>
+      <div class="token-panel" id="token-panel" hidden>
+        <input class="token-input" id="token-input" type="password" autocomplete="off" placeholder="GitHub token">
+        <button class="icon-btn" id="save-token" type="button" title="save token">✓</button>
+        <button class="icon-btn" id="clear-token" type="button" title="clear token">×</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <span class="sync-status" id="sync-status">Local draft</span>
+    <button class="btn" id="save-github">Save</button>
+    <button class="btn" id="export">Export JSON</button>
   </div>
 
   <div class="refs">
     <button class="refs-head" id="refs-toggle" type="button">
       <span class="refs-caret" id="refs-caret">▸</span>
-      Prioritized sources &amp; search seeds
+      Source
       <span class="refs-count" id="refs-count"></span>
     </button>
     <div class="refs-body" id="refs-body" hidden>
       <p class="refs-hint">来源优先级与 search seeds(<b>Orgs</b> / <b>Sites</b> / <b>Keywords</b>)——只读,镜像自 <b>learning_roadmap_instruction.md §3</b>;改动请编辑该文件。</p>
       <div class="refs-list" id="refs-list"></div>
     </div>
-  </div>
-
-  <div class="toolbar">
-    <button class="btn" id="reset">Reset</button>
-    <button class="btn" id="export">Export JSON</button>
-  </div>
-
-  <div class="legend">
-    <span><i class="key-dot"></i> to-read</span>
-    <span><i class="key-dot reading"></i> reading</span>
-    <span><i class="key-dot read"></i> read</span>
   </div>
 
   <div class="pager">
@@ -614,153 +702,140 @@
     {
       "id": "d-eval-general",
       "title": "Eval Infra",
-      "desc": "评测系统本身怎么建——打分、数据集、统计严谨性、生产期 tracing。挑业界(OpenAI / Anthropic / DeepMind…)讲方法论与工程的 post。",
+      "desc": "长期收藏夹:评测系统怎么建、怎么判可信、怎么进生产闭环。",
       "items": [
         {
-          "id": "eg-div-c",
+          "id": "eg-div-basics",
           "type": "divider",
-          "label": "Canonical"
+          "label": "General / Basics"
         },
         {
           "id": "eg1",
           "title": "Challenges in evaluating AI systems — Anthropic",
           "url": "https://www.anthropic.com/news/evaluating-ai-systems",
-          "note": "为什么评测 AI 这么难——各类 eval 方法的取舍、陷阱与局限,理解 eval harness 该怎么设计。",
-          "status": "to-read"
+          "note": "为什么评测 AI 这么难——各类 eval 方法的取舍、陷阱与局限,理解 eval harness 该怎么设计。"
         },
         {
           "id": "eg2",
           "title": "A statistical approach to model evaluations — Anthropic",
           "url": "https://www.anthropic.com/research/statistical-approach-to-model-evals",
-          "note": "用统计严谨性(置信区间、配对差异、方差来源)做 eval 的方法论,讲清分数背后的可信度。",
-          "status": "to-read"
-        },
-        {
-          "id": "eg3",
-          "title": "OpenAI Evals — open-source eval framework",
-          "url": "https://github.com/openai/evals",
-          "note": "OpenAI 开源的 eval harness:registry + 自定义 eval 的组织方式,看通用评测框架的工程结构。",
-          "status": "to-read"
+          "note": "用统计严谨性(置信区间、配对差异、方差来源)做 eval 的方法论,讲清分数背后的可信度。"
         },
         {
           "id": "eg4",
           "title": "HELM — Holistic Evaluation of Language Models (Stanford CRFM)",
           "url": "https://crfm.stanford.edu/helm/",
-          "note": "多指标、多场景的 holistic benchmark 设计——覆盖度与可比性怎么平衡。",
-          "status": "to-read"
+          "note": "多指标、多场景的 holistic benchmark 设计——覆盖度与可比性怎么平衡。"
         },
         {
-          "id": "eg5",
-          "title": "LLM Observability — Datadog",
-          "url": "https://www.datadoghq.com/blog/datadog-llm-observability/",
-          "note": "把 eval 做成生产常在线产品:end-to-end tracing + 内置 evaluations(quality / toxicity / failure-to-answer)。",
-          "status": "to-read"
-        },
-        {
-          "id": "eg-div-e",
+          "id": "eg-div-harness",
           "type": "divider",
-          "label": "Emerging · last 6 months"
+          "label": "Eval Harness"
+        },
+        {
+          "id": "eg3",
+          "title": "OpenAI Evals — open-source eval framework",
+          "url": "https://github.com/openai/evals",
+          "note": "OpenAI 开源的 eval harness:registry + 自定义 eval 的组织方式,看通用评测框架的工程结构。"
         },
         {
           "id": "eg6",
           "title": "Inspect — open eval framework (UK AI Safety Institute)",
           "url": "https://inspect.aisi.org.uk/",
-          "note": "AISI 的通用评测框架,solver / scorer / dataset 抽象正在成为业界 harness 的事实标准之一;也是 safety eval 的主力工具。",
-          "status": "to-read"
+          "note": "AISI 的通用评测框架,solver / scorer / dataset 抽象正在成为业界 harness 的事实标准之一;也是 safety eval 的主力工具。"
         },
         {
           "id": "eg7",
           "title": "Evaluating LLM-based 0→1 software generation in E2E CLI scenarios",
           "url": "https://arxiv.org/abs/2604.06742",
-          "note": "⚠️ 标题为准。新型 task-based eval:在端到端 CLI 工具场景里评 agent 的 0→1 代码生成,代表 agentic eval 的设计趋势。",
-          "status": "to-read"
+          "note": "⚠️ 标题为准。新型 task-based eval:在端到端 CLI 工具场景里评 agent 的 0→1 代码生成,代表 agentic eval 的设计趋势。"
+        },
+        {
+          "id": "eg-div-ops",
+          "type": "divider",
+          "label": "EvalOps & Quality"
+        },
+        {
+          "id": "eg5",
+          "title": "LLM Observability — Datadog",
+          "url": "https://www.datadoghq.com/blog/datadog-llm-observability/",
+          "note": "把 eval 做成生产常在线产品:end-to-end tracing + 内置 evaluations(quality / toxicity / failure-to-answer)。"
         }
       ]
     },
     {
       "id": "d-eval-safety",
       "title": "Eval Infra - Safety",
-      "desc": "主战场:为 safety / guardrail 搭 harness——jailbreak、refusal、alignment check、red-team。Eval Infra 的通用底座在这里专精到安全。",
+      "desc": "长期收藏夹:安全评测的基础概念、攻击面压测、上线门禁与生产监控。",
       "items": [
         {
-          "id": "es-div-c",
+          "id": "es-div-basics",
           "type": "divider",
-          "label": "Canonical"
-        },
-        {
-          "id": "es1",
-          "title": "LlamaFirewall: open-source guardrail system for AI agents — Meta",
-          "url": "https://arxiv.org/abs/2505.03574",
-          "note": "Meta 的 safety harness:PromptGuard / AlignmentCheck / CodeShield 三层防护的动机与 agent 场景应用范围。",
-          "status": "to-read"
+          "label": "Safety Basics"
         },
         {
           "id": "es2",
           "title": "Llama Guard: LLM-based input-output safeguard — Meta",
           "url": "https://ai.meta.com/research/publications/llama-guard-llm-based-input-output-safeguard-for-human-ai-conversations/",
-          "note": "用一个 LLM 做输入/输出安全分类器,含可定制 safety taxonomy 与人机对话场景。",
-          "status": "to-read"
+          "note": "用一个 LLM 做输入/输出安全分类器,含可定制 safety taxonomy 与人机对话场景。"
+        },
+        {
+          "id": "es1",
+          "title": "LlamaFirewall: open-source guardrail system for AI agents — Meta",
+          "url": "https://arxiv.org/abs/2505.03574",
+          "note": "Meta 的 safety harness:PromptGuard / AlignmentCheck / CodeShield 三层防护的动机与 agent 场景应用范围。"
+        },
+        {
+          "id": "es-div-threats",
+          "type": "divider",
+          "label": "Threats & Red-Teaming"
         },
         {
           "id": "es3",
           "title": "CyberSecEval: benchmark for LLM cybersecurity risks — Meta",
           "url": "https://ai.meta.com/research/publications/cyberseceval-a-comprehensive-benchmark-for-evaluating-the-cybersecurity-risks-of-large-language-models/",
-          "note": "评测 LLM 网络安全风险(不安全代码生成、协助攻击)的 benchmark 设计与覆盖范围。",
-          "status": "to-read"
-        },
-        {
-          "id": "es4",
-          "title": "Updated Preparedness Framework — OpenAI",
-          "url": "https://openai.com/index/updating-our-preparedness-framework/",
-          "note": "以 tracked capability categories 与能力阈值管理 frontier 风险——何时触发更强缓解的判定逻辑。",
-          "status": "to-read"
-        },
-        {
-          "id": "es5",
-          "title": "Updated Responsible Scaling Policy — Anthropic",
-          "url": "https://www.anthropic.com/news/announcing-our-updated-responsible-scaling-policy",
-          "note": "用 ASL / capability thresholds 决定何时触发更强 safeguards 的治理框架及其落地逻辑。",
-          "status": "to-read"
+          "note": "评测 LLM 网络安全风险(不安全代码生成、协助攻击)的 benchmark 设计与覆盖范围。"
         },
         {
           "id": "es6",
           "title": "Frontier Threats Red Teaming for AI Safety — Anthropic",
           "url": "https://www.anthropic.com/news/frontier-threats-red-teaming-for-ai-safety",
-          "note": "面向前沿能力(如生物风险)的 red-team 方法论——怎么系统化地设计与执行安全压测。",
-          "status": "to-read"
-        },
-        {
-          "id": "es-div-e",
-          "type": "divider",
-          "label": "Emerging · last 6 months"
+          "note": "面向前沿能力(如生物风险)的 red-team 方法论——怎么系统化地设计与执行安全压测。"
         },
         {
           "id": "es7",
           "title": "Red-Teaming Anthropic's Internal Agent Monitoring Systems — METR",
           "url": "https://metr.org/blog/2026-03-25-red-teaming-anthropic-agent-monitoring/",
-          "note": "第三方红队对内部 agent 监控系统的实测(2026-03)——监控/检测类 safety infra 怎么被绕过,直接关乎 harness 的盲区。",
-          "status": "to-read"
+          "note": "第三方红队对内部 agent 监控系统的实测(2026-03)——监控/检测类 safety infra 怎么被绕过,直接关乎 harness 的盲区。"
         },
         {
           "id": "es8",
           "title": "Securing the future of AI agents — Google DeepMind",
           "url": "https://deepmind.google/blog/securing-the-future-of-ai-agents/",
-          "note": "对抗未对齐 agent 的安全控制与 containment 工程要求,定义了 agentic safety eval 要覆盖的威胁面。",
-          "status": "to-read"
+          "note": "对抗未对齐 agent 的安全控制与 containment 工程要求,定义了 agentic safety eval 要覆盖的威胁面。"
         },
         {
           "id": "es9",
           "title": "When the Agent Is the Adversary: architectural requirements for agentic AI containment",
           "url": "https://arxiv.org/abs/2604.23425",
-          "note": "⚠️ 标题为准(2026-04)。把 agent 当对手来设计 containment 架构——为 safety eval infra 提供威胁模型。",
-          "status": "to-read"
+          "note": "⚠️ 标题为准(2026-04)。把 agent 当对手来设计 containment 架构——为 safety eval infra 提供威胁模型。"
         },
         {
-          "id": "es10",
-          "title": "Distributional AGI Safety",
-          "url": "https://arxiv.org/abs/2512.16856",
-          "note": "⚠️ 标题为准(2025-12)。从分布视角谈 AGI 安全——影响安全评测该度量什么、怎么聚合风险。",
-          "status": "to-read"
+          "id": "es-div-gates",
+          "type": "divider",
+          "label": "Safety Gates & Monitoring"
+        },
+        {
+          "id": "es4",
+          "title": "Updated Preparedness Framework — OpenAI",
+          "url": "https://openai.com/index/updating-our-preparedness-framework/",
+          "note": "以 tracked capability categories 与能力阈值管理 frontier 风险——何时触发更强缓解的判定逻辑。"
+        },
+        {
+          "id": "es5",
+          "title": "Updated Responsible Scaling Policy — Anthropic",
+          "url": "https://www.anthropic.com/news/announcing-our-updated-responsible-scaling-policy",
+          "note": "用 ASL / capability thresholds 决定何时触发更强 safeguards 的治理框架及其落地逻辑。"
         }
       ]
     },
@@ -770,35 +845,27 @@
       "desc": "前沿打法——agent framework、context / loop engineering、interpretability、新训练方法。保持视野,不深挖。",
       "items": [
         {
-          "id": "ft-div-c",
+          "id": "ft-div-general",
           "type": "divider",
-          "label": "Canonical"
+          "label": "General"
         },
         {
           "id": "ft1",
           "title": "Building effective agents — Anthropic",
           "url": "https://www.anthropic.com/research/building-effective-agents",
-          "note": "agent 设计的基本盘:workflow vs agent、何时用 loop、常见 pattern——loop / context engineering 的源头读物。",
-          "status": "to-read"
+          "note": "agent 设计的基本盘:workflow vs agent、何时用 loop、常见 pattern——loop / context engineering 的源头读物。"
         },
         {
           "id": "ft2",
           "title": "ReAct: Synergizing Reasoning and Acting in LLMs",
           "url": "https://arxiv.org/abs/2210.03629",
-          "note": "reasoning + acting 交替的范式,几乎所有 agent loop 的雏形。",
-          "status": "to-read"
+          "note": "reasoning + acting 交替的范式,几乎所有 agent loop 的雏形。"
         },
         {
           "id": "ft3",
           "title": "Mapping the Mind of a Large Language Model — Anthropic",
           "url": "https://www.anthropic.com/research/mapping-mind-language-model",
-          "note": "用 sparse autoencoder 提取可解释 features,interpretability 的动机与在 safety 监控/steering 的应用。",
-          "status": "to-read"
-        },
-        {
-          "id": "ft-div-e",
-          "type": "divider",
-          "label": "Emerging · last 6 months"
+          "note": "用 sparse autoencoder 提取可解释 features,interpretability 的动机与在 safety 监控/steering 的应用。"
         }
       ]
     }
@@ -825,15 +892,13 @@
           "id": "wk-s2",
           "title": "Predicting model behavior before release by simulating deployment — OpenAI",
           "url": "https://openai.com/index/deployment-simulation/",
-          "note": "用真实 conversation context 做 pre-deployment simulation,更接近线上分布并降低 evaluation awareness,可直接启发 release-gate safety eval。",
-          "status": "to-read"
+          "note": "用真实 conversation context 做 pre-deployment simulation,更接近线上分布并降低 evaluation awareness,可直接启发 release-gate safety eval。"
         },
         {
           "id": "wk-s1",
           "title": "Securing the future of AI agents — Google DeepMind",
           "url": "https://deepmind.google/blog/securing-the-future-of-ai-agents/",
-          "note": "DeepMind 谈如何为日益强大、可能未对齐的 agent 设计安全控制——agent containment / monitoring 的工程要求,正是 safety eval infra 要覆盖的威胁面。",
-          "status": "to-read"
+          "note": "DeepMind 谈如何为日益强大、可能未对齐的 agent 设计安全控制——agent containment / monitoring 的工程要求,正是 safety eval infra 要覆盖的威胁面。"
         },
         {
           "id": "wk-t",
@@ -858,15 +923,13 @@
           "id": "wk-20260628-ei2",
           "title": "How to eval stateful agents",
           "url": "https://www.braintrust.dev/blog/stateful-agent-evals",
-          "note": "把 stateful agent eval 从单轮 prompt-score 推到 trajectory/side effects/external state,可映射真实 release-gate 回放。",
-          "status": "to-read"
+          "note": "把 stateful agent eval 从单轮 prompt-score 推到 trajectory/side effects/external state,可映射真实 release-gate 回放。"
         },
         {
           "id": "wk-20260628-ei3",
           "title": "Designing the runtime for Langfuse code evaluators",
           "url": "https://langfuse.com/blog/2026-06-22-code-evaluators-execution-model",
-          "note": "code evaluator 的 sandbox/runtime 设计,对把 deterministic policy checks 安全跑在 traces 上有直接参考。",
-          "status": "to-read"
+          "note": "code evaluator 的 sandbox/runtime 设计,对把 deterministic policy checks 安全跑在 traces 上有直接参考。"
         },
         {
           "id": "wk-20260628-es",
@@ -877,8 +940,7 @@
           "id": "wk-20260628-es1",
           "title": "Previewing GPT-5.6 Sol: a next-generation model",
           "url": "https://openai.com/index/previewing-gpt-5-6-sol/",
-          "note": "limited preview 配套 layered safeguards/automated red-teaming/cyber thresholds,是 capability-tiered release gate 的近例。",
-          "status": "to-read"
+          "note": "limited preview 配套 layered safeguards/automated red-teaming/cyber thresholds,是 capability-tiered release gate 的近例。"
         },
         {
           "id": "wk-20260628-af",
@@ -889,15 +951,13 @@
           "id": "wk-20260628-af1",
           "title": "How agents are transforming work",
           "url": "https://openai.com/index/how-agents-are-transforming-work/",
-          "note": "Codex usage 显示 delegated long-horizon tasks/parallel agents 成主形态,提示 eval infra 要覆盖小时级 agent turns。",
-          "status": "to-read"
+          "note": "Codex usage 显示 delegated long-horizon tasks/parallel agents 成主形态,提示 eval infra 要覆盖小时级 agent turns。"
         },
         {
           "id": "wk-20260628-af2",
           "title": "Anthropic Economic Index report: Cadences",
           "url": "https://www.anthropic.com/research/economic-index-june-2026-report",
-          "note": "privacy-preserving telemetry 升到 hourly/daily + artifact classifier,对 online monitoring→eval feedback loop 有启发。",
-          "status": "to-read"
+          "note": "privacy-preserving telemetry 升到 hourly/daily + artifact classifier,对 online monitoring→eval feedback loop 有启发。"
         }
       ]
     },
@@ -917,15 +977,13 @@
           "id": "wk-20260703-ei1",
           "title": "Inspect AI 0.3.242-0.3.244 changelog",
           "url": "https://inspect.aisi.org.uk/CHANGELOG.html",
-          "note": "06/29-07/01 更新强化 remote eval logs、control channel、checkpoint/sandbox 安全,利于大规模可靠 eval harness。",
-          "status": "to-read"
+          "note": "06/29-07/01 更新强化 remote eval logs、control channel、checkpoint/sandbox 安全,利于大规模可靠 eval harness。"
         },
         {
           "id": "wk-20260703-ei2",
           "title": "Arize Phoenix Alternatives 2026: Top 7 for Agent Observability",
           "url": "https://laminar.sh/article/arize-phoenix-alternatives-2026",
-          "note": "agent traces 从 span-tree 转向 OTel-native/trace compression/Signals/code-first eval SDK,指向 online monitoring→eval loop。",
-          "status": "to-read"
+          "note": "agent traces 从 span-tree 转向 OTel-native/trace compression/Signals/code-first eval SDK,指向 online monitoring→eval loop。"
         },
         {
           "id": "wk-20260703-es",
@@ -936,8 +994,7 @@
           "id": "wk-20260703-es1",
           "title": "More details on Fable 5’s cyber safeguards and our jailbreak framework — Anthropic",
           "url": "https://www.anthropic.com/news/fable-safeguards-jailbreak-framework",
-          "note": "公开 cyber classifier taxonomy、safety margin 与 jailbreak severity framework,可直接借鉴 policy-grounded release gate。",
-          "status": "to-read"
+          "note": "公开 cyber classifier taxonomy、safety margin 与 jailbreak severity framework,可直接借鉴 policy-grounded release gate。"
         },
         {
           "id": "wk-20260703-af",
@@ -962,22 +1019,19 @@
           "id": "wk-20260711-ei1",
           "title": "Separating signal from noise in coding evaluations — OpenAI",
           "url": "https://openai.com/index/separating-signal-from-noise-coding-evaluations/",
-          "note": "SWE-Bench Pro 审计发现约 30% broken tasks,提醒 release-gate eval 必须做 dataset QA 与 human adjudication。",
-          "status": "to-read"
+          "note": "SWE-Bench Pro 审计发现约 30% broken tasks,提醒 release-gate eval 必须做 dataset QA 与 human adjudication。"
         },
         {
           "id": "wk-20260711-ei2",
           "title": "Inspect AI 0.3.245-0.3.246 changelog",
           "url": "https://inspect.aisi.org.uk/CHANGELOG.html",
-          "note": "新增 GPT-5.6 support、reasoning_mode、checkpoint veto 与 control channel retry,利于低延迟可恢复 eval orchestration。",
-          "status": "to-read"
+          "note": "新增 GPT-5.6 support、reasoning_mode、checkpoint veto 与 control channel retry,利于低延迟可恢复 eval orchestration。"
         },
         {
           "id": "wk-20260711-ei3",
           "title": "3 production patterns for AI agents and how to evaluate each one — Arize",
           "url": "https://arize.com/blog/3-production-patterns-ai-agents-how-to-evaluate-each-one/",
-          "note": "把 agent eval 明确分成 span/trace/session 三层,可直接映射 product harness 的 regression gate 与 online monitoring。",
-          "status": "to-read"
+          "note": "把 agent eval 明确分成 span/trace/session 三层,可直接映射 product harness 的 regression gate 与 online monitoring。"
         },
         {
           "id": "wk-20260711-es",
@@ -988,8 +1042,7 @@
           "id": "wk-20260711-es1",
           "title": "GPT-5.6: Frontier intelligence that scales with your ambition — OpenAI",
           "url": "https://openai.com/index/gpt-5-6/",
-          "note": "发布含 cyber/bio capability eval、70 万 A100e 小时 automated red-teaming 与 continuous monitoring,是高强度 release safety gate 样板。",
-          "status": "to-read"
+          "note": "发布含 cyber/bio capability eval、70 万 A100e 小时 automated red-teaming 与 continuous monitoring,是高强度 release safety gate 样板。"
         },
         {
           "id": "wk-20260711-af",
@@ -1000,8 +1053,61 @@
           "id": "wk-20260711-af1",
           "title": "An off switch for dual-use knowledge in AI models — Anthropic",
           "url": "https://www.anthropic.com/research/off-switch-dual-use",
-          "note": "GRAM 尝试在训练层面关闭 dual-use knowledge,虽非生产 eval,但会影响未来 safety scoring 与 capability suppression 设计。",
-          "status": "to-read"
+          "note": "GRAM 尝试在训练层面关闭 dual-use knowledge,虽非生产 eval,但会影响未来 safety scoring 与 capability suppression 设计。"
+        }
+      ]
+    },
+    {
+      "id": "d-week-20260717",
+      "dated": true,
+      "date": "2026-07-17",
+      "title": "📅 Weekly · 2026-07-17",
+      "desc": "",
+      "items": [
+        {
+          "id": "wk-20260717-ei",
+          "type": "divider",
+          "label": "Eval Infra"
+        },
+        {
+          "id": "wk-20260717-ei1",
+          "title": "Inspect AI 0.3.247 changelog",
+          "url": "https://inspect.aisi.org.uk/CHANGELOG.html",
+          "note": "atomic eval logs、turn_count/token_limit usage 与 checkpoint 隐蔽性增强,直接提升大规模 eval harness 可靠性。"
+        },
+        {
+          "id": "wk-20260717-ei2",
+          "title": "How we chose the model behind Topics with Baseten — Braintrust",
+          "url": "https://www.braintrust.dev/blog/model-behind-topics-baseten",
+          "note": "用 LLM 持续聚类 production traces 做 active observability,可作为 online monitoring→eval feedback loop 的产品形态参考。"
+        },
+        {
+          "id": "wk-20260717-ei3",
+          "title": "Inside Cursor's agent factory: how it verifies AI-written code — Arize",
+          "url": "https://arize.com/blog/inside-cursors-agent-factory-how-it-verifies-ai-written-code/",
+          "note": "强调 evidence、risk policy 与 correction feedback,适合借鉴到 agent-generated changes 的 release-gate verification。"
+        },
+        {
+          "id": "wk-20260717-es",
+          "type": "divider",
+          "label": "Eval Infra - Safety"
+        },
+        {
+          "id": "wk-20260717-es1",
+          "title": "GPT-Red: Unlocking Self-Improvement for Robustness — OpenAI",
+          "url": "https://openai.com/index/unlocking-self-improvement-gpt-red/",
+          "note": "self-play automated red-teaming 可生成 prompt injection/agent attack 场景,是 safety eval infra 自动化扩展的强信号。"
+        },
+        {
+          "id": "wk-20260717-af",
+          "type": "divider",
+          "label": "AI Frontier"
+        },
+        {
+          "id": "wk-20260717-af1",
+          "title": "From human-operated agent development to systematic agent improvement — Arize",
+          "url": "https://arize.com/blog/from-human-operated-agent-development-to-systematic-agent-improvement/",
+          "note": "把 traces、failure discovery、managed workers、evals 串成 agent improvement loop,有助于理解下一代 AI control plane。"
         }
       ]
     }
@@ -1012,15 +1118,26 @@
 <script>
 (function () {
   const KEY = 'fleet-os.learning-roadmap.v6';
-  const SEED_SYNC = '2026-07-11-weekly';
-  const SEED = JSON.parse(document.getElementById('seed').textContent);
+  const DIRTY_KEY = KEY + '.dirty';
+  const TOKEN_KEY = KEY + '.github-token';
+  const DATA_PATH = 'roadmap-data.json';
+  const RAW_DATA_URL = 'https://raw.githubusercontent.com/WhiteCloudUU/fleet-os-learning/main/roadmap-data.json';
+  const GITHUB_API_URL = 'https://api.github.com/repos/WhiteCloudUU/fleet-os-learning/contents/roadmap-data.json';
+  const GITHUB_BRANCH = 'main';
+  const FALLBACK_SEED = JSON.parse(document.getElementById('seed').textContent);
   const $deck = document.getElementById('deck');
   const $updated = document.getElementById('updated');
   const $tabs = document.getElementById('pager-tabs');
   const $prevPage = document.getElementById('prev-page');
   const $nextPage = document.getElementById('next-page');
   const $export = document.getElementById('export');
-  const $reset = document.getElementById('reset');
+  const $saveGithub = document.getElementById('save-github');
+  const $setToken = document.getElementById('set-token');
+  const $tokenPanel = document.getElementById('token-panel');
+  const $tokenInput = document.getElementById('token-input');
+  const $saveToken = document.getElementById('save-token');
+  const $clearToken = document.getElementById('clear-token');
+  const $syncStatus = document.getElementById('sync-status');
   const $refresh = document.getElementById('refresh-date');
   const $refsToggle = document.getElementById('refs-toggle');
   const $refsCaret = document.getElementById('refs-caret');
@@ -1035,45 +1152,172 @@
     { name: 'AI Frontier',         kind: 'single', id: 'd-frontier' }
   ];
 
-  let state = load();
+  let state = loadLocalDraft();
   let pageIdx = 0;
   let weekIdx = 0; // index into date-desc-sorted weeklies; 0 = latest
   let dragInfo = null; // { cardId, iid } while dragging a reading
+  let booted = false;
 
-  function load() {
+  function stripStatus(cards) {
+    (cards || []).forEach((card) => {
+      (card.items || []).forEach((it) => {
+        if (it && it.status) delete it.status;
+      });
+    });
+  }
+
+  function normalizeData(data) {
+    const s = data || {};
+    if (!s.weeklies) s.weeklies = [];
+    if (!s.domains) s.domains = [];
+    if (!s.references) s.references = [];
+    if (typeof s.refsOpen !== 'boolean') s.refsOpen = false;
+    s.weeklies.forEach((w) => { if (w && w.dated) w.desc = ''; });
+    stripStatus(s.domains);
+    stripStatus(s.weeklies);
+    return s;
+  }
+
+  function clone(obj) {
+    return JSON.parse(JSON.stringify(obj));
+  }
+
+  function loadLocalDraft() {
     try {
       const stored = localStorage.getItem(KEY);
       if (stored) {
-        const s = JSON.parse(stored);
-        if (!s.weeklies) s.weeklies = [];
-        if (!s.domains) s.domains = [];
-        if (!s.references) s.references = [];
-        if (typeof s.refsOpen !== 'boolean') s.refsOpen = false;
-        const existingWeeklyIds = new Set(s.weeklies.map(w => w.id));
-        let changed = false;
-        (SEED.weeklies || []).forEach((w) => {
-          if (!existingWeeklyIds.has(w.id)) {
-            s.weeklies.push(JSON.parse(JSON.stringify(w)));
-            changed = true;
-          }
-        });
-        if (s.seedSync !== SEED_SYNC) {
-          s.weeklies.forEach((w) => {
-            if (w && w.dated) w.desc = '';
-          });
-          s.seedSync = SEED_SYNC;
-          changed = true;
-        }
-        if (changed) {
-          localStorage.setItem(KEY, JSON.stringify(s));
-        }
-        // refs are read-only and rendered from SEED, so stored references are ignored
-        return s;
+        return normalizeData(JSON.parse(stored));
       }
     } catch (e) {}
-    return JSON.parse(JSON.stringify(SEED));
+    return normalizeData(clone(FALLBACK_SEED));
   }
-  function save() { localStorage.setItem(KEY, JSON.stringify(state)); }
+
+  function dataUrl() {
+    const base = location.protocol === 'file:' ? RAW_DATA_URL : DATA_PATH;
+    return base + (base.includes('?') ? '&' : '?') + 'v=' + Date.now();
+  }
+
+  function setStatus(msg, warn) {
+    $syncStatus.textContent = msg;
+    $syncStatus.classList.toggle('warn', !!warn);
+  }
+
+  function setDirty(isDirty) {
+    $saveGithub.classList.toggle('dirty', !!isDirty);
+  }
+
+  async function loadLatest(opts) {
+    opts = opts || {};
+    if (opts.silent && localStorage.getItem(DIRTY_KEY)) {
+      setStatus('Unsaved local draft', true);
+      return;
+    }
+    if (!opts.silent) setStatus('Loading latest…');
+    try {
+      const res = await fetch(dataUrl(), { cache: 'no-store' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      state = normalizeData(await res.json());
+      localStorage.setItem(KEY, JSON.stringify(state));
+      localStorage.removeItem(DIRTY_KEY);
+      setDirty(false);
+      weekIdx = 0;
+      $updated.textContent = state.updated || '';
+      setStatus('Loaded latest');
+      renderRefs(); renderDeck();
+    } catch (e) {
+      if (!opts.silent) setStatus('Load failed: ' + e.message, true);
+      else setStatus(localStorage.getItem(DIRTY_KEY) ? 'Unsaved local draft' : 'Local fallback', !!localStorage.getItem(DIRTY_KEY));
+    }
+  }
+
+  function save() {
+    localStorage.setItem(KEY, JSON.stringify(state));
+    localStorage.setItem(DIRTY_KEY, '1');
+    setDirty(true);
+    if (booted) setStatus('Unsaved local changes', true);
+  }
+
+  function token() {
+    return localStorage.getItem(TOKEN_KEY) || '';
+  }
+
+  function showTokenPanel() {
+    $tokenInput.value = token();
+    $tokenPanel.hidden = false;
+    $tokenInput.focus();
+  }
+
+  function hideTokenPanel() {
+    $tokenPanel.hidden = true;
+  }
+
+  function saveToken() {
+    const next = $tokenInput.value.trim();
+    if (!next) {
+      localStorage.removeItem(TOKEN_KEY);
+      setStatus('Token cleared');
+    } else {
+      localStorage.setItem(TOKEN_KEY, next);
+      setStatus('Token saved locally');
+    }
+    hideTokenPanel();
+  }
+
+  function clearToken() {
+    localStorage.removeItem(TOKEN_KEY);
+    $tokenInput.value = '';
+    setStatus('Token cleared');
+    hideTokenPanel();
+  }
+
+  function toBase64(str) {
+    const bytes = new TextEncoder().encode(str);
+    let out = '';
+    for (let i = 0; i < bytes.length; i += 0x8000) {
+      out += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+    }
+    return btoa(out);
+  }
+
+  async function githubRequest(url, opts) {
+    if (!token()) {
+      showTokenPanel();
+      throw new Error('GitHub token is required');
+    }
+    const headers = Object.assign({
+      'Accept': 'application/vnd.github+json',
+      'Authorization': 'Bearer ' + token(),
+      'X-GitHub-Api-Version': '2022-11-28'
+    }, (opts && opts.headers) || {});
+    return fetch(url, Object.assign({}, opts, { headers }));
+  }
+
+  async function saveToGithub() {
+    setStatus('Saving to GitHub…');
+    try {
+      const get = await githubRequest(GITHUB_API_URL + '?ref=' + encodeURIComponent(GITHUB_BRANCH));
+      if (!get.ok) throw new Error('read failed: HTTP ' + get.status);
+      const meta = await get.json();
+      const body = {
+        message: 'Update roadmap data',
+        branch: GITHUB_BRANCH,
+        sha: meta.sha,
+        content: toBase64(JSON.stringify(state, null, 2) + '\n')
+      };
+      const put = await githubRequest(GITHUB_API_URL, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      if (!put.ok) throw new Error('save failed: HTTP ' + put.status);
+      localStorage.setItem(KEY, JSON.stringify(state));
+      localStorage.removeItem(DIRTY_KEY);
+      setDirty(false);
+      setStatus('Saved to GitHub');
+    } catch (e) {
+      setStatus(e.message, true);
+    }
+  }
   function uid() { return 'x' + Math.random().toString(36).slice(2, 9); }
   function findCard(cid) { return state.domains.concat(state.weeklies).find(x => x.id === cid); }
   function sortedWeeklies() {
@@ -1084,18 +1328,8 @@
     return dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
   }
 
-  // parallel statuses — cycling one never touches the others
-  const CYCLE = ['to-read', 'reading', 'read'];
-  function cycleItem(cid, iid) {
-    const d = findCard(cid);
-    const it = d && d.items.find(x => x.id === iid);
-    if (!it) return;
-    it.status = CYCLE[(CYCLE.indexOf(it.status) + 1) % CYCLE.length];
-    save(); renderDeck();
-  }
-
   function newItem() {
-    return { id: uid(), title: 'New reading — one line.', url: '', note: '', status: 'to-read' };
+    return { id: uid(), title: 'New reading — one line.', url: '', note: '' };
   }
   // insert a reading at the END of the section that starts with dividerId
   // (dividerId === null means the leading, divider-less section)
@@ -1123,6 +1357,84 @@
     const d = findCard(cid);
     if (!d) return;
     d.items = d.items.filter(x => x.id !== iid);
+    save(); renderDeck();
+  }
+  function currentLane(card, iid) {
+    let lane = '';
+    for (const it of card.items) {
+      if (it.id === iid) return lane;
+      if (it.type === 'divider') lane = it.label || '';
+    }
+    return lane;
+  }
+  function favoriteTarget(card, iid) {
+    const lane = currentLane(card, iid);
+    if (lane === 'Eval Infra') return { cardId: 'd-eval-general', dividers: ['eg-div-basics', 'eg-div-harness', 'eg-div-ops'] };
+    if (lane === 'Eval Infra - Safety') return { cardId: 'd-eval-safety', dividers: ['es-div-basics', 'es-div-threats', 'es-div-gates'] };
+    if (lane === 'AI Frontier') return { cardId: 'd-frontier', dividers: ['ft-div-general'] };
+    return null;
+  }
+  function classifyFavorite(target, it) {
+    const hay = ((it.title || '') + ' ' + (it.note || '') + ' ' + (it.url || '')).toLowerCase();
+    if (target.cardId === 'd-eval-general') {
+      if (/(harness|inspect|framework|runner|scorer|dataset|trajectory|agent eval|openai evals|lm-eval)/.test(hay)) return 'eg-div-harness';
+      if (/(observability|tracing|monitoring|release|gate|benchmark qa|statistical|human|calibration|signal|noise|quality|ci)/.test(hay)) return 'eg-div-ops';
+      return 'eg-div-basics';
+    }
+    if (target.cardId === 'd-eval-safety') {
+      if (/(jailbreak|red.?team|prompt injection|adversary|attack|cyber|bio|dual-use|threat|containment)/.test(hay)) return 'es-div-threats';
+      if (/(release|gate|monitoring|preparedness|rsp|responsible scaling|frontier safety|threshold|safeguard|continuous)/.test(hay)) return 'es-div-gates';
+      return 'es-div-basics';
+    }
+    return 'ft-div-general';
+  }
+  function insertFavorite(targetCard, dividerId, item) {
+    const di = targetCard.items.findIndex(x => x.id === dividerId);
+    let start = di >= 0 ? di + 1 : targetCard.items.length;
+    let end = start;
+    while (end < targetCard.items.length && targetCard.items[end].type !== 'divider') end++;
+    targetCard.items.splice(end, 0, item);
+  }
+  function removeFavoriteCopy(targetCard, sourceItem) {
+    const before = targetCard.items.length;
+    targetCard.items = targetCard.items.filter((x) => {
+      if (x.type === 'divider') return true;
+      if (x.sourceId && x.sourceId === sourceItem.id) return false;
+      if (sourceItem.url && x.url === sourceItem.url) return false;
+      return x.title !== sourceItem.title;
+    });
+    return targetCard.items.length !== before;
+  }
+  function favoriteItem(cid, iid) {
+    const source = findCard(cid);
+    const it = source && source.items.find(x => x.id === iid);
+    const target = source && it && (it.favoriteTarget
+      ? { cardId: it.favoriteTarget }
+      : favoriteTarget(source, iid));
+    const targetCard = target && state.domains.find(x => x.id === target.cardId);
+    if (!source || !it || !targetCard) return;
+    if (it.favorited) {
+      removeFavoriteCopy(targetCard, it);
+      it.favorited = false;
+      delete it.favoriteTarget;
+      save(); renderDeck();
+      return;
+    }
+    const duplicate = targetCard.items.some(x =>
+      x.type !== 'divider' && ((it.url && x.url === it.url) || (x.title === it.title))
+    );
+    if (!duplicate) {
+      insertFavorite(targetCard, classifyFavorite(target, it), {
+        id: uid(),
+        sourceId: it.id,
+        sourceUrl: it.url || '',
+        title: it.title || 'Untitled reading',
+        url: it.url || '',
+        note: it.note || ''
+      });
+    }
+    it.favorited = true;
+    it.favoriteTarget = target.cardId;
     save(); renderDeck();
   }
   // move reading `draggedIid` to sit before/after `targetId` within the same card
@@ -1165,12 +1477,6 @@
     a.href = url; a.download = 'learning-roadmap.json'; a.click();
     URL.revokeObjectURL(url);
   }
-  function reset() {
-    if (!confirm('Reset to seed and lose all edits?')) return;
-    state = JSON.parse(JSON.stringify(SEED));
-    pageIdx = 0; weekIdx = 0;
-    save(); renderRefs(); renderDeck();
-  }
 
   function bindEdit(el, getter, setter, opts) {
     opts = opts || {};
@@ -1187,14 +1493,13 @@
   // build one domain/weekly card element
   function renderCard(d) {
     const realItems = d.items.filter(i => i.type !== 'divider');
-    const readCount = realItems.filter(i => i.status === 'read').length;
     const card = document.createElement('div');
     card.className = 'domain' + (d.dated ? ' dated' : '');
     card.innerHTML = `
       <button class="row-delete domain-delete" title="delete card">×</button>
       <div class="domain-head">
         <h2 contenteditable="true">${escape(d.title)}</h2>
-        <span class="count">${readCount}/${realItems.length} read</span>
+        <span class="count">${realItems.length} items</span>
       </div>
       <div class="domain-desc" contenteditable="true">${escape(d.desc)}</div>
       <div class="items"></div>
@@ -1237,10 +1542,14 @@
     }
     function buildRow(it) {
       const row = document.createElement('div');
-      row.className = 'item ' + it.status;
+      row.className = 'item';
       const hasUrl = !!(it.url && it.url.trim());
+      const heartIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.7c-2.1-2-5.5-1.7-7.4.6L12 7l-1.4-1.7C8.7 3 5.3 2.7 3.2 4.7.9 6.9.9 10.5 3.1 12.8L12 21l8.9-8.2c2.2-2.3 2.2-5.9-.1-8.1Z"/></svg>';
+      const control = d.dated
+        ? `<button class="favorite-btn ${it.favorited ? 'favorited' : ''}" type="button" title="${it.favorited ? 'remove from favorites' : 'save to matching collection'}">${heartIcon}</button>`
+        : '<span class="item-bullet" aria-hidden="true"></span>';
       row.innerHTML = `
-        <div class="item-dot ${it.status === 'read' ? 'read' : (it.status === 'reading' ? 'reading' : '')}" title="click to cycle"></div>
+        ${control}
         <div class="item-main">
           <div class="item-title" contenteditable="true">${escape(it.title)}</div>
           <div class="item-note" contenteditable="true">${escape(it.note || '')}</div>
@@ -1251,7 +1560,8 @@
         </div>
         <button class="row-delete" title="delete">×</button>
       `;
-      row.querySelector('.item-dot').addEventListener('click', () => cycleItem(d.id, it.id));
+      const fav = row.querySelector('.favorite-btn');
+      if (fav) fav.addEventListener('click', () => favoriteItem(d.id, it.id));
       bindEdit(row.querySelector('.item-title'), () => it, (o, v) => o.title = v);
       bindEdit(row.querySelector('.item-note'), () => it, (o, v) => o.note = v, { multiline: true });
       bindEdit(row.querySelector('.item-url'), () => it, (o, v) => o.url = v, { rerender: true });
@@ -1401,11 +1711,10 @@
     $deck.appendChild(acts);
   }
 
-  // read-only: prioritized sources mirror learning_roadmap_instruction.md (§3),
-  // always rendered from SEED so the panel stays in sync with the source file.
+  // read-only: prioritized sources mirror learning_roadmap_instruction.md (§3).
   const REF_KINDS = [{ key: 'org', label: 'Orgs' }, { key: 'site', label: 'Sites' }, { key: 'keyword', label: 'Keywords' }];
   function renderRefs() {
-    const refs = SEED.references || [];
+    const refs = state.references || [];
     $refsCaret.textContent = state.refsOpen ? '▾' : '▸';
     $refsCount.textContent = '(' + refs.length + ')';
     $refsBody.hidden = !state.refsOpen;
@@ -1474,7 +1783,7 @@
   }
 
   // top-of-page init (bind once)
-  $updated.textContent = state.updated;
+  $updated.textContent = state.updated || '';
   bindEdit($updated, () => state, (o, v) => o.updated = v);
 
   $refsToggle.addEventListener('click', () => { state.refsOpen = !state.refsOpen; save(); renderRefs(); });
@@ -1482,11 +1791,19 @@
   $prevPage.addEventListener('click', () => goPage(-1));
   $nextPage.addEventListener('click', () => goPage(1));
   $export.addEventListener('click', exportJSON);
-  $reset.addEventListener('click', reset);
+  $saveGithub.addEventListener('click', saveToGithub);
+  $setToken.addEventListener('click', () => {
+    if ($tokenPanel.hidden) showTokenPanel();
+    else hideTokenPanel();
+  });
+  $saveToken.addEventListener('click', saveToken);
+  $clearToken.addEventListener('click', clearToken);
+  $tokenInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') saveToken();
+    else if (e.key === 'Escape') hideTokenPanel();
+  });
   $refresh.addEventListener('click', () => {
-    state.updated = 'Last updated · ' + todayYMD();
-    $updated.textContent = state.updated;
-    save();
+    loadLatest();
   });
 
   document.addEventListener('keydown', (e) => {
@@ -1503,8 +1820,12 @@
     return escape(s).replace(/"/g, '&quot;');
   }
 
+  booted = true;
+  setDirty(!!localStorage.getItem(DIRTY_KEY));
+  setStatus(localStorage.getItem(DIRTY_KEY) ? 'Unsaved local draft' : 'Local draft', !!localStorage.getItem(DIRTY_KEY));
   renderRefs();
   renderDeck();
+  loadLatest({ silent: true });
 })();
 </script>
 </body>

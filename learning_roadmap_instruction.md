@@ -1,16 +1,17 @@
 # Learning Roadmap — Weekly Update Guidance
 
 This file is the **single source of context** for generating a weekly update to my
-Learning Roadmap (`learning_roadmap.html`). **Feed it in full every time** a weekly
-card is generated. It defines who I am, what to track, where to look, and the exact
-output shape. Do not produce a long research report — produce roadmap items.
+Learning Roadmap data (`roadmap-data.json`, rendered by `learning_roadmap.html`).
+**Feed it in full every time** a weekly card is generated. It defines who I am, what
+to track, where to look, and the exact output shape. Do not produce a long research
+report — produce roadmap items.
 
 ---
 
 ## 0. Scope — weekly update ONLY
 
 When I ask for a weekly update, **only** generate one new weekly card and append it to
-`weeklies` in `learning_roadmap.html`. **Do NOT touch anything else** — not the three
+`weeklies` in `roadmap-data.json`. **Do NOT touch anything else** — not the three
 domain cards (`Eval Infra` / `Eval Infra - Safety` / `AI Frontier`), their items, the
 references panel, or any existing weekly card — unless I explicitly ask in that message.
 
@@ -97,7 +98,7 @@ For each item produce **only three fields**:
 - **Be selective:** a few high-signal items beat a long list. Drop low-impact noise.
 - **Empty lane:** if a lane has no meaningful signal this cycle, leave it empty — keep
   the divider, add no items. Do not invent filler.
-- New items default to `status: "to-read"`.
+- Do not add reading-status fields. The app no longer tracks `to-read` / `reading` / `read`.
 
 ### Shape (appended as one weekly card to `weeklies`)
 
@@ -108,9 +109,9 @@ For each item produce **only three fields**:
   "desc": "本周扫描——按 3 条 lane 归类的新 signal。当周无更新的 lane 留空即可。",
   "items": [
     { "type": "divider", "label": "Eval Infra" },
-    { "title": "...", "url": "...", "note": "<why it matters to me>", "status": "to-read" },
+    { "title": "...", "url": "...", "note": "<why it matters to me>" },
     { "type": "divider", "label": "Eval Infra - Safety" },
-    { "title": "...", "url": "...", "note": "...", "status": "to-read" },
+    { "title": "...", "url": "...", "note": "..." },
     { "type": "divider", "label": "AI Frontier" }
   ]
 }

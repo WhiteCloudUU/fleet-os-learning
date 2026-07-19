@@ -1,0 +1,530 @@
+{
+  "updated": "Last updated · 2026-06-20",
+  "refsOpen": false,
+  "references": [
+    {
+      "id": "org1",
+      "kind": "org",
+      "parts": [
+        {
+          "label": "OpenAI",
+          "url": "https://developers.openai.com/api/docs/guides/evals"
+        },
+        {
+          "label": "Anthropic",
+          "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+        },
+        {
+          "label": "Google DeepMind",
+          "url": "https://deepmind.google/blog/strengthening-our-frontier-safety-framework/"
+        }
+      ]
+    },
+    {
+      "id": "org2",
+      "kind": "org",
+      "parts": [
+        {
+          "label": "Meta / Purple Llama",
+          "url": "https://github.com/meta-llama/PurpleLlama"
+        },
+        {
+          "label": "UK AISI",
+          "url": "https://inspect.aisi.org.uk/"
+        },
+        {
+          "label": "US AISI"
+        }
+      ]
+    },
+    {
+      "id": "org3",
+      "kind": "org",
+      "parts": [
+        {
+          "label": "Braintrust",
+          "url": "https://www.braintrust.dev/articles/llm-evaluation-guide"
+        },
+        {
+          "label": "Arize",
+          "url": "https://arize.com/blog/"
+        },
+        {
+          "label": "Datadog",
+          "url": "https://docs.datadoghq.com/llm_observability/evaluations/"
+        },
+        {
+          "label": "LangSmith",
+          "url": "https://docs.langchain.com/langsmith/evaluation"
+        },
+        {
+          "label": "Langfuse",
+          "url": "https://langfuse.com/docs/evaluation/overview"
+        },
+        {
+          "label": "Galileo",
+          "url": "https://docs.galileo.ai/what-is-galileo"
+        }
+      ]
+    },
+    {
+      "id": "org4",
+      "kind": "org",
+      "parts": [
+        {
+          "label": "Academic / OSS:"
+        },
+        {
+          "label": "HELM",
+          "url": "https://crfm.stanford.edu/helm/"
+        },
+        {
+          "label": "OpenAI Evals",
+          "url": "https://github.com/openai/evals"
+        },
+        {
+          "label": "lm-eval-harness",
+          "url": "https://github.com/EleutherAI/lm-evaluation-harness"
+        },
+        {
+          "label": "AgentDojo",
+          "url": "https://github.com/ethz-spylab/agentdojo"
+        }
+      ]
+    },
+    {
+      "id": "ref1",
+      "kind": "site",
+      "text": "anthropic.com/research · openai.com/index · deepmind.google/blog"
+    },
+    {
+      "id": "ref2",
+      "kind": "site",
+      "text": "arxiv.org (cs.AI / cs.CR) · metr.org/blog · inspect.aisi.org.uk"
+    },
+    {
+      "id": "ref3",
+      "kind": "keyword",
+      "text": "agentic eval · LLM-as-judge · jailbreak robustness · refusal eval · guardrail benchmark"
+    },
+    {
+      "id": "ref4",
+      "kind": "keyword",
+      "text": "agentic AI containment · red-team automation · alignment eval"
+    }
+  ],
+  "domains": [
+    {
+      "id": "d-eval-general",
+      "title": "Eval Infra",
+      "desc": "长期收藏夹:评测系统怎么建、怎么判可信、怎么进生产闭环。",
+      "items": [
+        {
+          "id": "eg-div-basics",
+          "type": "divider",
+          "label": "General / Basics"
+        },
+        {
+          "id": "eg1",
+          "title": "Challenges in evaluating AI systems — Anthropic",
+          "url": "https://www.anthropic.com/news/evaluating-ai-systems",
+          "note": "为什么评测 AI 这么难——各类 eval 方法的取舍、陷阱与局限,理解 eval harness 该怎么设计。"
+        },
+        {
+          "id": "eg2",
+          "title": "A statistical approach to model evaluations — Anthropic",
+          "url": "https://www.anthropic.com/research/statistical-approach-to-model-evals",
+          "note": "用统计严谨性(置信区间、配对差异、方差来源)做 eval 的方法论,讲清分数背后的可信度。"
+        },
+        {
+          "id": "eg4",
+          "title": "HELM — Holistic Evaluation of Language Models (Stanford CRFM)",
+          "url": "https://crfm.stanford.edu/helm/",
+          "note": "多指标、多场景的 holistic benchmark 设计——覆盖度与可比性怎么平衡。"
+        },
+        {
+          "id": "eg-div-harness",
+          "type": "divider",
+          "label": "Eval Harness"
+        },
+        {
+          "id": "eg3",
+          "title": "OpenAI Evals — open-source eval framework",
+          "url": "https://github.com/openai/evals",
+          "note": "OpenAI 开源的 eval harness:registry + 自定义 eval 的组织方式,看通用评测框架的工程结构。"
+        },
+        {
+          "id": "eg6",
+          "title": "Inspect — open eval framework (UK AI Safety Institute)",
+          "url": "https://inspect.aisi.org.uk/",
+          "note": "AISI 的通用评测框架,solver / scorer / dataset 抽象正在成为业界 harness 的事实标准之一;也是 safety eval 的主力工具。"
+        },
+        {
+          "id": "eg7",
+          "title": "Evaluating LLM-based 0→1 software generation in E2E CLI scenarios",
+          "url": "https://arxiv.org/abs/2604.06742",
+          "note": "⚠️ 标题为准。新型 task-based eval:在端到端 CLI 工具场景里评 agent 的 0→1 代码生成,代表 agentic eval 的设计趋势。"
+        },
+        {
+          "id": "eg-div-ops",
+          "type": "divider",
+          "label": "EvalOps & Quality"
+        },
+        {
+          "id": "eg5",
+          "title": "LLM Observability — Datadog",
+          "url": "https://www.datadoghq.com/blog/datadog-llm-observability/",
+          "note": "把 eval 做成生产常在线产品:end-to-end tracing + 内置 evaluations(quality / toxicity / failure-to-answer)。"
+        }
+      ]
+    },
+    {
+      "id": "d-eval-safety",
+      "title": "Eval Infra - Safety",
+      "desc": "长期收藏夹:安全评测的基础概念、攻击面压测、上线门禁与生产监控。",
+      "items": [
+        {
+          "id": "es-div-basics",
+          "type": "divider",
+          "label": "Safety Basics"
+        },
+        {
+          "id": "es2",
+          "title": "Llama Guard: LLM-based input-output safeguard — Meta",
+          "url": "https://ai.meta.com/research/publications/llama-guard-llm-based-input-output-safeguard-for-human-ai-conversations/",
+          "note": "用一个 LLM 做输入/输出安全分类器,含可定制 safety taxonomy 与人机对话场景。"
+        },
+        {
+          "id": "es1",
+          "title": "LlamaFirewall: open-source guardrail system for AI agents — Meta",
+          "url": "https://arxiv.org/abs/2505.03574",
+          "note": "Meta 的 safety harness:PromptGuard / AlignmentCheck / CodeShield 三层防护的动机与 agent 场景应用范围。"
+        },
+        {
+          "id": "es-div-threats",
+          "type": "divider",
+          "label": "Threats & Red-Teaming"
+        },
+        {
+          "id": "es3",
+          "title": "CyberSecEval: benchmark for LLM cybersecurity risks — Meta",
+          "url": "https://ai.meta.com/research/publications/cyberseceval-a-comprehensive-benchmark-for-evaluating-the-cybersecurity-risks-of-large-language-models/",
+          "note": "评测 LLM 网络安全风险(不安全代码生成、协助攻击)的 benchmark 设计与覆盖范围。"
+        },
+        {
+          "id": "es6",
+          "title": "Frontier Threats Red Teaming for AI Safety — Anthropic",
+          "url": "https://www.anthropic.com/news/frontier-threats-red-teaming-for-ai-safety",
+          "note": "面向前沿能力(如生物风险)的 red-team 方法论——怎么系统化地设计与执行安全压测。"
+        },
+        {
+          "id": "es7",
+          "title": "Red-Teaming Anthropic's Internal Agent Monitoring Systems — METR",
+          "url": "https://metr.org/blog/2026-03-25-red-teaming-anthropic-agent-monitoring/",
+          "note": "第三方红队对内部 agent 监控系统的实测(2026-03)——监控/检测类 safety infra 怎么被绕过,直接关乎 harness 的盲区。"
+        },
+        {
+          "id": "es8",
+          "title": "Securing the future of AI agents — Google DeepMind",
+          "url": "https://deepmind.google/blog/securing-the-future-of-ai-agents/",
+          "note": "对抗未对齐 agent 的安全控制与 containment 工程要求,定义了 agentic safety eval 要覆盖的威胁面。"
+        },
+        {
+          "id": "es9",
+          "title": "When the Agent Is the Adversary: architectural requirements for agentic AI containment",
+          "url": "https://arxiv.org/abs/2604.23425",
+          "note": "⚠️ 标题为准(2026-04)。把 agent 当对手来设计 containment 架构——为 safety eval infra 提供威胁模型。"
+        },
+        {
+          "id": "es-div-gates",
+          "type": "divider",
+          "label": "Safety Gates & Monitoring"
+        },
+        {
+          "id": "es4",
+          "title": "Updated Preparedness Framework — OpenAI",
+          "url": "https://openai.com/index/updating-our-preparedness-framework/",
+          "note": "以 tracked capability categories 与能力阈值管理 frontier 风险——何时触发更强缓解的判定逻辑。"
+        },
+        {
+          "id": "es5",
+          "title": "Updated Responsible Scaling Policy — Anthropic",
+          "url": "https://www.anthropic.com/news/announcing-our-updated-responsible-scaling-policy",
+          "note": "用 ASL / capability thresholds 决定何时触发更强 safeguards 的治理框架及其落地逻辑。"
+        }
+      ]
+    },
+    {
+      "id": "d-frontier",
+      "title": "AI Frontier",
+      "desc": "前沿打法——agent framework、context / loop engineering、interpretability、新训练方法。保持视野,不深挖。",
+      "items": [
+        {
+          "id": "ft-div-general",
+          "type": "divider",
+          "label": "General"
+        },
+        {
+          "id": "ft1",
+          "title": "Building effective agents — Anthropic",
+          "url": "https://www.anthropic.com/research/building-effective-agents",
+          "note": "agent 设计的基本盘:workflow vs agent、何时用 loop、常见 pattern——loop / context engineering 的源头读物。"
+        },
+        {
+          "id": "ft2",
+          "title": "ReAct: Synergizing Reasoning and Acting in LLMs",
+          "url": "https://arxiv.org/abs/2210.03629",
+          "note": "reasoning + acting 交替的范式,几乎所有 agent loop 的雏形。"
+        },
+        {
+          "id": "ft3",
+          "title": "Mapping the Mind of a Large Language Model — Anthropic",
+          "url": "https://www.anthropic.com/research/mapping-mind-language-model",
+          "note": "用 sparse autoencoder 提取可解释 features,interpretability 的动机与在 safety 监控/steering 的应用。"
+        }
+      ]
+    }
+  ],
+  "weeklies": [
+    {
+      "id": "d-week-20260620",
+      "dated": true,
+      "date": "2026-06-20",
+      "title": "📅 Weekly · 2026-06-20",
+      "desc": "",
+      "items": [
+        {
+          "id": "wk-g",
+          "type": "divider",
+          "label": "Eval Infra"
+        },
+        {
+          "id": "wk-s",
+          "type": "divider",
+          "label": "Eval Infra - Safety"
+        },
+        {
+          "id": "wk-s2",
+          "title": "Predicting model behavior before release by simulating deployment — OpenAI",
+          "url": "https://openai.com/index/deployment-simulation/",
+          "note": "用真实 conversation context 做 pre-deployment simulation,更接近线上分布并降低 evaluation awareness,可直接启发 release-gate safety eval。"
+        },
+        {
+          "id": "wk-s1",
+          "title": "Securing the future of AI agents — Google DeepMind",
+          "url": "https://deepmind.google/blog/securing-the-future-of-ai-agents/",
+          "note": "DeepMind 谈如何为日益强大、可能未对齐的 agent 设计安全控制——agent containment / monitoring 的工程要求,正是 safety eval infra 要覆盖的威胁面。"
+        },
+        {
+          "id": "wk-t",
+          "type": "divider",
+          "label": "AI Frontier"
+        }
+      ]
+    },
+    {
+      "id": "d-week-20260628",
+      "dated": true,
+      "date": "2026-06-28",
+      "title": "📅 Weekly · 2026-06-28",
+      "desc": "",
+      "items": [
+        {
+          "id": "wk-20260628-ei",
+          "type": "divider",
+          "label": "Eval Infra"
+        },
+        {
+          "id": "wk-20260628-ei2",
+          "title": "How to eval stateful agents",
+          "url": "https://www.braintrust.dev/blog/stateful-agent-evals",
+          "note": "把 stateful agent eval 从单轮 prompt-score 推到 trajectory/side effects/external state,可映射真实 release-gate 回放。"
+        },
+        {
+          "id": "wk-20260628-ei3",
+          "title": "Designing the runtime for Langfuse code evaluators",
+          "url": "https://langfuse.com/blog/2026-06-22-code-evaluators-execution-model",
+          "note": "code evaluator 的 sandbox/runtime 设计,对把 deterministic policy checks 安全跑在 traces 上有直接参考。"
+        },
+        {
+          "id": "wk-20260628-es",
+          "type": "divider",
+          "label": "Eval Infra - Safety"
+        },
+        {
+          "id": "wk-20260628-es1",
+          "title": "Previewing GPT-5.6 Sol: a next-generation model",
+          "url": "https://openai.com/index/previewing-gpt-5-6-sol/",
+          "note": "limited preview 配套 layered safeguards/automated red-teaming/cyber thresholds,是 capability-tiered release gate 的近例。"
+        },
+        {
+          "id": "wk-20260628-af",
+          "type": "divider",
+          "label": "AI Frontier"
+        },
+        {
+          "id": "wk-20260628-af1",
+          "title": "How agents are transforming work",
+          "url": "https://openai.com/index/how-agents-are-transforming-work/",
+          "note": "Codex usage 显示 delegated long-horizon tasks/parallel agents 成主形态,提示 eval infra 要覆盖小时级 agent turns。"
+        },
+        {
+          "id": "wk-20260628-af2",
+          "title": "Anthropic Economic Index report: Cadences",
+          "url": "https://www.anthropic.com/research/economic-index-june-2026-report",
+          "note": "privacy-preserving telemetry 升到 hourly/daily + artifact classifier,对 online monitoring→eval feedback loop 有启发。"
+        }
+      ]
+    },
+    {
+      "id": "d-week-20260703",
+      "dated": true,
+      "date": "2026-07-03",
+      "title": "📅 Weekly · 2026-07-03",
+      "desc": "",
+      "items": [
+        {
+          "id": "wk-20260703-ei",
+          "type": "divider",
+          "label": "Eval Infra"
+        },
+        {
+          "id": "wk-20260703-ei1",
+          "title": "Inspect AI 0.3.242-0.3.244 changelog",
+          "url": "https://inspect.aisi.org.uk/CHANGELOG.html",
+          "note": "06/29-07/01 更新强化 remote eval logs、control channel、checkpoint/sandbox 安全,利于大规模可靠 eval harness。"
+        },
+        {
+          "id": "wk-20260703-ei2",
+          "title": "Arize Phoenix Alternatives 2026: Top 7 for Agent Observability",
+          "url": "https://laminar.sh/article/arize-phoenix-alternatives-2026",
+          "note": "agent traces 从 span-tree 转向 OTel-native/trace compression/Signals/code-first eval SDK,指向 online monitoring→eval loop。"
+        },
+        {
+          "id": "wk-20260703-es",
+          "type": "divider",
+          "label": "Eval Infra - Safety"
+        },
+        {
+          "id": "wk-20260703-es1",
+          "title": "More details on Fable 5’s cyber safeguards and our jailbreak framework — Anthropic",
+          "url": "https://www.anthropic.com/news/fable-safeguards-jailbreak-framework",
+          "note": "公开 cyber classifier taxonomy、safety margin 与 jailbreak severity framework,可直接借鉴 policy-grounded release gate。"
+        },
+        {
+          "id": "wk-20260703-af",
+          "type": "divider",
+          "label": "AI Frontier"
+        }
+      ]
+    },
+    {
+      "id": "d-week-20260711",
+      "dated": true,
+      "date": "2026-07-11",
+      "title": "📅 Weekly · 2026-07-11",
+      "desc": "",
+      "items": [
+        {
+          "id": "wk-20260711-ei",
+          "type": "divider",
+          "label": "Eval Infra"
+        },
+        {
+          "id": "wk-20260711-ei1",
+          "title": "Separating signal from noise in coding evaluations — OpenAI",
+          "url": "https://openai.com/index/separating-signal-from-noise-coding-evaluations/",
+          "note": "SWE-Bench Pro 审计发现约 30% broken tasks,提醒 release-gate eval 必须做 dataset QA 与 human adjudication。"
+        },
+        {
+          "id": "wk-20260711-ei2",
+          "title": "Inspect AI 0.3.245-0.3.246 changelog",
+          "url": "https://inspect.aisi.org.uk/CHANGELOG.html",
+          "note": "新增 GPT-5.6 support、reasoning_mode、checkpoint veto 与 control channel retry,利于低延迟可恢复 eval orchestration。"
+        },
+        {
+          "id": "wk-20260711-ei3",
+          "title": "3 production patterns for AI agents and how to evaluate each one — Arize",
+          "url": "https://arize.com/blog/3-production-patterns-ai-agents-how-to-evaluate-each-one/",
+          "note": "把 agent eval 明确分成 span/trace/session 三层,可直接映射 product harness 的 regression gate 与 online monitoring。"
+        },
+        {
+          "id": "wk-20260711-es",
+          "type": "divider",
+          "label": "Eval Infra - Safety"
+        },
+        {
+          "id": "wk-20260711-es1",
+          "title": "GPT-5.6: Frontier intelligence that scales with your ambition — OpenAI",
+          "url": "https://openai.com/index/gpt-5-6/",
+          "note": "发布含 cyber/bio capability eval、70 万 A100e 小时 automated red-teaming 与 continuous monitoring,是高强度 release safety gate 样板。"
+        },
+        {
+          "id": "wk-20260711-af",
+          "type": "divider",
+          "label": "AI Frontier"
+        },
+        {
+          "id": "wk-20260711-af1",
+          "title": "An off switch for dual-use knowledge in AI models — Anthropic",
+          "url": "https://www.anthropic.com/research/off-switch-dual-use",
+          "note": "GRAM 尝试在训练层面关闭 dual-use knowledge,虽非生产 eval,但会影响未来 safety scoring 与 capability suppression 设计。"
+        }
+      ]
+    },
+    {
+      "id": "d-week-20260717",
+      "dated": true,
+      "date": "2026-07-17",
+      "title": "📅 Weekly · 2026-07-17",
+      "desc": "",
+      "items": [
+        {
+          "id": "wk-20260717-ei",
+          "type": "divider",
+          "label": "Eval Infra"
+        },
+        {
+          "id": "wk-20260717-ei1",
+          "title": "Inspect AI 0.3.247 changelog",
+          "url": "https://inspect.aisi.org.uk/CHANGELOG.html",
+          "note": "atomic eval logs、turn_count/token_limit usage 与 checkpoint 隐蔽性增强,直接提升大规模 eval harness 可靠性。"
+        },
+        {
+          "id": "wk-20260717-ei2",
+          "title": "How we chose the model behind Topics with Baseten — Braintrust",
+          "url": "https://www.braintrust.dev/blog/model-behind-topics-baseten",
+          "note": "用 LLM 持续聚类 production traces 做 active observability,可作为 online monitoring→eval feedback loop 的产品形态参考。"
+        },
+        {
+          "id": "wk-20260717-ei3",
+          "title": "Inside Cursor's agent factory: how it verifies AI-written code — Arize",
+          "url": "https://arize.com/blog/inside-cursors-agent-factory-how-it-verifies-ai-written-code/",
+          "note": "强调 evidence、risk policy 与 correction feedback,适合借鉴到 agent-generated changes 的 release-gate verification。"
+        },
+        {
+          "id": "wk-20260717-es",
+          "type": "divider",
+          "label": "Eval Infra - Safety"
+        },
+        {
+          "id": "wk-20260717-es1",
+          "title": "GPT-Red: Unlocking Self-Improvement for Robustness — OpenAI",
+          "url": "https://openai.com/index/unlocking-self-improvement-gpt-red/",
+          "note": "self-play automated red-teaming 可生成 prompt injection/agent attack 场景,是 safety eval infra 自动化扩展的强信号。"
+        },
+        {
+          "id": "wk-20260717-af",
+          "type": "divider",
+          "label": "AI Frontier"
+        },
+        {
+          "id": "wk-20260717-af1",
+          "title": "From human-operated agent development to systematic agent improvement — Arize",
+          "url": "https://arize.com/blog/from-human-operated-agent-development-to-systematic-agent-improvement/",
+          "note": "把 traces、failure discovery、managed workers、evals 串成 agent improvement loop,有助于理解下一代 AI control plane。"
+        }
+      ]
+    }
+  ]
+}
