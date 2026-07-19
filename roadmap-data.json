@@ -140,7 +140,7 @@
           "id": "xm6eros9",
           "title": "What is an evaluation harness - Arize",
           "url": "https://arize.com/blog/what-is-an-evaluation-harness/",
-          "note": "对比了 benchmark runner 和 eval harness in prod。简单而言 benchmark runner是一套固定流程 (load a model- > run against static standards -> compare results)，主要给researchers offline用的"
+          "note": "对比了 benchmark runner 和 eval harness in prod。- 简单而言 benchmark runner是一套固定流程 (load a model- > run against static standards -> compare results)，主要给researchers offline 评测 model 的能力- eval harness 则偏online, evaluate 的对象是 system (i.e. real-time data)，目的是评估 how the system behaves"
         },
         {
           "id": "eg-div-harness",
