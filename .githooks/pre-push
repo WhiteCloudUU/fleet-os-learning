@@ -1,0 +1,86 @@
+#!/bin/sh
+set -eu
+
+remote_name="${1:-origin}"
+remote_branch="main"
+data_file="roadmap-data.json"
+
+if ! git rev-parse --verify HEAD >/dev/null 2>&1; then
+  exit 0
+fi
+
+if ! git diff --quiet -- "$data_file"; then
+  cat >&2 <<EOF
+pre-push blocked: $data_file has uncommitted local changes.
+
+Save/commit or discard them before pushing. If browser edits were saved remotely,
+run:
+  git pull --rebase $remote_name $remote_branch
+EOF
+  exit 1
+fi
+
+if ! git diff --cached --quiet -- "$data_file"; then
+  cat >&2 <<EOF
+pre-push blocked: $data_file is staged but not committed.
+
+Commit it first, or unstage it before pushing.
+EOF
+  exit 1
+fi
+
+if ! git fetch --quiet "$remote_name" "$remote_branch"; then
+  cat >&2 <<EOF
+pre-push blocked: could not fetch $remote_name/$remote_branch.
+
+Run:
+  git fetch $remote_name $remote_branch
+EOF
+  exit 1
+fi
+
+remote_ref="refs/remotes/$remote_name/$remote_branch"
+if ! git rev-parse --verify "$remote_ref" >/dev/null 2>&1; then
+  cat >&2 <<EOF
+pre-push blocked: could not find $remote_ref.
+EOF
+  exit 1
+fi
+
+base="$(git merge-base HEAD "$remote_ref")"
+remote_changed=0
+local_changed=0
+
+if ! git diff --quiet "$base" "$remote_ref" -- "$data_file"; then
+  remote_changed=1
+fi
+
+if ! git diff --quiet "$base" HEAD -- "$data_file"; then
+  local_changed=1
+fi
+
+if [ "$remote_changed" -eq 1 ] && [ "$local_changed" -eq 1 ]; then
+  cat >&2 <<EOF
+pre-push blocked: both remote and local changed $data_file since the common base.
+
+This usually means the browser saved newer roadmap state to GitHub. Pull and
+resolve first:
+  git pull --rebase $remote_name $remote_branch
+
+Then re-run validation before pushing.
+EOF
+  exit 1
+fi
+
+if [ "$remote_changed" -eq 1 ]; then
+  cat >&2 <<EOF
+pre-push blocked: remote has newer $data_file.
+
+Pull first to avoid overwriting browser-saved roadmap state:
+  git pull --rebase $remote_name $remote_branch
+EOF
+  exit 1
+fi
+
+exit 0
+

@@ -486,22 +486,62 @@
     outline: none;
   }
   .item.read .item-title { color: var(--gray-500); font-weight: 400; }
+  .note-shell {
+    display: grid;
+    grid-template-columns: 12px 1fr;
+    gap: 4px;
+    align-items: start;
+    margin-top: 3px;
+  }
+  .note-toggle {
+    width: 12px;
+    height: 19px;
+    border: none;
+    background: transparent;
+    color: var(--gray-300);
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 10px;
+    line-height: 1;
+    padding: 3px 0 0;
+    opacity: 0.65;
+    transition: color 0.12s, opacity 0.12s;
+  }
+  .note-toggle:hover { color: var(--gray-500); opacity: 1; }
   .item-note {
     font-size: 12.5px;
     line-height: 1.5;
     color: var(--gray-500);
-    margin-top: 3px;
     outline: none;
+    white-space: pre-wrap;
+    max-height: 1.5em;
+    overflow: hidden;
+    cursor: text;
+  }
+  .note-shell.expanded .item-note {
+    max-height: none;
+    overflow: visible;
   }
   .item-note:empty::before {
     content: "add a note…";
     color: var(--gray-300);
   }
-  .item-row2 {
+  .title-line {
     display: flex;
     align-items: center;
     gap: 8px;
+    min-width: 0;
+  }
+  .title-line .item-title { flex: 1; min-width: 0; }
+  .item-row2 {
+    display: none;
+    align-items: center;
+    gap: 8px;
     margin-top: 4px;
+    padding-left: 16px;
+  }
+  .item-row2.expanded {
+    display: flex;
   }
   .item-url {
     font-family: var(--mono);
@@ -529,6 +569,20 @@
   }
   .item-go:hover { opacity: 1; transform: translate(1px, -1px); }
   .item-go.hidden { display: none; }
+  .link-toggle {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    color: var(--gray-500);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    padding: 2px 5px;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.12s, background 0.12s, border-color 0.12s, color 0.12s;
+  }
+  .link-toggle:hover { opacity: 1; background: var(--gray-150); border-color: var(--gray-300); color: var(--gray-700); }
 
   [contenteditable]:focus {
     background: var(--gray-150);
@@ -1215,8 +1269,11 @@
     if (!opts.silent) setStatus('Loading latest…');
     try {
       const res = await fetch(dataUrl(), { cache: 'no-store' });
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      state = normalizeData(await res.json());
+      if (res.ok) {
+        state = normalizeData(await res.json());
+      } else {
+        state = normalizeData(await loadViaGithubApi());
+      }
       localStorage.setItem(KEY, JSON.stringify(state));
       localStorage.removeItem(DIRTY_KEY);
       setDirty(false);
@@ -1279,6 +1336,13 @@
     return btoa(out);
   }
 
+  function fromBase64(str) {
+    const bin = atob(String(str || '').replace(/\s/g, ''));
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
+
   async function githubRequest(url, opts) {
     if (!token()) {
       showTokenPanel();
@@ -1292,11 +1356,26 @@
     return fetch(url, Object.assign({}, opts, { headers }));
   }
 
+  async function loadViaGithubApi() {
+    const res = await githubRequest(GITHUB_API_URL + '?ref=' + encodeURIComponent(GITHUB_BRANCH));
+    if (!res.ok) {
+      throw githubHttpError(res, 'load');
+    }
+    const meta = await res.json();
+    return JSON.parse(fromBase64(meta.content));
+  }
+
+  function githubHttpError(res, action) {
+    if (res.status === 404) return new Error(action + ' failed: token cannot access repo/file');
+    if (res.status === 401 || res.status === 403) return new Error(action + ' failed: token permission denied');
+    return new Error(action + ' failed: HTTP ' + res.status);
+  }
+
   async function saveToGithub() {
     setStatus('Saving to GitHub…');
     try {
       const get = await githubRequest(GITHUB_API_URL + '?ref=' + encodeURIComponent(GITHUB_BRANCH));
-      if (!get.ok) throw new Error('read failed: HTTP ' + get.status);
+      if (!get.ok) throw githubHttpError(get, 'save read');
       const meta = await get.json();
       const body = {
         message: 'Update roadmap data',
@@ -1309,7 +1388,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
       });
-      if (!put.ok) throw new Error('save failed: HTTP ' + put.status);
+      if (!put.ok) throw githubHttpError(put, 'save write');
       localStorage.setItem(KEY, JSON.stringify(state));
       localStorage.removeItem(DIRTY_KEY);
       setDirty(false);
@@ -1481,7 +1560,7 @@
   function bindEdit(el, getter, setter, opts) {
     opts = opts || {};
     el.addEventListener('blur', () => {
-      const v = el.textContent.trim();
+      const v = (opts.multiline ? el.innerText : el.textContent).trim();
       const obj = getter();
       if (obj) { setter(obj, v); save(); if (opts.rerender) renderDeck(); }
     });
@@ -1551,11 +1630,17 @@
       row.innerHTML = `
         ${control}
         <div class="item-main">
-          <div class="item-title" contenteditable="true">${escape(it.title)}</div>
-          <div class="item-note" contenteditable="true">${escape(it.note || '')}</div>
+          <div class="title-line">
+            <div class="item-title" contenteditable="true">${escape(it.title)}</div>
+            <a class="item-go ${hasUrl ? '' : 'hidden'}" target="_blank" rel="noopener" href="${escapeAttr(it.url || '')}">↗</a>
+            <button class="link-toggle" type="button" title="edit link">link</button>
+          </div>
+          <div class="note-shell">
+            <button class="note-toggle" type="button" title="expand note">▸</button>
+            <div class="item-note" contenteditable="true">${escape(it.note || '')}</div>
+          </div>
           <div class="item-row2">
             <span class="item-url" contenteditable="true">${escape(it.url || '')}</span>
-            <a class="item-go ${hasUrl ? '' : 'hidden'}" target="_blank" rel="noopener" href="${escapeAttr(it.url || '')}">↗</a>
           </div>
         </div>
         <button class="row-delete" title="delete">×</button>
@@ -1564,6 +1649,26 @@
       if (fav) fav.addEventListener('click', () => favoriteItem(d.id, it.id));
       bindEdit(row.querySelector('.item-title'), () => it, (o, v) => o.title = v);
       bindEdit(row.querySelector('.item-note'), () => it, (o, v) => o.note = v, { multiline: true });
+      const noteShell = row.querySelector('.note-shell');
+      const noteToggle = row.querySelector('.note-toggle');
+      const noteEl = row.querySelector('.item-note');
+      noteToggle.addEventListener('click', () => {
+        const expanded = noteShell.classList.toggle('expanded');
+        if (!expanded) noteEl.blur();
+        noteToggle.textContent = expanded ? '▾' : '▸';
+        noteToggle.title = expanded ? 'collapse note' : 'expand note';
+      });
+      noteEl.addEventListener('focus', () => {
+        noteShell.classList.add('expanded');
+        noteToggle.textContent = '▾';
+        noteToggle.title = 'collapse note';
+      });
+      const linkRow = row.querySelector('.item-row2');
+      const linkToggle = row.querySelector('.link-toggle');
+      linkToggle.addEventListener('click', () => {
+        linkRow.classList.toggle('expanded');
+        if (linkRow.classList.contains('expanded')) row.querySelector('.item-url').focus();
+      });
       bindEdit(row.querySelector('.item-url'), () => it, (o, v) => o.url = v, { rerender: true });
       row.querySelector('.row-delete').addEventListener('click', () => deleteItem(d.id, it.id));
 
