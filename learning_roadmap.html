@@ -1563,8 +1563,30 @@
     URL.revokeObjectURL(url);
   }
 
+  function insertPlainText(text) {
+    if (document.queryCommandSupported && document.queryCommandSupported('insertText')) {
+      document.execCommand('insertText', false, text);
+      return;
+    }
+    const sel = window.getSelection();
+    if (!sel || !sel.rangeCount) return;
+    const range = sel.getRangeAt(0);
+    range.deleteContents();
+    range.insertNode(document.createTextNode(text));
+    range.collapse(false);
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+
   function bindEdit(el, getter, setter, opts) {
     opts = opts || {};
+    el.addEventListener('paste', (e) => {
+      const raw = e.clipboardData && e.clipboardData.getData('text/plain');
+      if (raw == null) return;
+      e.preventDefault();
+      const text = opts.multiline ? raw : raw.replace(/\s+/g, ' ');
+      insertPlainText(text);
+    });
     el.addEventListener('blur', () => {
       const v = (opts.multiline ? el.innerText : el.textContent).trim();
       const obj = getter();
