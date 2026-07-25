@@ -1274,6 +1274,7 @@
       } else {
         state = normalizeData(await loadViaGithubApi());
       }
+      if (!opts.silent) state.updated = 'Last updated · ' + todayYMD();
       localStorage.setItem(KEY, JSON.stringify(state));
       localStorage.removeItem(DIRTY_KEY);
       setDirty(false);
