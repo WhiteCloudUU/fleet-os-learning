@@ -23,8 +23,14 @@ The app is a static HTML UI (`learning_roadmap.html`) backed by a shared data fi
 
 - `roadmap-data.json`: source of truth for roadmap state.
 - `learning_roadmap.html`: static UI shell and fallback seed.
-- `learning_roadmap_instruction.md`: rules for generating weekly cards.
-- `staff_os.md`: user strategy context and prioritization principles.
+- `learning_roadmap_instruction.md`: source of truth for weekly-card content rules, sources, lane labels, item shape, and prioritization.
+- `staff_os.md`: user strategy context and prioritization principles, read through `learning_roadmap_instruction.md` when weekly generation calls for it.
+
+## Instruction Boundary
+
+- This skill owns repository operations: sync, edit targets, validation, commit/push, and GitHub Pages/GitHub API workflow.
+- `learning_roadmap_instruction.md` owns weekly-card content: what to track, where to search, how to choose items, lane labels, item fields, and writing style.
+- If the two files conflict, use this skill for operational workflow and `learning_roadmap_instruction.md` for weekly-card content.
 
 ## Golden Rules
 
@@ -48,54 +54,13 @@ The app is a static HTML UI (`learning_roadmap.html`) backed by a shared data fi
 Use this workflow when the user asks for a weekly reading card.
 
 1. Pull the latest remote state.
-2. Read `learning_roadmap_instruction.md` fully.
-3. Read `staff_os.md` for prioritization context.
+2. Read `learning_roadmap_instruction.md` fully and follow it as the source of truth for content, sources, lane labels, schema, recency, and writing style.
+3. Read `staff_os.md` only as directed by `learning_roadmap_instruction.md` or when extra prioritization context is needed.
 4. Inspect existing `roadmap-data.json` weeklies to determine the last card date.
 5. Browse current sources because this task depends on recent AI/eval/safety updates.
-6. Select only high-signal items for the user's focus:
-   - AI safety eval infrastructure
-   - release gates
-   - eval reliability
-   - low-latency/reusable eval harnesses
-   - policy-grounded safety scoring
-   - online monitoring to eval feedback loops
-7. Append one weekly card to `weeklies`.
-8. Use exactly these lane dividers:
-   - `Eval Infra`
-   - `Eval Infra - Safety`
-   - `AI Frontier`
-9. Leave a lane empty if no meaningful signal exists.
-10. New item shape:
-
-   ```json
-   {
-     "id": "wk-YYYYMMDD-...",
-     "title": "...",
-     "url": "...",
-     "note": "Chinese note with English technical terms"
-   }
-   ```
-
-11. Do not include `status`.
-12. Keep `desc` as an empty string for weekly cards.
-
-Example weekly card:
-
-```json
-{
-  "id": "d-week-20260717",
-  "dated": true,
-  "date": "2026-07-17",
-  "title": "📅 Weekly · 2026-07-17",
-  "desc": "",
-  "items": [
-    { "id": "wk-20260717-ei", "type": "divider", "label": "Eval Infra" },
-    { "id": "wk-20260717-ei1", "title": "...", "url": "...", "note": "..." },
-    { "id": "wk-20260717-es", "type": "divider", "label": "Eval Infra - Safety" },
-    { "id": "wk-20260717-af", "type": "divider", "label": "AI Frontier" }
-  ]
-}
-```
+6. Append exactly one weekly card to `weeklies` in `roadmap-data.json`.
+7. Do not include `status`.
+8. Keep `desc` as an empty string for weekly cards unless `learning_roadmap_instruction.md` is explicitly updated to say otherwise.
 
 ## Favorites Model
 
