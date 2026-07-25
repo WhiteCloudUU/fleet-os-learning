@@ -1365,23 +1365,33 @@
   async function loadViaGithubApi() {
     const res = await githubRequest(GITHUB_API_URL + '?ref=' + encodeURIComponent(GITHUB_BRANCH));
     if (!res.ok) {
-      throw githubHttpError(res, 'load');
+      throw await githubHttpError(res, 'load');
     }
     const meta = await res.json();
     return JSON.parse(fromBase64(meta.content));
   }
 
-  function githubHttpError(res, action) {
-    if (res.status === 404) return new Error(action + ' failed: token cannot access repo/file');
-    if (res.status === 401 || res.status === 403) return new Error(action + ' failed: token permission denied');
-    return new Error(action + ' failed: HTTP ' + res.status);
+  async function githubHttpError(res, action) {
+    let detail = '';
+    try {
+      const body = await res.clone().json();
+      detail = body && body.message ? ': ' + body.message : '';
+    } catch (e) {
+      try {
+        const text = await res.clone().text();
+        detail = text ? ': ' + text.slice(0, 160) : '';
+      } catch (e2) {}
+    }
+    if (res.status === 404) return new Error(action + ' failed: token cannot access repo/file' + detail);
+    if (res.status === 401 || res.status === 403) return new Error(action + ' failed: token permission denied' + detail);
+    return new Error(action + ' failed: HTTP ' + res.status + detail);
   }
 
   async function saveToGithub() {
     setStatus('Saving to GitHub…');
     try {
       const get = await githubRequest(GITHUB_API_URL + '?ref=' + encodeURIComponent(GITHUB_BRANCH));
-      if (!get.ok) throw githubHttpError(get, 'save read');
+      if (!get.ok) throw await githubHttpError(get, 'save read');
       const meta = await get.json();
       const body = {
         message: 'Update roadmap data',
@@ -1394,7 +1404,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
       });
-      if (!put.ok) throw githubHttpError(put, 'save write');
+      if (!put.ok) throw await githubHttpError(put, 'save write');
       localStorage.setItem(KEY, JSON.stringify(state));
       localStorage.removeItem(DIRTY_KEY);
       setDirty(false);
