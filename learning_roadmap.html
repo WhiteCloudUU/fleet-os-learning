@@ -1277,13 +1277,9 @@
       localStorage.setItem(KEY, JSON.stringify(state));
       localStorage.removeItem(DIRTY_KEY);
       setDirty(false);
-      if (!opts.silent) pageIdx = 0;
       weekIdx = 0;
       $updated.textContent = state.updated || '';
-      const latestWeek = sortedWeeklies()[0];
-      const latestLabel = latestWeek && latestWeek.date ? ' · latest weekly ' + latestWeek.date : '';
-      const weekCount = Array.isArray(state.weeklies) ? ' · ' + state.weeklies.length + ' weekly cards' : '';
-      setStatus('Loaded latest' + latestLabel + weekCount);
+      setStatus('Loaded latest');
       renderRefs(); renderDeck();
     } catch (e) {
       if (!opts.silent) setStatus('Load failed: ' + e.message, true);
