@@ -531,6 +531,72 @@
           "note": "把 traces、failure discovery、managed workers、evals 串成 agent improvement loop,有助于理解下一代 AI control plane。"
         }
       ]
+    },
+    {
+      "id": "d-week-20260724",
+      "dated": true,
+      "date": "2026-07-24",
+      "title": "📅 Weekly · 2026-07-24",
+      "desc": "",
+      "items": [
+        {
+          "id": "wk-20260724-ei",
+          "type": "divider",
+          "label": "Eval Infra"
+        },
+        {
+          "id": "wk-20260724-ei1",
+          "title": "How to measure human-LLM judge alignment — Arize",
+          "url": "https://arize.com/blog/measuring-human-llm-judge-alignment/",
+          "note": "把 human agreement、LLM judge agreement 与 error taxonomy 拆开测,适合校准 policy-grounded safety scorer 的可靠性。"
+        },
+        {
+          "id": "wk-20260724-ei2",
+          "title": "Improve agent quality with Insights Agent and Multi-turn Evals, now in LangSmith — LangChain",
+          "url": "https://www.langchain.com/blog/insights-agent-multiturn-evals-langsmith",
+          "note": "把 production threads 自动聚类成 failure modes 并做 multi-turn eval,很贴 online monitoring→eval feedback loop。"
+        },
+        {
+          "id": "wk-20260724-ei3",
+          "title": "Yes, you can copy our eval setup — Langfuse",
+          "url": "https://langfuse.com/blog/2026-07-16-steal-our-eval-setup",
+          "note": "给出 trace→monitor→dataset→experiment 的可复用 eval loop,适合沉淀成低成本 eval harness template。"
+        },
+        {
+          "id": "wk-20260724-es",
+          "type": "divider",
+          "label": "Eval Infra - Safety"
+        },
+        {
+          "id": "wk-20260724-es1",
+          "title": "OpenAI and Hugging Face partner to address security incident during model evaluation — OpenAI",
+          "url": "https://openai.com/index/hugging-face-model-evaluation-security-incident/",
+          "note": "内部 cyber eval 触发真实 infra compromise,强提醒 safety eval sandbox、network boundary 与 monitoring 本身也要进入 release gate。"
+        },
+        {
+          "id": "wk-20260724-es2",
+          "title": "Cheating behaviour in frontier model evaluations — UK AISI",
+          "url": "https://www.aisi.gov.uk/blog/cheating-behaviour-in-frontier-model-evaluations",
+          "note": "AISI 把 eval cheating 作为系统性风险来监控,说明 capability/safety eval 需要 transcript review 与 anti-gaming instrumentation。"
+        },
+        {
+          "id": "wk-20260724-es3",
+          "title": "UK AISI / CAISI Preliminary Assessment of Kimi K3's Cyber Capabilities — UK AISI",
+          "url": "https://www.aisi.gov.uk/blog/preliminary-assessment-of-kimi-k3s-cyber-capabilities",
+          "note": "联合 cyber capability eval 展示开源/闭源 frontier gap 与 safeguard bypass 风险,可作为 release-risk calibration 的外部参照。"
+        },
+        {
+          "id": "wk-20260724-af",
+          "type": "divider",
+          "label": "AI Frontier"
+        },
+        {
+          "id": "wk-20260724-af1",
+          "title": "Introducing Gemini 3.6 Flash, 3.5 Flash-Lite, and 3.5 Flash Cyber — Google DeepMind",
+          "url": "https://deepmind.google/blog/",
+          "note": "Frontier provider 开始把 cyber-specialized variant 作为模型线发布,意味着安全能力评估要跟上更细粒度的 model family 变化。"
+        }
+      ]
     }
   ]
 }
