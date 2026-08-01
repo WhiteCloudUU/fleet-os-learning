@@ -585,6 +585,72 @@
           "note": "Frontier provider 开始把 cyber-specialized variant 作为模型线发布,意味着安全能力评估要跟上更细粒度的 model family 变化。"
         }
       ]
+    },
+    {
+      "id": "d-week-20260801",
+      "dated": true,
+      "date": "2026-08-01",
+      "title": "📅 Weekly · 2026-08-01",
+      "desc": "",
+      "items": [
+        {
+          "id": "wk-20260801-ei",
+          "type": "divider",
+          "label": "Eval Infra"
+        },
+        {
+          "id": "wk-20260801-ei1",
+          "title": "Behavior specs, an open standard for supervising long-horizon agents — Braintrust",
+          "url": "https://www.braintrust.dev/blog/behavior-specs",
+          "note": "把 long-horizon agent eval 从 outcome score 拆到 trajectory behavior specs,很适合 release-gate 里监督过程而不只看最终结果。"
+        },
+        {
+          "id": "wk-20260801-ei2",
+          "title": "How enabling two settings tripled our scores on the ARC-AGI-3 benchmark — OpenAI",
+          "url": "https://openai.com/index/how-two-settings-tripled-our-arc-agi-3-scores/",
+          "note": "retained reasoning 与 compaction 让同一模型分数大幅变化,提醒 eval harness settings 本身必须被 versioned 和 release-reviewed。"
+        },
+        {
+          "id": "wk-20260801-es",
+          "type": "divider",
+          "label": "Eval Infra - Safety"
+        },
+        {
+          "id": "wk-20260801-es1",
+          "title": "Investigating three real-world incidents in our cybersecurity evaluations — Anthropic",
+          "url": "https://www.anthropic.com/news/investigating-incidents-cybersecurity-evals",
+          "note": "cyber eval 误连真实网络导致真实影响,是 eval sandbox、egress control、scenario realism 与 stop-condition 设计的高优先级案例。"
+        },
+        {
+          "id": "wk-20260801-es2",
+          "title": "OpenAI and Hugging Face partner to address security incident during model evaluation — OpenAI",
+          "url": "https://openai.com/index/hugging-face-model-evaluation-security-incident/",
+          "note": "7/29 update 引入 CrowdStrike、METR、Redwood 第三方 review,说明高风险 eval incident 需要独立审计和可复盘 transcript evidence。"
+        },
+        {
+          "id": "wk-20260801-es3",
+          "title": "Gemini Robotics 2 brings whole body intelligence to robots — Google DeepMind",
+          "url": "https://deepmind.google/blog/gemini-robotics-2-brings-whole-body-intelligence-to-robots/",
+          "note": "发布 ASIMOV-Agentic benchmark 衡量 unsafe tool call refusal 与 human intervention,可借鉴为 embodied/agentic safety gate 的测试维度。"
+        },
+        {
+          "id": "wk-20260801-af",
+          "type": "divider",
+          "label": "AI Frontier"
+        },
+        {
+          "id": "wk-20260801-af1",
+          "title": "Discovering cryptographic weaknesses with Claude — Anthropic",
+          "url": "https://www.anthropic.com/research/discovering-cryptographic-weaknesses",
+          "note": "Claude Mythos Preview 能半自动发现 crypto algorithm weakness,是 cyber capability eval 从软件漏洞扩展到数学/密码分析的 frontier signal。"
+        },
+        {
+          "id": "wk-20260801-af2",
+          "title": "Ten advances in mathematics and theoretical computer science — OpenAI",
+          "url": "https://openai.com/index/ten-advances-in-mathematics/",
+          "note": "内部 Astra 在 open problems 上产出并用 Lean formalization 辅助验证,提示 frontier eval 需要覆盖 research discovery 与 proof verification loop。"
+        }
+      ]
     }
   ]
 }
