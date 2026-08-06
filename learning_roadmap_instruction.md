@@ -42,10 +42,10 @@ optimizations.
 
 Safety evals · EvalOps · AI reliability · Release safety gates · Preparedness
 Framework · Responsible Scaling Policy · Frontier Safety Framework · System cards ·
-Model-graded evals · Human calibration · Red teaming · Agent safety evals · Prompt
-injection benchmarks · Post-deployment monitoring · Online / continuous eval · Safety
-case · AI control plane · Guardrails / runtime enforcement · Policy-grounded
-evaluation · Production feedback loops
+Model-graded evals · Human calibration · Red teaming · Agent safety evals · AI
+agentic evals · Prompt injection benchmarks · Post-deployment monitoring · Online /
+continuous eval · Safety case · AI control plane · Guardrails / runtime enforcement ·
+Policy-grounded evaluation · Production feedback loops
 
 ---
 
@@ -66,8 +66,9 @@ evaluation · Production feedback loops
 **Search seeds:**
 - *Sites:* anthropic.com/research · openai.com/index · deepmind.google/blog ·
   arxiv.org (cs.AI / cs.CR) · metr.org/blog · inspect.aisi.org.uk
-- *Keywords:* agentic eval · LLM-as-judge · jailbreak robustness · refusal eval ·
-  guardrail benchmark · agentic AI containment · red-team automation · alignment eval
+- *Keywords:* AI agentic eval · agentic eval · agent evaluation harness ·
+  LLM-as-judge · jailbreak robustness · refusal eval · guardrail benchmark ·
+  agentic AI containment · red-team automation · alignment eval
 
 ---
 
