@@ -36,6 +36,11 @@ online monitoring → eval feedback loop · policy-grounded safety scoring. Chal
 low-impact items; prefer system-level / reusable / release-critical over local
 optimizations.
 
+Within **Eval Infra**, give extra weight to **AI agentic eval harness** signals:
+agent trajectories, multi-turn/session evals, tool-use traces, behavior specs,
+harness settings/versioning, and production trace → eval dataset loops. Treat this
+as an increasingly default shape of modern eval harnesses, not a side topic.
+
 ---
 
 ## 2. What to track (topics)
@@ -67,6 +72,7 @@ Policy-grounded evaluation · Production feedback loops
 - *Sites:* anthropic.com/research · openai.com/index · deepmind.google/blog ·
   arxiv.org (cs.AI / cs.CR) · metr.org/blog · inspect.aisi.org.uk
 - *Keywords:* AI agentic eval · agentic eval · agent evaluation harness ·
+  agent trajectory eval · multi-turn agent eval · tool-use trace eval ·
   LLM-as-judge · jailbreak robustness · refusal eval · guardrail benchmark ·
   agentic AI containment · red-team automation · alignment eval
 

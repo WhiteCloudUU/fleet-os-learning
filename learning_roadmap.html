@@ -588,7 +588,7 @@
     padding: 0;
     flex-shrink: 0;
     cursor: pointer;
-    opacity: 0.45;
+    opacity: 0;
     transition: opacity 0.12s, background 0.12s, border-color 0.12s, color 0.12s;
   }
   .edit-toggle svg {
@@ -600,6 +600,7 @@
     stroke-linecap: round;
     stroke-linejoin: round;
   }
+  .item:hover .edit-toggle, .edit-toggle:focus-visible { opacity: 0.45; }
   .edit-toggle:hover { opacity: 1; background: var(--gray-150); border-color: var(--gray-300); color: var(--gray-700); }
 
   [contenteditable="true"]:focus {

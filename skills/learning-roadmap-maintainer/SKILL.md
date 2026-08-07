@@ -74,6 +74,7 @@ Weekly cards are an inbox. Domain cards are curated favorites.
 `Eval Infra`
 - `General / Basics`
 - `Eval Harness`
+- `Agentic Eval Harness`
 - `EvalOps & Quality`
 
 `Eval Infra - Safety`
