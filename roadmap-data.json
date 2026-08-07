@@ -131,6 +131,12 @@
           "note": "近期高信号:把 agent trajectory 的期望行为写成可执行 specs,适合作为 agentic eval harness 的 process-level release gate。"
         },
         {
+          "id": "eg-agentic-harness-deepeval-multiturn",
+          "title": "Multi-Turn Evaluation — DeepEval",
+          "url": "https://deepeval.com/guides/guides-multi-turn-evaluation",
+          "note": "用 scenario-based simulation、ConversationalTestCase 和 conversation-level metrics 做多轮 agent/chatbot eval,适合作为 agentic harness 的 CI/CD 与 production feedback loop 参考。"
+        },
+        {
           "id": "eg-div-basics",
           "type": "divider",
           "label": "Eval Harness"
