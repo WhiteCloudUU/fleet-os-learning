@@ -425,7 +425,7 @@
     gap: 11px;
     align-items: start;
     position: relative;
-    padding-right: 22px;
+    padding-right: 34px;
   }
   .favorite-btn {
     width: 20px;
@@ -574,20 +574,40 @@
   }
   .item-go:hover { opacity: 1; transform: translate(1px, -1px); }
   .item-go.hidden { display: none; }
+  .item-actions {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    display: flex;
+    align-items: center;
+    gap: 1px;
+  }
   .link-toggle {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.04em;
-    color: var(--gray-500);
+    width: 20px;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gray-400);
     background: transparent;
     border: 1px solid transparent;
     border-radius: 5px;
-    padding: 2px 5px;
+    padding: 0;
     cursor: pointer;
-    opacity: 0.5;
+    opacity: 0;
     transition: opacity 0.12s, background 0.12s, border-color 0.12s, color 0.12s;
   }
-  .link-toggle:hover { opacity: 1; background: var(--gray-150); border-color: var(--gray-300); color: var(--gray-700); }
+  .link-toggle svg {
+    width: 12px;
+    height: 12px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .item:hover .link-toggle { opacity: 0.42; }
+  .link-toggle:hover { opacity: 1 !important; background: var(--gray-150); border-color: var(--gray-300); color: var(--gray-700); }
 
   [contenteditable]:focus {
     background: var(--gray-150);
@@ -609,6 +629,11 @@
     cursor: pointer;
     padding: 2px 6px;
     line-height: 1;
+  }
+  .item-actions .row-delete {
+    position: static;
+    top: auto;
+    right: auto;
   }
   .item:hover .row-delete, .domain:hover .domain-delete { opacity: 0.55; }
   .row-delete:hover { opacity: 1 !important; color: var(--clay); }
@@ -1671,7 +1696,6 @@
           <div class="title-line">
             <div class="item-title" contenteditable="true">${escape(it.title)}</div>
             <a class="item-go ${hasUrl ? '' : 'hidden'}" target="_blank" rel="noopener" href="${escapeAttr(it.url || '')}">↗</a>
-            <button class="link-toggle" type="button" title="edit link">link</button>
           </div>
           <div class="note-shell">
             <button class="note-toggle" type="button" title="expand note">▸</button>
@@ -1681,7 +1705,15 @@
             <span class="item-url" contenteditable="true">${escape(it.url || '')}</span>
           </div>
         </div>
-        <button class="row-delete" title="delete">×</button>
+        <div class="item-actions">
+          <button class="link-toggle" type="button" title="edit link" aria-label="edit link">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M10 13a5 5 0 0 0 7.1.1l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1"/>
+              <path d="M14 11a5 5 0 0 0-7.1-.1l-2 2A5 5 0 0 0 12 20l1.1-1.1"/>
+            </svg>
+          </button>
+          <button class="row-delete" title="delete">×</button>
+        </div>
       `;
       const fav = row.querySelector('.favorite-btn');
       if (fav) fav.addEventListener('click', () => favoriteItem(d.id, it.id));
