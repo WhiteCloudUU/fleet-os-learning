@@ -120,9 +120,26 @@
       "desc": "长期收藏夹:评测系统怎么建、怎么判可信、怎么进生产闭环。",
       "items": [
         {
+          "id": "eg-div-agentic-harness",
+          "type": "divider",
+          "label": "Agentic Eval Harness"
+        },
+        {
+          "id": "eg-agentic-harness-1",
+          "title": "Behavior specs, an open standard for supervising long-horizon agents — Braintrust",
+          "url": "https://www.braintrust.dev/blog/behavior-specs",
+          "note": "近期高信号:把 agent trajectory 的期望行为写成可执行 specs,适合作为 agentic eval harness 的 process-level release gate。"
+        },
+        {
+          "id": "eg-agentic-harness-2",
+          "title": "Improve agent quality with Insights Agent and Multi-turn Evals, now in LangSmith — LangChain",
+          "url": "https://www.langchain.com/blog/insights-agent-multiturn-evals-langsmith",
+          "note": "把 production traces 聚类成 behavior patterns,再用 multi-turn eval 评完整 conversation trajectory,很贴近生产 agent harness 的默认形态。"
+        },
+        {
           "id": "eg-div-basics",
           "type": "divider",
-          "label": "General / Basics"
+          "label": "Eval Harness"
         },
         {
           "id": "eg1",
@@ -151,7 +168,7 @@
         {
           "id": "eg-div-harness",
           "type": "divider",
-          "label": "Eval Harness"
+          "label": "Eval Harness Framework"
         },
         {
           "id": "eg4",
@@ -176,23 +193,6 @@
           "title": "Evaluating LLM-based 0→1 software generation in E2E CLI scenarios",
           "url": "https://arxiv.org/abs/2604.06742",
           "note": "新型 task-based eval:在端到端 CLI 工具场景里评 agent 的 0→1 代码生成,代表 agentic eval 的设计趋势。"
-        },
-        {
-          "id": "eg-div-agentic-harness",
-          "type": "divider",
-          "label": "Agentic Eval Harness"
-        },
-        {
-          "id": "eg-agentic-harness-1",
-          "title": "Behavior specs, an open standard for supervising long-horizon agents — Braintrust",
-          "url": "https://www.braintrust.dev/blog/behavior-specs",
-          "note": "近期高信号:把 agent trajectory 的期望行为写成可执行 specs,适合作为 agentic eval harness 的 process-level release gate。"
-        },
-        {
-          "id": "eg-agentic-harness-2",
-          "title": "Improve agent quality with Insights Agent and Multi-turn Evals, now in LangSmith — LangChain",
-          "url": "https://www.langchain.com/blog/insights-agent-multiturn-evals-langsmith",
-          "note": "把 production traces 聚类成 behavior patterns,再用 multi-turn eval 评完整 conversation trajectory,很贴近生产 agent harness 的默认形态。"
         },
         {
           "id": "eg-div-ops",

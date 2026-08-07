@@ -72,9 +72,9 @@ Weekly cards are an inbox. Domain cards are curated favorites.
 - Domain cards currently use these dividers:
 
 `Eval Infra`
-- `General / Basics`
 - `Eval Harness`
 - `Agentic Eval Harness`
+- `Eval Harness Framework`
 - `EvalOps & Quality`
 
 `Eval Infra - Safety`
