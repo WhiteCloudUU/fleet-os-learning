@@ -1714,6 +1714,12 @@
         linkRow.classList.add('expanded');
         titleEl.focus();
       }
+      function closeTitleAndLinkEdit() {
+        titleEl.blur();
+        urlEl.blur();
+        titleEl.setAttribute('contenteditable', 'false');
+        linkRow.classList.remove('expanded');
+      }
       titleEl.addEventListener('click', () => {
         if (titleEl.isContentEditable) return;
         if (hasUrl) openItemLink();
@@ -1747,9 +1753,19 @@
         noteToggle.title = 'collapse note';
       });
       const editToggle = row.querySelector('.edit-toggle');
-      editToggle.addEventListener('click', () => {
+      editToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (linkRow.classList.contains('expanded') || titleEl.isContentEditable) {
+          closeTitleAndLinkEdit();
+          return;
+        }
         editTitleAndLink();
       });
+      document.addEventListener('click', (e) => {
+        if (!linkRow.classList.contains('expanded') && !titleEl.isContentEditable) return;
+        if (titleEl.contains(e.target) || linkRow.contains(e.target) || editToggle.contains(e.target)) return;
+        closeTitleAndLinkEdit();
+      }, true);
       bindEdit(urlEl, () => it, (o, v) => o.url = v, { rerender: true });
       row.querySelector('.row-delete').addEventListener('click', () => deleteItem(d.id, it.id));
 
