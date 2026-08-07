@@ -1,5 +1,5 @@
 {
-  "updated": "Last updated · 2026-07-25",
+  "updated": "Last updated · 2026-08-07",
   "refsOpen": false,
   "references": [
     {
@@ -175,7 +175,7 @@
           "id": "eg7",
           "title": "Evaluating LLM-based 0→1 software generation in E2E CLI scenarios",
           "url": "https://arxiv.org/abs/2604.06742",
-          "note": "⚠️ 标题为准。新型 task-based eval:在端到端 CLI 工具场景里评 agent 的 0→1 代码生成,代表 agentic eval 的设计趋势。"
+          "note": "新型 task-based eval:在端到端 CLI 工具场景里评 agent 的 0→1 代码生成,代表 agentic eval 的设计趋势。"
         },
         {
           "id": "eg-div-ops",
