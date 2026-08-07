@@ -490,6 +490,17 @@
     font-weight: 500;
     outline: none;
   }
+  .item-title.linked {
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 3px;
+    transition: color 0.12s, text-decoration-color 0.12s;
+  }
+  .item-title.linked:hover {
+    color: var(--clay);
+    text-decoration-color: rgba(217,119,87,0.35);
+  }
   .item.read .item-title { color: var(--gray-500); font-weight: 400; }
   .note-shell {
     display: grid;
@@ -564,25 +575,7 @@
     content: "add link…";
     color: var(--gray-300);
   }
-  .item-go {
-    font-size: 12px;
-    color: var(--clay);
-    text-decoration: none;
-    flex-shrink: 0;
-    opacity: 0.75;
-    transition: opacity 0.12s, transform 0.1s;
-  }
-  .item-go:hover { opacity: 1; transform: translate(1px, -1px); }
-  .item-go.hidden { display: none; }
-  .item-actions {
-    position: absolute;
-    top: 21px;
-    right: -2px;
-    display: flex;
-    align-items: center;
-    gap: 1px;
-  }
-  .link-toggle {
+  .edit-toggle {
     width: 20px;
     height: 20px;
     display: inline-flex;
@@ -593,11 +586,12 @@
     border: 1px solid transparent;
     border-radius: 5px;
     padding: 0;
+    flex-shrink: 0;
     cursor: pointer;
-    opacity: 0;
+    opacity: 0.45;
     transition: opacity 0.12s, background 0.12s, border-color 0.12s, color 0.12s;
   }
-  .link-toggle svg {
+  .edit-toggle svg {
     width: 12px;
     height: 12px;
     stroke: currentColor;
@@ -606,10 +600,9 @@
     stroke-linecap: round;
     stroke-linejoin: round;
   }
-  .item:hover .link-toggle { opacity: 0.42; }
-  .link-toggle:hover { opacity: 1 !important; background: var(--gray-150); border-color: var(--gray-300); color: var(--gray-700); }
+  .edit-toggle:hover { opacity: 1; background: var(--gray-150); border-color: var(--gray-300); color: var(--gray-700); }
 
-  [contenteditable]:focus {
+  [contenteditable="true"]:focus {
     background: var(--gray-150);
     border-radius: 4px;
     padding: 0 4px;
@@ -629,11 +622,6 @@
     cursor: pointer;
     padding: 2px 6px;
     line-height: 1;
-  }
-  .item-actions .row-delete {
-    position: static;
-    top: auto;
-    right: auto;
   }
   .item:hover .row-delete, .domain:hover .domain-delete { opacity: 0.55; }
   .row-delete:hover { opacity: 1 !important; color: var(--clay); }
@@ -1694,8 +1682,13 @@
         ${control}
         <div class="item-main">
           <div class="title-line">
-            <div class="item-title" contenteditable="true">${escape(it.title)}</div>
-            <a class="item-go ${hasUrl ? '' : 'hidden'}" target="_blank" rel="noopener" href="${escapeAttr(it.url || '')}">↗</a>
+            <div class="item-title ${hasUrl ? 'linked' : ''}" contenteditable="false" role="${hasUrl ? 'link' : 'button'}" tabindex="0">${escape(it.title)}</div>
+            <button class="edit-toggle" type="button" title="edit title and link" aria-label="edit title and link">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 20h9"/>
+                <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+              </svg>
+            </button>
           </div>
           <div class="note-shell">
             <button class="note-toggle" type="button" title="expand note">▸</button>
@@ -1705,19 +1698,39 @@
             <span class="item-url" contenteditable="true">${escape(it.url || '')}</span>
           </div>
         </div>
-        <div class="item-actions">
-          <button class="link-toggle" type="button" title="edit link" aria-label="edit link">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M10 13a5 5 0 0 0 7.1.1l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1"/>
-              <path d="M14 11a5 5 0 0 0-7.1-.1l-2 2A5 5 0 0 0 12 20l1.1-1.1"/>
-            </svg>
-          </button>
-          <button class="row-delete" title="delete">×</button>
-        </div>
+        <button class="row-delete" title="delete">×</button>
       `;
       const fav = row.querySelector('.favorite-btn');
       if (fav) fav.addEventListener('click', () => favoriteItem(d.id, it.id));
-      bindEdit(row.querySelector('.item-title'), () => it, (o, v) => o.title = v);
+      const titleEl = row.querySelector('.item-title');
+      const linkRow = row.querySelector('.item-row2');
+      const urlEl = row.querySelector('.item-url');
+      function openItemLink() {
+        const url = (it.url || '').trim();
+        if (url) window.open(url, '_blank', 'noopener');
+      }
+      function editTitleAndLink() {
+        titleEl.setAttribute('contenteditable', 'true');
+        linkRow.classList.add('expanded');
+        titleEl.focus();
+      }
+      titleEl.addEventListener('click', () => {
+        if (titleEl.isContentEditable) return;
+        if (hasUrl) openItemLink();
+        else editTitleAndLink();
+      });
+      titleEl.addEventListener('keydown', (e) => {
+        if (titleEl.isContentEditable) return;
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          if (hasUrl) openItemLink();
+          else editTitleAndLink();
+        }
+      });
+      bindEdit(titleEl, () => it, (o, v) => o.title = v);
+      titleEl.addEventListener('blur', () => {
+        titleEl.setAttribute('contenteditable', 'false');
+      });
       bindEdit(row.querySelector('.item-note'), () => it, (o, v) => o.note = v, { multiline: true });
       const noteShell = row.querySelector('.note-shell');
       const noteToggle = row.querySelector('.note-toggle');
@@ -1733,13 +1746,11 @@
         noteToggle.textContent = '▾';
         noteToggle.title = 'collapse note';
       });
-      const linkRow = row.querySelector('.item-row2');
-      const linkToggle = row.querySelector('.link-toggle');
-      linkToggle.addEventListener('click', () => {
-        linkRow.classList.toggle('expanded');
-        if (linkRow.classList.contains('expanded')) row.querySelector('.item-url').focus();
+      const editToggle = row.querySelector('.edit-toggle');
+      editToggle.addEventListener('click', () => {
+        editTitleAndLink();
       });
-      bindEdit(row.querySelector('.item-url'), () => it, (o, v) => o.url = v, { rerender: true });
+      bindEdit(urlEl, () => it, (o, v) => o.url = v, { rerender: true });
       row.querySelector('.row-delete').addEventListener('click', () => deleteItem(d.id, it.id));
 
       // drag handle — only the grip starts a drag, so text editing stays intact
