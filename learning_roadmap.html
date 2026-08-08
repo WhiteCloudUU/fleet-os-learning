@@ -480,7 +480,24 @@
   .item-grip:hover { color: var(--gray-500); }
   .item-grip:active { cursor: grabbing; }
   .item.dragging { opacity: 0.4; }
-  .item.drag-over, .divider.drag-over { background: rgba(217,119,87,0.08); border-radius: 6px; }
+  .drop-slot {
+    height: 30px;
+    border: 1px dashed rgba(217,119,87,0.38);
+    border-radius: 7px;
+    background: rgba(217,119,87,0.055);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--clay);
+    font-size: 13px;
+    line-height: 1;
+    margin: 3px 22px 3px 29px;
+    pointer-events: auto;
+  }
+  .drop-slot::before {
+    content: "＋";
+    opacity: 0.55;
+  }
 
   .item-main { min-width: 0; }
   .item-title {
@@ -1229,6 +1246,7 @@
   let pageIdx = 0;
   let weekIdx = 0; // index into date-desc-sorted weeklies; 0 = latest
   let dragInfo = null; // { cardId, iid } while dragging a reading
+  let dropSlot = null;
   let booted = false;
 
   function stripStatus(cards) {
@@ -1558,6 +1576,40 @@
     else d.items.splice(placeAfter ? ti + 1 : ti, 0, moved);
     save(); renderDeck();
   }
+  function clearDropSlot() {
+    if (dropSlot && dropSlot.parentNode) dropSlot.parentNode.removeChild(dropSlot);
+    dropSlot = null;
+    if (dragInfo) {
+      delete dragInfo.targetId;
+      delete dragInfo.placeAfter;
+    }
+  }
+  function showDropSlot(refEl, placeAfter, targetId) {
+    if (!dragInfo) return;
+    if (!dropSlot) {
+      dropSlot = document.createElement('div');
+      dropSlot.className = 'drop-slot';
+      dropSlot.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+      });
+      dropSlot.addEventListener('drop', (e) => {
+        e.preventDefault();
+        if (!dragInfo || !dragInfo.targetId) return;
+        const { cardId, iid, targetId, placeAfter } = dragInfo;
+        clearDropSlot();
+        reorderItem(cardId, iid, targetId, placeAfter);
+      });
+    }
+    dragInfo.targetId = targetId;
+    dragInfo.placeAfter = placeAfter;
+    const parent = refEl.parentNode;
+    const next = placeAfter ? refEl.nextSibling : refEl;
+    if (next === dropSlot) return;
+    if (dropSlot.parentNode !== parent || dropSlot.nextSibling !== next) {
+      parent.insertBefore(dropSlot, next);
+    }
+  }
   function deleteCard(cid) {
     if (!confirm('Delete this whole card?')) return;
     state.domains = state.domains.filter(x => x.id !== cid);
@@ -1660,13 +1712,13 @@
       dv.addEventListener('dragover', (e) => {
         if (!dragInfo || dragInfo.cardId !== d.id) return;
         e.preventDefault();
-        dv.classList.add('drag-over');
+        e.dataTransfer.dropEffect = 'move';
+        showDropSlot(dv, true, it.id);
       });
-      dv.addEventListener('dragleave', () => dv.classList.remove('drag-over'));
       dv.addEventListener('drop', (e) => {
         if (!dragInfo || dragInfo.cardId !== d.id) return;
         e.preventDefault();
-        dv.classList.remove('drag-over');
+        clearDropSlot();
         reorderItem(d.id, dragInfo.iid, it.id, true);
       });
       return dv;
@@ -1786,7 +1838,7 @@
       grip.addEventListener('dragend', () => {
         dragInfo = null;
         row.classList.remove('dragging');
-        document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+        clearDropSlot();
       });
       row.appendChild(grip);
 
@@ -1794,15 +1846,17 @@
       row.addEventListener('dragover', (e) => {
         if (!dragInfo || dragInfo.cardId !== d.id || dragInfo.iid === it.id) return;
         e.preventDefault();
-        row.classList.add('drag-over');
+        e.dataTransfer.dropEffect = 'move';
+        const rect = row.getBoundingClientRect();
+        const after = (e.clientY - rect.top) > rect.height / 2;
+        showDropSlot(row, after, it.id);
       });
-      row.addEventListener('dragleave', () => row.classList.remove('drag-over'));
       row.addEventListener('drop', (e) => {
         if (!dragInfo || dragInfo.cardId !== d.id) return;
         e.preventDefault();
-        row.classList.remove('drag-over');
         const rect = row.getBoundingClientRect();
         const after = (e.clientY - rect.top) > rect.height / 2;
+        clearDropSlot();
         reorderItem(d.id, dragInfo.iid, it.id, after);
       });
       return row;
