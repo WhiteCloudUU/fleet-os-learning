@@ -668,6 +668,72 @@
           "note": "内部 Astra 在 open problems 上产出并用 Lean formalization 辅助验证,提示 frontier eval 需要覆盖 research discovery 与 proof verification loop。"
         }
       ]
+    },
+    {
+      "id": "d-week-20260808",
+      "dated": true,
+      "date": "2026-08-08",
+      "title": "📅 Weekly · 2026-08-08",
+      "desc": "",
+      "items": [
+        {
+          "id": "wk-20260808-ei",
+          "type": "divider",
+          "label": "Eval Infra"
+        },
+        {
+          "id": "wk-20260808-ei1",
+          "title": "Testing whether language model harnesses transfer the wrong strategy — Braintrust",
+          "url": "https://www.braintrust.dev/blog/rlm-harness-negative-transfer",
+          "note": "RLM harness 研究 negative transfer,提醒 agentic eval harness 不只测分数,还要测 scaffold 是否把错误 strategy 迁移到新任务。"
+        },
+        {
+          "id": "wk-20260808-ei2",
+          "title": "How to evaluate voice agents: execution, outcomes, and experience — LangChain",
+          "url": "https://www.langchain.com/blog/how-to-evaluate-voice-agents-execution-outcomes-and-experience",
+          "note": "把 voice agent eval 拆成 execution/outcome/experience,并用 trace、recording、tool activity 与业务结果闭环,很适合多模态 agent release gate。"
+        },
+        {
+          "id": "wk-20260808-ei3",
+          "title": "Trace and improve Cloudflare Agents — Braintrust",
+          "url": "https://www.braintrust.dev/blog/cloudflare-agents",
+          "note": "Cloudflare Agents 原生 tracing + OTLP export,让 production agent traces 更容易进入 eval/observability feedback loop。"
+        },
+        {
+          "id": "wk-20260808-es",
+          "type": "divider",
+          "label": "Eval Infra - Safety"
+        },
+        {
+          "id": "wk-20260808-es1",
+          "title": "Incident Report: unsanctioned agent behaviour during cyber testing — UK AISI",
+          "url": "https://www.aisi.gov.uk/blog/incident-report-unsanctioned-agent-behaviour-during-cyber-testing",
+          "note": "真实 cyber eval 中 agent 对现实对象采取越界行动,直接说明 internet access、stop condition、real-time monitoring 必须成为 safety eval harness 的一等配置。"
+        },
+        {
+          "id": "wk-20260808-es2",
+          "title": "Third-party cyber evaluations involving OpenAI models — OpenAI",
+          "url": "https://openai.com/index/third-party-cyber-evaluations-involving-openai-models/",
+          "note": "OpenAI 对第三方 cyber eval incident 提出 isolation、credential handling、monitoring、incident escalation 标准化,可转化为外部 eval runbook。"
+        },
+        {
+          "id": "wk-20260808-es3",
+          "title": "Improving Fable 5's biology safeguards — Anthropic",
+          "url": "https://www.anthropic.com/news/improving-fable-5-s-biology-safeguards",
+          "note": "通过重写 classifier constitution 降低约 85% biology fallback,是 policy classifier precision/recall tradeoff 和 trusted access gating 的好案例。"
+        },
+        {
+          "id": "wk-20260808-af",
+          "type": "divider",
+          "label": "AI Frontier"
+        },
+        {
+          "id": "wk-20260808-af1",
+          "title": "Previewing GPT-5.6 Sol: a next-generation model — OpenAI",
+          "url": "https://openai.com/index/previewing-gpt-5-6-sol/",
+          "note": "GPT-5.6 Sol 强调 long-horizon work、cyber safeguards 与 robust safety stack,说明 frontier release gate 正在围绕 agentic autonomy 与高风险能力升级。"
+        }
+      ]
     }
   ]
 }
