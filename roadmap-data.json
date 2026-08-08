@@ -125,6 +125,12 @@
           "label": "Agentic Eval Harness"
         },
         {
+          "id": "eg-agentic-harness-anthropic-demystifying",
+          "title": "Demystifying evals for AI agents — Anthropic",
+          "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+          "note": "Anthropic 对 agent eval 的工程总览:task/trial/grader/transcript/outcome/harness/scaffold 的概念边界非常清楚,应该作为 agentic eval harness 基础读物。"
+        },
+        {
           "id": "eg-agentic-harness-1",
           "title": "Behavior specs, an open standard for supervising long-horizon agents — Braintrust",
           "url": "https://www.braintrust.dev/blog/behavior-specs",
