@@ -740,6 +740,60 @@
           "note": "GPT-5.6 Sol 强调 long-horizon work、cyber safeguards 与 robust safety stack,说明 frontier release gate 正在围绕 agentic autonomy 与高风险能力升级。"
         }
       ]
+    },
+    {
+      "id": "d-week-20260815",
+      "dated": true,
+      "date": "2026-08-15",
+      "title": "📅 Weekly · 2026-08-15",
+      "desc": "",
+      "items": [
+        {
+          "id": "wk-20260815-ei",
+          "type": "divider",
+          "label": "Eval Infra"
+        },
+        {
+          "id": "wk-20260815-ei1",
+          "title": "Compare Kimi K3 and DeepSeek V4 — Braintrust",
+          "url": "https://www.braintrust.dev/blog/kimi-k3-deepseek-v4",
+          "note": "用同一 dataset、judge、reasoning effort、latency/token 指标比较候选模型,是上线前 model swap eval gate 的产品化模板。"
+        },
+        {
+          "id": "wk-20260815-es",
+          "type": "divider",
+          "label": "Eval Infra - Safety"
+        },
+        {
+          "id": "wk-20260815-es1",
+          "title": "Patterns and problems in emerging multiagent systems — Anthropic",
+          "url": "https://www.anthropic.com/research/multiagent-systems",
+          "note": "用 swarm coordination、hidden-profile、turf-war 等环境测 multi-agent failure modes,给 agentic safety eval harness 增加系统级测试维度。"
+        },
+        {
+          "id": "wk-20260815-es2",
+          "title": "Expanding Daybreak as the Cyber Defense Window Narrows — OpenAI",
+          "url": "https://openai.com/index/expanding-daybreak-as-the-cyber-defense-window-narrows/",
+          "note": "给出 Advanced Cybersecurity Completion Rate、ExploitGym/ExploitBench 等 capability eval 与 Daybreak Red/Blue access control,适合参考 trusted-access release gate。"
+        },
+        {
+          "id": "wk-20260815-es3",
+          "title": "Putting frontier cyber models in more trusted hands — OpenAI",
+          "url": "https://openai.com/index/putting-frontier-cyber-models-in-more-trusted-hands/",
+          "note": "把 frontier cyber model 接入受治理的 partner workflow,强调 scope、logging、monitoring、human oversight,是 post-eval deployment control 的组织形态。"
+        },
+        {
+          "id": "wk-20260815-af",
+          "type": "divider",
+          "label": "AI Frontier"
+        },
+        {
+          "id": "wk-20260815-af1",
+          "title": "Introducing Gemini 3.7 Flash — Google DeepMind",
+          "url": "https://deepmind.google/blog/introducing-gemini-3-7-flash/",
+          "note": "新 Flash 模型主打 coding/agents 与更低成本,并更新 CBRN/cyber safeguards,说明 agent release gate 需要同时看能力、成本和安全配置。"
+        }
+      ]
     }
   ]
 }
