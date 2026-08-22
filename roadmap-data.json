@@ -794,6 +794,66 @@
           "note": "新 Flash 模型主打 coding/agents 与更低成本,并更新 CBRN/cyber safeguards,说明 agent release gate 需要同时看能力、成本和安全配置。"
         }
       ]
+    },
+    {
+      "id": "d-week-20260821",
+      "dated": true,
+      "date": "2026-08-21",
+      "title": "📅 Weekly · 2026-08-21",
+      "desc": "",
+      "items": [
+        {
+          "id": "wk-20260821-ei",
+          "type": "divider",
+          "label": "Eval Infra"
+        },
+        {
+          "id": "wk-20260821-ei1",
+          "title": "Where agent evals are going: Agent-as-a-Judge — Arize",
+          "url": "https://arize.com/blog/agent-as-a-judge-agentic-evaluation/",
+          "note": "把 judge 从 single-pass LLM 变成能 inspect traces/tool calls 的 agent,很贴 agentic eval harness 下一层能力:trajectory evidence + verdict。"
+        },
+        {
+          "id": "wk-20260821-ei2",
+          "title": "How we build evals for Deep Agents — LangChain",
+          "url": "https://www.langchain.com/blog/how-we-build-evals-for-deep-agents",
+          "note": "给出 Deep Agents 的 task suite、grader、trace review 与 regression loop,可直接参考为 agentic eval harness 的工程拆解。"
+        },
+        {
+          "id": "wk-20260821-ei3",
+          "title": "Agent Evaluation Readiness Checklist — LangChain",
+          "url": "https://www.langchain.com/blog/agent-evaluation-readiness-checklist",
+          "note": "把 agent eval 分成 run/trace/thread 层级,强调先人工 review production traces 再建 eval,适合指导从零搭 release-gate eval suite。"
+        },
+        {
+          "id": "wk-20260821-es",
+          "type": "divider",
+          "label": "Eval Infra - Safety"
+        },
+        {
+          "id": "wk-20260821-es1",
+          "title": "Pacing model development in an era of cyber-critical capabilities — OpenAI",
+          "url": "https://openai.com/index/pacing-model-development-cyber-capabilities/",
+          "note": "OpenAI 把 cyber-critical capability 与 pacing、research environment security、CoT monitoring 绑定,是高能力模型 safety gate 的强参考。"
+        },
+        {
+          "id": "wk-20260821-es2",
+          "title": "Offering Zero Data Retention for frontier models — OpenAI",
+          "url": "https://openai.com/index/offering-zero-data-retention-for-frontier-models/",
+          "note": "ZDR 场景仍保留 automated misuse detection 的 limited safety signals,很适合思考 privacy-preserving online monitoring/eval feedback loop。"
+        },
+        {
+          "id": "wk-20260821-af",
+          "type": "divider",
+          "label": "AI Frontier"
+        },
+        {
+          "id": "wk-20260821-af1",
+          "title": "GPT-5.6: Frontier intelligence that scales with your ambition — OpenAI",
+          "url": "https://openai.com/index/gpt-5-6/",
+          "note": "8/21 更新 Sol API/credit pricing 并保留 coding agent、cyber、tool-use 等 eval 表,说明 frontier capability/cost curve 会改变 release gate 的默认模型选择。"
+        }
+      ]
     }
   ]
 }
