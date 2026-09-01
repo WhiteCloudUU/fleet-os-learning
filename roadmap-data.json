@@ -854,6 +854,66 @@
           "note": "8/21 更新 Sol API/credit pricing 并保留 coding agent、cyber、tool-use 等 eval 表,说明 frontier capability/cost curve 会改变 release gate 的默认模型选择。"
         }
       ]
+    },
+    {
+      "id": "d-week-20260830",
+      "dated": true,
+      "date": "2026-08-30",
+      "title": "📅 Weekly · 2026-08-30",
+      "desc": "",
+      "items": [
+        {
+          "id": "wk-20260830-ei",
+          "type": "divider",
+          "label": "Eval Infra"
+        },
+        {
+          "id": "wk-20260830-ei1",
+          "title": "Sandboxed agent evals with Harbor — Braintrust",
+          "url": "https://www.braintrust.dev/blog/harbor-agent-evals",
+          "note": "Harbor 把 agent task、isolated Docker、verifier、trajectory trace 串到 Braintrust,是 agentic eval harness 从本地 job 到可比较 experiment 的好模板。"
+        },
+        {
+          "id": "wk-20260830-ei2",
+          "title": "Use Braintrust with your coding agent — Braintrust",
+          "url": "https://www.braintrust.dev/blog/braintrust-mcp",
+          "note": "MCP 让 coding agent 直接查询 traces、创建 evaluator、补 regression dataset、跑 eval,体现 eval workflow 正在进入 agent control loop。"
+        },
+        {
+          "id": "wk-20260830-ei3",
+          "title": "A skill is just an agent. So measure your changes. — Arize",
+          "url": "https://arize.com/blog/quantifying-skill-changes-arize-ax/",
+          "note": "把 skill/prompt 变更当作 agent 版本来做 golden dataset、sandboxed experiment、trace-level scoring,很适合 release-gate automation。"
+        },
+        {
+          "id": "wk-20260830-ei4",
+          "title": "Optimal stopping: spending evaluation compute where it counts — UK AISI",
+          "url": "https://www.aisi.gov.uk/blog/optimal-stopping-spending-evaluation-compute-where-it-counts",
+          "note": "optstop 用 sequential measurement 把 eval compute 投到 uncertainty 高的任务上,对长任务/agentic eval 的低延迟与成本控制很有价值。"
+        },
+        {
+          "id": "wk-20260830-es",
+          "type": "divider",
+          "label": "Eval Infra - Safety"
+        },
+        {
+          "id": "wk-20260830-es1",
+          "title": "Piloting the world's first double-blind AI evaluations — Google DeepMind",
+          "url": "https://deepmind.google/blog/piloting-the-worlds-first-double-blind-ai-evaluations/",
+          "note": "用 Confidential Computing 做 evaluator prompts 与 proprietary model 双向隔离,直接对应高敏 benchmark 的 contamination、防泄漏与第三方评测可信度。"
+        },
+        {
+          "id": "wk-20260830-es2",
+          "title": "Why better models don’t fix every agent failure: Lessons from OpenAI — Arize",
+          "url": "https://arize.com/blog/why-better-models-dont-fix-every-agent-failure/",
+          "note": "强调 agent failure 往往来自 context/tools/observability 而非模型能力,提醒 safety eval 要覆盖 process metrics 与 production traces。"
+        },
+        {
+          "id": "wk-20260830-af",
+          "type": "divider",
+          "label": "AI Frontier"
+        }
+      ]
     }
   ]
 }
