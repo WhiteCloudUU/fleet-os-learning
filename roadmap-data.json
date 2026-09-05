@@ -914,6 +914,72 @@
           "label": "AI Frontier"
         }
       ]
+    },
+    {
+      "id": "d-week-20260905",
+      "dated": true,
+      "date": "2026-09-05",
+      "title": "📅 Weekly · 2026-09-05",
+      "desc": "",
+      "items": [
+        {
+          "id": "wk-20260905-ei",
+          "type": "divider",
+          "label": "Eval Infra"
+        },
+        {
+          "id": "wk-20260905-ei1",
+          "title": "One connected system for agent observability — Braintrust",
+          "url": "https://www.braintrust.dev/blog/active-observability-loop-patterns-debugger",
+          "note": "Patterns、Debugger、Loop 把 production traces→issues→datasets/evaluators→monitoring 串成闭环,很贴 agentic eval harness 的长期形态。"
+        },
+        {
+          "id": "wk-20260905-ei2",
+          "title": "Arize Phoenix has a built-in MCP server that lets your agents query traces with SQL — Arize",
+          "url": "https://arize.com/blog/phoenix-mcp-sql-code-mode/",
+          "note": "让 coding agent 用 read-only SQL/code mode 查询 traces,比 retrieval-only 低约 17x cost,适合低延迟 trace investigation→eval dataset loop。"
+        },
+        {
+          "id": "wk-20260905-es",
+          "type": "divider",
+          "label": "Eval Infra - Safety"
+        },
+        {
+          "id": "wk-20260905-es1",
+          "title": "Path to Astra: critical capabilities and frontier safeguards — OpenAI",
+          "url": "https://openai.com/index/path-to-astra/",
+          "note": "围绕 cyber critical capability、safeguards、alignment/monitoring 给出 release 前后控制面,是 safety gate 和 deployment control 的强参考。"
+        },
+        {
+          "id": "wk-20260905-es2",
+          "title": "Safety overview: GPT-6 Astra — OpenAI",
+          "url": "https://openai.com/index/safety-overview-gpt-6-astra/",
+          "note": "Astra 首次达到 Preparedness Framework 的 Critical cyber threshold,并报告新 alignment eval suite,直接影响高风险模型 release-gate 标准。"
+        },
+        {
+          "id": "wk-20260905-af",
+          "type": "divider",
+          "label": "AI Frontier"
+        },
+        {
+          "id": "wk-20260905-af1",
+          "title": "GPT-6 Astra: A new generation of intelligence — OpenAI",
+          "url": "https://openai.com/index/gpt-6-astra/",
+          "note": "Astra 在 computer use、software engineering、cyber、science 上刷新 frontier,说明 agentic/autonomous task eval 需要更强 sandbox 与 scope controls。"
+        },
+        {
+          "id": "wk-20260905-af2",
+          "title": "Introducing Claude Fable 5.1 and Claude Mythos 5.1 — Anthropic",
+          "url": "https://www.anthropic.com/claude-fable-and-mythos-5-1",
+          "note": "Fable/Mythos 5.1 把 effort level、cost、safeguard intervention 写进 benchmark 解读,很适合比较 production model selection 与 safety false-positive tradeoff。"
+        },
+        {
+          "id": "wk-20260905-af3",
+          "title": "Introducing Gemini 3.8 Flash and 3.8 Flash Cyber — Google",
+          "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/3-8-flash-and-3-8-flash-cyber/",
+          "note": "Gemini 3.8 Flash Cyber 在 CyberGym/patching/cost 曲线上前进,显示 cyber-specialized frontier model 正在变成单独 release/eval 轨道。"
+        }
+      ]
     }
   ]
 }
