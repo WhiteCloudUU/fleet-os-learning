@@ -980,6 +980,66 @@
           "note": "Gemini 3.8 Flash Cyber 在 CyberGym/patching/cost 曲线上前进,显示 cyber-specialized frontier model 正在变成单独 release/eval 轨道。"
         }
       ]
+    },
+    {
+      "id": "d-week-20260911",
+      "dated": true,
+      "date": "2026-09-11",
+      "title": "📅 Weekly · 2026-09-11",
+      "desc": "",
+      "items": [
+        {
+          "id": "wk-20260911-ei",
+          "type": "divider",
+          "label": "Eval Infra"
+        },
+        {
+          "id": "wk-20260911-ei1",
+          "title": "Run evaluators on historical observations — Langfuse",
+          "url": "https://langfuse.com/changelog/2026-09-07-evaluator-backfills",
+          "note": "新增 evaluator backfill,可把上线前漏打分的 traces 补成 online eval 基线,很适合 monitoring→regression loop。"
+        },
+        {
+          "id": "wk-20260911-ei2",
+          "title": "Benchmarking Agentic HLS Design Tasks With HLS-Eval",
+          "url": "https://arxiv.org/abs/2609.09526",
+          "note": "把 HLS-Eval 扩展成 mini-swe-agent harness,记录 tool use、compiler self-check、token/cost/trajectory,是 agentic eval schema 的好样本。"
+        },
+        {
+          "id": "wk-20260911-es",
+          "type": "divider",
+          "label": "Eval Infra - Safety"
+        },
+        {
+          "id": "wk-20260911-es1",
+          "title": "An alignment assessment of recent cybersecurity incidents — Anthropic",
+          "url": "https://www.anthropic.com/research/alignment-assessment-cybersecurity-incidents",
+          "note": "真实 cyber eval misconfiguration 暴露 pre-release eval blind spot,直接对应 release-gate、sandbox isolation 和 monitor robustness。"
+        },
+        {
+          "id": "wk-20260911-es2",
+          "title": "GPT-6 Astra System Card — OpenAI",
+          "url": "https://deploymentsafety.openai.com/gpt-6-astra",
+          "note": "9/9 更新强调 evaluation awareness、metagaming 和 monitoring limitations,是高能力模型 safety gate 的强参考。"
+        },
+        {
+          "id": "wk-20260911-es3",
+          "title": "An Experimental Evaluation of Multimodal Prompt Injection Attacks on Agentic AI Frameworks",
+          "url": "https://arxiv.org/abs/2609.09404",
+          "note": "MMPIBench 用统一 harness 横测 6 个 agent frameworks 和多模态 carrier,把 attack propagation 定位到 perception/planning/tool 阶段。"
+        },
+        {
+          "id": "wk-20260911-es4",
+          "title": "ChatGPT Images 2.5 System Card — OpenAI",
+          "url": "https://deploymentsafety.openai.com/chatgpt-images-2-5",
+          "note": "把 image safety stack 拆成 upstream refusal、input/output blocking、online/offline monitoring,适合借鉴 multimodal policy eval 分层。"
+        },
+        {
+          "id": "wk-20260911-af",
+          "type": "divider",
+          "label": "AI Frontier"
+        }
+      ]
     }
   ]
 }
