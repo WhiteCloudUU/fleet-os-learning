@@ -1040,6 +1040,72 @@
           "label": "AI Frontier"
         }
       ]
+    },
+    {
+      "id": "d-week-20260919",
+      "dated": true,
+      "date": "2026-09-19",
+      "title": "📅 Weekly · 2026-09-19",
+      "desc": "",
+      "items": [
+        {
+          "id": "wk-20260919-ei",
+          "type": "divider",
+          "label": "Eval Infra"
+        },
+        {
+          "id": "wk-20260919-ei1",
+          "title": "Skill-based Agentic Evaluation for Real-time Data Science Tasks",
+          "url": "https://arxiv.org/abs/2609.16487",
+          "note": "提出 ground-truth-as-code,让 live data agent eval 不依赖静态答案,适合生产数据/非稳定数据源的 reusable eval harness。"
+        },
+        {
+          "id": "wk-20260919-ei2",
+          "title": "Quantifying Overclaiming Propensity in Frontier LLM Agents",
+          "url": "https://arxiv.org/abs/2609.20812",
+          "note": "OverclaimBench 把 agent final report 和实际文件覆盖率对齐,可直接转成 coding/review agent 的 completion honesty eval。"
+        },
+        {
+          "id": "wk-20260919-es",
+          "type": "divider",
+          "label": "Eval Infra - Safety"
+        },
+        {
+          "id": "wk-20260919-es1",
+          "title": "LLM Agent Capabilities Should Follow Task Intent and Context Source",
+          "url": "https://arxiv.org/abs/2609.14631",
+          "note": "IntentCap 用 short-lived capability lease + deterministic checker 做 tool/action gating,很适合 release-gate 里的 least-privilege safety policy。"
+        },
+        {
+          "id": "wk-20260919-es2",
+          "title": "The Verifiable Action Card: Trustworthy Human-in-the-Loop Control for Secure Autonomous Agents",
+          "url": "https://arxiv.org/abs/2609.18411",
+          "note": "VAC 从真实 pending action 重建 approval card,把 prompt-influenced HITL 改成可验证 action binding,是 agent browser safety gate 的强模式。"
+        },
+        {
+          "id": "wk-20260919-es3",
+          "title": "Collective Loss of Control in LLM Agent Systems: An Epidemic Account of Mutation, Contagion, and Recovery",
+          "url": "https://arxiv.org/abs/2609.18460",
+          "note": "RogueHandoff-20 量化 unsafe trajectory 在多 agent 系统里的传播,提醒 eval sandbox 需要审计跨 run communication 和 recovery。"
+        },
+        {
+          "id": "wk-20260919-af",
+          "type": "divider",
+          "label": "AI Frontier"
+        },
+        {
+          "id": "wk-20260919-af1",
+          "title": "How Claude is uplifting biomolecular modeling — Anthropic",
+          "url": "https://www.anthropic.com/research/claude-uplifts-biomolecular-modeling",
+          "note": "Claude 用 agentic optimization 把 30+ 生物模型平均提速约 4x,说明 frontier agents 正在从任务执行走向科学工具链改造。"
+        },
+        {
+          "id": "wk-20260919-af2",
+          "title": "Introducing Astra for Law — OpenAI",
+          "url": "https://openai.com/index/astra-for-law/",
+          "note": "Astra 垂直到 legal workflow,把 frontier model、专业检索和业务工具绑定,可观察高风险专业场景如何做 domain-specific controls。"
+        }
+      ]
     }
   ]
 }
