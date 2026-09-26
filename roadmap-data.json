@@ -1106,6 +1106,72 @@
           "note": "Astra 垂直到 legal workflow,把 frontier model、专业检索和业务工具绑定,可观察高风险专业场景如何做 domain-specific controls。"
         }
       ]
+    },
+    {
+      "id": "d-week-20260926",
+      "dated": true,
+      "date": "2026-09-26",
+      "title": "📅 Weekly · 2026-09-26",
+      "desc": "",
+      "items": [
+        {
+          "id": "wk-20260926-ei",
+          "type": "divider",
+          "label": "Eval Infra"
+        },
+        {
+          "id": "wk-20260926-ei1",
+          "title": "Harness-Zero: Harness Distillation via Agent-as-Harness",
+          "url": "https://arxiv.org/abs/2609.24974",
+          "note": "把 specialized harness 的行为蒸馏进模型权重,提示长期 eval infra 需要记录 harness-induced behavior,不只看最终 task success。"
+        },
+        {
+          "id": "wk-20260926-ei2",
+          "title": "When Should Dependency Updates Invoke Repair Agents? A Lightweight Routing Study",
+          "url": "https://arxiv.org/abs/2609.25911",
+          "note": "DepFixRouter 用轻量 pre-agent routing 降低 66%+ agent 调用/token,很适合把 expensive eval/repair agent 放进低延迟 pipeline。"
+        },
+        {
+          "id": "wk-20260926-es",
+          "type": "divider",
+          "label": "Eval Infra - Safety"
+        },
+        {
+          "id": "wk-20260926-es1",
+          "title": "PASTABench: Proactive Assessment of Sequential Trajectories for Agent Safety",
+          "url": "https://arxiv.org/abs/2609.28197",
+          "note": "把 agent safety 从 post-hoc trajectory eval 推到 stepwise intervention timing,直接对应在线 monitor 和 safety gate 触发点。"
+        },
+        {
+          "id": "wk-20260926-es2",
+          "title": "DUMA-Bench: A Dual-Control Multi-Agent Benchmark for Evaluating LLM Agent Security",
+          "url": "https://arxiv.org/abs/2609.24662",
+          "note": "dual-control setting 让 attack success 从 26.9% 到 41.1%,说明安全 eval 必须覆盖 user/environment 共同改写状态的真实交互。"
+        },
+        {
+          "id": "wk-20260926-es3",
+          "title": "Advancing Private AI Compute with secure, server-side memory — Google DeepMind",
+          "url": "https://deepmind.google/blog/advancing-private-ai-compute-with-secure-server-side-memory/",
+          "note": "Private AI Compute 开始支持 secure server-side memory,对 PrivateAI 场景的 privacy boundary、data retention eval 和 policy scoring 很相关。"
+        },
+        {
+          "id": "wk-20260926-af",
+          "type": "divider",
+          "label": "AI Frontier"
+        },
+        {
+          "id": "wk-20260926-af1",
+          "title": "Claude Opus 5.5 — Anthropic",
+          "url": "https://www.anthropic.com/claude-opus-5-5",
+          "note": "Opus 5.5 在 agentic coding/computer use 降成本并加强 behavioral audit、prompt injection 防护,是 frontier model selection 的重要新基线。"
+        },
+        {
+          "id": "wk-20260926-af2",
+          "title": "Released GPT-6 Sol and GPT-6 Luna — OpenAI API Changelog",
+          "url": "https://developers.openai.com/api/docs/changelog",
+          "note": "Sol/Luna 把 GPT-6 能力下放到更便宜的大规模调用档,会改变 eval budget、routing 和 release-gate 覆盖率的取舍。"
+        }
+      ]
     }
   ]
 }
