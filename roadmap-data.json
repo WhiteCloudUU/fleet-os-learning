@@ -1172,6 +1172,66 @@
           "note": "Sol/Luna 把 GPT-6 能力下放到更便宜的大规模调用档,会改变 eval budget、routing 和 release-gate 覆盖率的取舍。"
         }
       ]
+    },
+    {
+      "id": "d-week-20261003",
+      "dated": true,
+      "date": "2026-10-03",
+      "title": "📅 Weekly · 2026-10-03",
+      "desc": "",
+      "items": [
+        {
+          "id": "wk-20261003-ei",
+          "type": "divider",
+          "label": "Eval Infra"
+        },
+        {
+          "id": "wk-20261003-ei1",
+          "title": "How to Build a Model Router in the Harness — LangChain",
+          "url": "https://www.langchain.com/blog/how-to-build-a-model-router-in-the-harness",
+          "note": "把 routing 放进 harness 而非通用 gateway,用 traces、A/B 和 success metric 验证 64% cost drop,很贴低延迟 eval/release pipeline。"
+        },
+        {
+          "id": "wk-20261003-ei2",
+          "title": "Are agent harnesses dying? What harness distillation changes — Arize",
+          "url": "https://arize.com/blog/agent-harness-distillation/",
+          "note": "把 harness 版本、model 版本和 intervention log 作为可评估对象,提醒 agentic eval harness 需要跟模型升级一起持续删减/重测。"
+        },
+        {
+          "id": "wk-20261003-es",
+          "type": "divider",
+          "label": "Eval Infra - Safety"
+        },
+        {
+          "id": "wk-20261003-es1",
+          "title": "Addendum to GPT-6 Astra System Card: GPT-6.1 Sol — OpenAI",
+          "url": "https://deploymentsafety.openai.com/gpt-6-1-sol",
+          "note": "新增 GPT-6.1 Sol 的 safe completions、jailbreak、agentic/workplace、deployment simulation 和 monitorability eval,可直接参考 release-gate 结构。"
+        },
+        {
+          "id": "wk-20261003-es2",
+          "title": "AgentBoundary: Counterfactual Evaluation of Safety in Tool-Using LLM Agents",
+          "url": "https://arxiv.org/abs/2609.33658",
+          "note": "用四路 counterfactual 区分 over-refusal、unsafe compliance 和 task failure,很适合 permission-sensitive tool-use safety eval。"
+        },
+        {
+          "id": "wk-20261003-es3",
+          "title": "Fairwind Program — Google DeepMind",
+          "url": "https://deepmind.google/fairwind-program/",
+          "note": "Gemini 4 Argon 先给受信 cyber defenders,配套 restricted dual-use、managed access、ZDR 和 partner due diligence,是高风险能力分阶段发布样本。"
+        },
+        {
+          "id": "wk-20261003-af",
+          "type": "divider",
+          "label": "AI Frontier"
+        },
+        {
+          "id": "wk-20261003-af1",
+          "title": "Gemini 4 Argon: our next era of frontier intelligence — Google DeepMind",
+          "url": "https://deepmind.google/models/gemini/",
+          "note": "Argon 面向 coding、enterprise knowledge work 和 cyber defense,并公开 prompt injection、misalignment monitoring、sandbox hardening 等 frontier safeguards。"
+        }
+      ]
     }
   ]
 }
