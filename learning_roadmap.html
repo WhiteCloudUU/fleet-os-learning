@@ -1248,6 +1248,10 @@
   let dragInfo = null; // { cardId, iid } while dragging a reading
   let dropSlot = null;
   let booted = false;
+  let autoSaveTimer = null;
+  let autoSaveInFlight = false;
+  let autoSaveQueued = false;
+  const AUTO_SAVE_DELAY = 2000;
 
   function stripStatus(cards) {
     (cards || []).forEach((card) => {
@@ -1329,7 +1333,27 @@
     localStorage.setItem(KEY, JSON.stringify(state));
     localStorage.setItem(DIRTY_KEY, '1');
     setDirty(true);
-    if (booted) setStatus('Unsaved local changes', true);
+    if (booted) {
+      setStatus('Unsaved local changes', true);
+      scheduleAutoSave();
+    }
+  }
+
+  function scheduleAutoSave() {
+    if (!booted) return;
+    clearTimeout(autoSaveTimer);
+    autoSaveTimer = null;
+    if (!token()) {
+      setStatus('Unsaved local changes · token needed for auto-save', true);
+      return;
+    }
+    if (autoSaveInFlight) {
+      autoSaveQueued = true;
+      setStatus('Auto-save queued…', true);
+      return;
+    }
+    setStatus('Auto-save pending…', true);
+    autoSaveTimer = setTimeout(() => saveToGithub({ auto: true }), AUTO_SAVE_DELAY);
   }
 
   function token() {
@@ -1419,8 +1443,20 @@
     return new Error(action + ' failed: HTTP ' + res.status + detail);
   }
 
-  async function saveToGithub() {
-    setStatus('Saving to GitHub…');
+  async function saveToGithub(opts) {
+    opts = opts || {};
+    clearTimeout(autoSaveTimer);
+    autoSaveTimer = null;
+    if (autoSaveInFlight) {
+      autoSaveQueued = true;
+      setStatus(opts.auto ? 'Auto-save queued…' : 'Save queued…', true);
+      return;
+    }
+    if (opts.auto && !localStorage.getItem(DIRTY_KEY)) return;
+    autoSaveInFlight = true;
+    const snapshot = clone(state);
+    const snapshotJSON = JSON.stringify(snapshot);
+    setStatus(opts.auto ? 'Auto-saving to GitHub…' : 'Saving to GitHub…');
     try {
       const get = await githubRequest(GITHUB_API_URL + '?ref=' + encodeURIComponent(GITHUB_BRANCH));
       if (!get.ok) throw await githubHttpError(get, 'save read');
@@ -1429,7 +1465,7 @@
         message: 'Update roadmap data',
         branch: GITHUB_BRANCH,
         sha: meta.sha,
-        content: toBase64(JSON.stringify(state, null, 2) + '\n')
+        content: toBase64(JSON.stringify(snapshot, null, 2) + '\n')
       };
       const put = await githubRequest(GITHUB_API_URL, {
         method: 'PUT',
@@ -1438,11 +1474,24 @@
       });
       if (!put.ok) throw await githubHttpError(put, 'save write');
       localStorage.setItem(KEY, JSON.stringify(state));
-      localStorage.removeItem(DIRTY_KEY);
-      setDirty(false);
-      setStatus('Saved to GitHub');
+      if (JSON.stringify(state) === snapshotJSON) {
+        localStorage.removeItem(DIRTY_KEY);
+        setDirty(false);
+        setStatus(opts.auto ? 'Auto-saved to GitHub' : 'Saved to GitHub');
+      } else {
+        localStorage.setItem(DIRTY_KEY, '1');
+        setDirty(true);
+        autoSaveQueued = true;
+        setStatus('Auto-save queued…', true);
+      }
     } catch (e) {
-      setStatus(e.message, true);
+      setStatus((opts.auto ? 'Auto-save failed: ' : '') + e.message, true);
+    } finally {
+      autoSaveInFlight = false;
+      if (autoSaveQueued) {
+        autoSaveQueued = false;
+        scheduleAutoSave();
+      }
     }
   }
   function uid() { return 'x' + Math.random().toString(36).slice(2, 9); }
