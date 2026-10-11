@@ -1492,32 +1492,18 @@
     const snapshotJSON = JSON.stringify(snapshot);
     setStatus(opts.auto ? 'Auto-saving to GitHub…' : 'Saving to GitHub…');
     try {
-      const get = await githubRequest(GITHUB_API_URL + '?ref=' + encodeURIComponent(GITHUB_BRANCH));
-      if (!get.ok) throw await githubHttpError(get, 'save read');
-      const meta = await get.json();
-      let remoteData = normalizeData(JSON.parse(fromBase64(meta.content)));
-      let merged = mergeForGithubSave(remoteData, snapshot);
-      let body = {
-        message: 'Update roadmap data',
-        branch: GITHUB_BRANCH,
-        sha: meta.sha,
-        content: toBase64(JSON.stringify(merged, null, 2) + '\n')
-      };
-      let put = await githubRequest(GITHUB_API_URL, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      });
-      if (!put.ok && put.status === 409) {
-        const retryGet = await githubRequest(GITHUB_API_URL + '?ref=' + encodeURIComponent(GITHUB_BRANCH));
-        if (!retryGet.ok) throw await githubHttpError(retryGet, 'save retry read');
-        const retryMeta = await retryGet.json();
-        remoteData = normalizeData(JSON.parse(fromBase64(retryMeta.content)));
+      let merged = null;
+      let put = null;
+      for (let attempt = 0; attempt < 5; attempt++) {
+        const get = await githubRequest(GITHUB_API_URL + '?ref=' + encodeURIComponent(GITHUB_BRANCH));
+        if (!get.ok) throw await githubHttpError(get, attempt ? 'save retry read' : 'save read');
+        const meta = await get.json();
+        const remoteData = normalizeData(JSON.parse(fromBase64(meta.content)));
         merged = mergeForGithubSave(remoteData, snapshot);
-        body = {
+        const body = {
           message: 'Update roadmap data',
           branch: GITHUB_BRANCH,
-          sha: retryMeta.sha,
+          sha: meta.sha,
           content: toBase64(JSON.stringify(merged, null, 2) + '\n')
         };
         put = await githubRequest(GITHUB_API_URL, {
@@ -1525,6 +1511,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body)
         });
+        if (put.ok || put.status !== 409) break;
       }
       if (!put.ok) throw await githubHttpError(put, 'save write');
       if (JSON.stringify(state) === snapshotJSON) {
