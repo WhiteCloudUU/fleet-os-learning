@@ -1207,8 +1207,6 @@
 (function () {
   const KEY = 'fleet-os.learning-roadmap.v6';
   const DIRTY_KEY = KEY + '.dirty';
-  const SHA_KEY = KEY + '.remote-sha';
-  const SYNCED_KEY = KEY + '.synced-json';
   const TOKEN_KEY = KEY + '.github-token';
   const DATA_PATH = 'roadmap-data.json';
   const RAW_DATA_URL = 'https://raw.githubusercontent.com/WhiteCloudUU/fleet-os-learning/main/roadmap-data.json';
@@ -1249,7 +1247,6 @@
   let autoSaveTimer = null;
   let autoSaveInFlight = false;
   let autoSaveQueued = false;
-  let remoteDataSha = localStorage.getItem(SHA_KEY) || '';
   const AUTO_SAVE_DELAY = 2000;
 
   function stripStatus(cards) {
@@ -1274,18 +1271,6 @@
 
   function clone(obj) {
     return JSON.parse(JSON.stringify(obj));
-  }
-
-  function dataJSON(data) {
-    return JSON.stringify(normalizeData(clone(data)));
-  }
-
-  function remoteHasMissingWeekly(remoteData, localData) {
-    const localIds = new Set((localData.weeklies || []).map((w) => w && (w.id || w.date)).filter(Boolean));
-    return (remoteData.weeklies || []).some((w) => {
-      const key = w && (w.id || w.date);
-      return key && !localIds.has(key);
-    });
   }
 
   function loadLocalDraft() {
@@ -1326,13 +1311,7 @@
       } else {
         const loaded = await loadViaGithubApi();
         state = normalizeData(loaded.data);
-        rememberRemoteSha(loaded.sha);
       }
-      try {
-        const meta = await fetchGithubMeta();
-        rememberRemoteSha(meta.sha);
-      } catch (e) {}
-      rememberSyncedState(state);
       if (!opts.silent) state.updated = 'Last updated · ' + todayYMD();
       localStorage.setItem(KEY, JSON.stringify(state));
       localStorage.removeItem(DIRTY_KEY);
@@ -1376,16 +1355,6 @@
 
   function token() {
     return localStorage.getItem(TOKEN_KEY) || '';
-  }
-
-  function rememberRemoteSha(sha) {
-    if (!sha) return;
-    remoteDataSha = sha;
-    localStorage.setItem(SHA_KEY, sha);
-  }
-
-  function rememberSyncedState(data) {
-    localStorage.setItem(SYNCED_KEY, dataJSON(data));
   }
 
   function showTokenPanel() {
@@ -1462,6 +1431,36 @@
     return { data: JSON.parse(fromBase64(meta.content)), sha: meta.sha };
   }
 
+  function cardKey(card) {
+    return card && (card.id || card.date || card.title);
+  }
+
+  function mergeForGithubSave(remoteData, localData) {
+    const remote = normalizeData(clone(remoteData));
+    const local = normalizeData(clone(localData));
+    const localWeeklies = new Map((local.weeklies || []).map((w) => [cardKey(w), w]).filter((pair) => pair[0]));
+    const used = new Set();
+    const mergedWeeklies = (remote.weeklies || []).map((w) => {
+      const key = cardKey(w);
+      if (key && localWeeklies.has(key)) {
+        used.add(key);
+        return localWeeklies.get(key);
+      }
+      return w;
+    });
+    (local.weeklies || []).forEach((w) => {
+      const key = cardKey(w);
+      if (!key || !used.has(key)) mergedWeeklies.push(w);
+    });
+    return normalizeData(Object.assign({}, remote, {
+      updated: local.updated,
+      refsOpen: local.refsOpen,
+      references: local.references || [],
+      domains: local.domains || [],
+      weeklies: mergedWeeklies
+    }));
+  }
+
   async function githubHttpError(res, action) {
     let detail = '';
     try {
@@ -1496,57 +1495,48 @@
       const get = await githubRequest(GITHUB_API_URL + '?ref=' + encodeURIComponent(GITHUB_BRANCH));
       if (!get.ok) throw await githubHttpError(get, 'save read');
       const meta = await get.json();
-      const syncedJSON = localStorage.getItem(SYNCED_KEY);
-      if (remoteDataSha && meta.sha && meta.sha !== remoteDataSha) {
-        const remoteData = normalizeData(JSON.parse(fromBase64(meta.content)));
-        const remoteJSON = dataJSON(remoteData);
-        if (remoteJSON === snapshotJSON) {
-          rememberRemoteSha(meta.sha);
-          rememberSyncedState(snapshot);
-          localStorage.setItem(KEY, JSON.stringify(state));
-          localStorage.removeItem(DIRTY_KEY);
-          setDirty(false);
-          setStatus(opts.auto ? 'Auto-saved to GitHub' : 'Saved to GitHub');
-          return;
-        }
-        if (remoteJSON === syncedJSON) {
-          rememberRemoteSha(meta.sha);
-        } else if (!syncedJSON && !remoteHasMissingWeekly(remoteData, snapshot)) {
-          rememberRemoteSha(meta.sha);
-          rememberSyncedState(remoteData);
-        } else {
-          localStorage.setItem(DIRTY_KEY, '1');
-          setDirty(true);
-          throw new Error('Remote changed · click ↻ before editing more');
-        }
-      }
-      const body = {
+      let remoteData = normalizeData(JSON.parse(fromBase64(meta.content)));
+      let merged = mergeForGithubSave(remoteData, snapshot);
+      let body = {
         message: 'Update roadmap data',
         branch: GITHUB_BRANCH,
         sha: meta.sha,
-        content: toBase64(JSON.stringify(snapshot, null, 2) + '\n')
+        content: toBase64(JSON.stringify(merged, null, 2) + '\n')
       };
-      const put = await githubRequest(GITHUB_API_URL, {
+      let put = await githubRequest(GITHUB_API_URL, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
       });
-      if (!put.ok) throw await githubHttpError(put, 'save write');
-      const saved = await put.json();
-      const savedSha = saved && saved.content && saved.content.sha;
-      rememberRemoteSha(savedSha);
-      if (!savedSha) {
-        try {
-          const fresh = await fetchGithubMeta();
-          rememberRemoteSha(fresh.sha);
-        } catch (e) {}
+      if (!put.ok && put.status === 409) {
+        const retryGet = await githubRequest(GITHUB_API_URL + '?ref=' + encodeURIComponent(GITHUB_BRANCH));
+        if (!retryGet.ok) throw await githubHttpError(retryGet, 'save retry read');
+        const retryMeta = await retryGet.json();
+        remoteData = normalizeData(JSON.parse(fromBase64(retryMeta.content)));
+        merged = mergeForGithubSave(remoteData, snapshot);
+        body = {
+          message: 'Update roadmap data',
+          branch: GITHUB_BRANCH,
+          sha: retryMeta.sha,
+          content: toBase64(JSON.stringify(merged, null, 2) + '\n')
+        };
+        put = await githubRequest(GITHUB_API_URL, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
       }
-      rememberSyncedState(snapshot);
-      localStorage.setItem(KEY, JSON.stringify(state));
+      if (!put.ok) throw await githubHttpError(put, 'save write');
       if (JSON.stringify(state) === snapshotJSON) {
+        state = merged;
+        localStorage.setItem(KEY, JSON.stringify(state));
         localStorage.removeItem(DIRTY_KEY);
         setDirty(false);
         setStatus(opts.auto ? 'Auto-saved to GitHub' : 'Saved to GitHub');
+        if (JSON.stringify(merged) !== snapshotJSON) {
+          $updated.textContent = state.updated || '';
+          renderRefs(); renderDeck();
+        }
       } else {
         localStorage.setItem(DIRTY_KEY, '1');
         setDirty(true);
