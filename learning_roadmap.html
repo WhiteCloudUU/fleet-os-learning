@@ -1207,6 +1207,7 @@
 (function () {
   const KEY = 'fleet-os.learning-roadmap.v6';
   const DIRTY_KEY = KEY + '.dirty';
+  const SHA_KEY = KEY + '.remote-sha';
   const TOKEN_KEY = KEY + '.github-token';
   const DATA_PATH = 'roadmap-data.json';
   const RAW_DATA_URL = 'https://raw.githubusercontent.com/WhiteCloudUU/fleet-os-learning/main/roadmap-data.json';
@@ -1247,6 +1248,7 @@
   let autoSaveTimer = null;
   let autoSaveInFlight = false;
   let autoSaveQueued = false;
+  let remoteDataSha = localStorage.getItem(SHA_KEY) || '';
   const AUTO_SAVE_DELAY = 2000;
 
   function stripStatus(cards) {
@@ -1309,8 +1311,14 @@
       if (res.ok) {
         state = normalizeData(await res.json());
       } else {
-        state = normalizeData(await loadViaGithubApi());
+        const loaded = await loadViaGithubApi();
+        state = normalizeData(loaded.data);
+        rememberRemoteSha(loaded.sha);
       }
+      try {
+        const meta = await fetchGithubMeta();
+        rememberRemoteSha(meta.sha);
+      } catch (e) {}
       if (!opts.silent) state.updated = 'Last updated · ' + todayYMD();
       localStorage.setItem(KEY, JSON.stringify(state));
       localStorage.removeItem(DIRTY_KEY);
@@ -1354,6 +1362,12 @@
 
   function token() {
     return localStorage.getItem(TOKEN_KEY) || '';
+  }
+
+  function rememberRemoteSha(sha) {
+    if (!sha) return;
+    remoteDataSha = sha;
+    localStorage.setItem(SHA_KEY, sha);
   }
 
   function showTokenPanel() {
@@ -1414,13 +1428,20 @@
     return fetch(url, Object.assign({}, opts, { headers }));
   }
 
+  async function fetchGithubMeta() {
+    const headers = {
+      'Accept': 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28'
+    };
+    if (token()) headers.Authorization = 'Bearer ' + token();
+    const res = await fetch(GITHUB_API_URL + '?ref=' + encodeURIComponent(GITHUB_BRANCH), { headers, cache: 'no-store' });
+    if (!res.ok) throw await githubHttpError(res, 'load');
+    return res.json();
+  }
+
   async function loadViaGithubApi() {
-    const res = await githubRequest(GITHUB_API_URL + '?ref=' + encodeURIComponent(GITHUB_BRANCH));
-    if (!res.ok) {
-      throw await githubHttpError(res, 'load');
-    }
-    const meta = await res.json();
-    return JSON.parse(fromBase64(meta.content));
+    const meta = await fetchGithubMeta();
+    return { data: JSON.parse(fromBase64(meta.content)), sha: meta.sha };
   }
 
   async function githubHttpError(res, action) {
@@ -1457,6 +1478,11 @@
       const get = await githubRequest(GITHUB_API_URL + '?ref=' + encodeURIComponent(GITHUB_BRANCH));
       if (!get.ok) throw await githubHttpError(get, 'save read');
       const meta = await get.json();
+      if (remoteDataSha && meta.sha && meta.sha !== remoteDataSha) {
+        localStorage.setItem(DIRTY_KEY, '1');
+        setDirty(true);
+        throw new Error('Remote changed · click ↻ before editing more');
+      }
       const body = {
         message: 'Update roadmap data',
         branch: GITHUB_BRANCH,
@@ -1469,6 +1495,8 @@
         body: JSON.stringify(body)
       });
       if (!put.ok) throw await githubHttpError(put, 'save write');
+      const saved = await put.json();
+      rememberRemoteSha(saved && saved.content && saved.content.sha);
       localStorage.setItem(KEY, JSON.stringify(state));
       if (JSON.stringify(state) === snapshotJSON) {
         localStorage.removeItem(DIRTY_KEY);
