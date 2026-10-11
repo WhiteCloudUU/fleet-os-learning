@@ -1237,7 +1237,7 @@
       "id": "d-week-20261011",
       "dated": true,
       "date": "2026-10-11",
-      "title": "📅 Weekly · 2026-10-11",
+      "title": "📅 Weekly · 2026-10-11f",
       "desc": "",
       "items": [
         {
@@ -1249,7 +1249,7 @@
           "id": "wk-20261011-ei1",
           "title": "Tracking distributed tracing for AI agents: how to follow one request across services — Braintrust",
           "url": "https://www.braintrust.dev/articles/distributed-tracing-ai-agents",
-          "note": "强调跨 API/queue/worker/tool service 传递 span context,很适合多服务 agent harness 的 failure attribution 和 latency eval。..."
+          "note": "强调跨 API/queue/worker/tool service 传递 span context,很适合多服务 agent harness 的 failure attribution 和 latency eval。"
         },
         {
           "id": "wk-20261011-ei2",
