@@ -1208,6 +1208,7 @@
   const KEY = 'fleet-os.learning-roadmap.v6';
   const DIRTY_KEY = KEY + '.dirty';
   const SHA_KEY = KEY + '.remote-sha';
+  const SYNCED_KEY = KEY + '.synced-json';
   const TOKEN_KEY = KEY + '.github-token';
   const DATA_PATH = 'roadmap-data.json';
   const RAW_DATA_URL = 'https://raw.githubusercontent.com/WhiteCloudUU/fleet-os-learning/main/roadmap-data.json';
@@ -1275,6 +1276,10 @@
     return JSON.parse(JSON.stringify(obj));
   }
 
+  function dataJSON(data) {
+    return JSON.stringify(normalizeData(clone(data)));
+  }
+
   function loadLocalDraft() {
     try {
       const stored = localStorage.getItem(KEY);
@@ -1319,6 +1324,7 @@
         const meta = await fetchGithubMeta();
         rememberRemoteSha(meta.sha);
       } catch (e) {}
+      rememberSyncedState(state);
       if (!opts.silent) state.updated = 'Last updated · ' + todayYMD();
       localStorage.setItem(KEY, JSON.stringify(state));
       localStorage.removeItem(DIRTY_KEY);
@@ -1368,6 +1374,10 @@
     if (!sha) return;
     remoteDataSha = sha;
     localStorage.setItem(SHA_KEY, sha);
+  }
+
+  function rememberSyncedState(data) {
+    localStorage.setItem(SYNCED_KEY, dataJSON(data));
   }
 
   function showTokenPanel() {
@@ -1479,9 +1489,14 @@
       if (!get.ok) throw await githubHttpError(get, 'save read');
       const meta = await get.json();
       if (remoteDataSha && meta.sha && meta.sha !== remoteDataSha) {
-        localStorage.setItem(DIRTY_KEY, '1');
-        setDirty(true);
-        throw new Error('Remote changed · click ↻ before editing more');
+        const remoteJSON = dataJSON(JSON.parse(fromBase64(meta.content)));
+        if (remoteJSON === localStorage.getItem(SYNCED_KEY)) {
+          rememberRemoteSha(meta.sha);
+        } else {
+          localStorage.setItem(DIRTY_KEY, '1');
+          setDirty(true);
+          throw new Error('Remote changed · click ↻ before editing more');
+        }
       }
       const body = {
         message: 'Update roadmap data',
@@ -1496,7 +1511,15 @@
       });
       if (!put.ok) throw await githubHttpError(put, 'save write');
       const saved = await put.json();
-      rememberRemoteSha(saved && saved.content && saved.content.sha);
+      const savedSha = saved && saved.content && saved.content.sha;
+      rememberRemoteSha(savedSha);
+      if (!savedSha) {
+        try {
+          const fresh = await fetchGithubMeta();
+          rememberRemoteSha(fresh.sha);
+        } catch (e) {}
+      }
+      rememberSyncedState(snapshot);
       localStorage.setItem(KEY, JSON.stringify(state));
       if (JSON.stringify(state) === snapshotJSON) {
         localStorage.removeItem(DIRTY_KEY);
