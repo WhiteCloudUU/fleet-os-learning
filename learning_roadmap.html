@@ -1280,6 +1280,14 @@
     return JSON.stringify(normalizeData(clone(data)));
   }
 
+  function remoteHasMissingWeekly(remoteData, localData) {
+    const localIds = new Set((localData.weeklies || []).map((w) => w && (w.id || w.date)).filter(Boolean));
+    return (remoteData.weeklies || []).some((w) => {
+      const key = w && (w.id || w.date);
+      return key && !localIds.has(key);
+    });
+  }
+
   function loadLocalDraft() {
     try {
       const stored = localStorage.getItem(KEY);
@@ -1488,10 +1496,24 @@
       const get = await githubRequest(GITHUB_API_URL + '?ref=' + encodeURIComponent(GITHUB_BRANCH));
       if (!get.ok) throw await githubHttpError(get, 'save read');
       const meta = await get.json();
+      const syncedJSON = localStorage.getItem(SYNCED_KEY);
       if (remoteDataSha && meta.sha && meta.sha !== remoteDataSha) {
-        const remoteJSON = dataJSON(JSON.parse(fromBase64(meta.content)));
-        if (remoteJSON === localStorage.getItem(SYNCED_KEY)) {
+        const remoteData = normalizeData(JSON.parse(fromBase64(meta.content)));
+        const remoteJSON = dataJSON(remoteData);
+        if (remoteJSON === snapshotJSON) {
           rememberRemoteSha(meta.sha);
+          rememberSyncedState(snapshot);
+          localStorage.setItem(KEY, JSON.stringify(state));
+          localStorage.removeItem(DIRTY_KEY);
+          setDirty(false);
+          setStatus(opts.auto ? 'Auto-saved to GitHub' : 'Saved to GitHub');
+          return;
+        }
+        if (remoteJSON === syncedJSON) {
+          rememberRemoteSha(meta.sha);
+        } else if (!syncedJSON && !remoteHasMissingWeekly(remoteData, snapshot)) {
+          rememberRemoteSha(meta.sha);
+          rememberSyncedState(remoteData);
         } else {
           localStorage.setItem(DIRTY_KEY, '1');
           setDirty(true);
