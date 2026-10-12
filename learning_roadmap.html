@@ -1247,7 +1247,9 @@
   let autoSaveTimer = null;
   let autoSaveInFlight = false;
   let autoSaveQueued = false;
-  const AUTO_SAVE_DELAY = 2000;
+  let autoSaveCooldownUntil = 0;
+  const AUTO_SAVE_DELAY = 8000;
+  const AUTO_SAVE_COOLDOWN = 10000;
 
   function stripStatus(cards) {
     (cards || []).forEach((card) => {
@@ -1349,8 +1351,9 @@
       setStatus('Auto-save queued…', true);
       return;
     }
-    setStatus('Auto-save pending…', true);
-    autoSaveTimer = setTimeout(() => saveToGithub({ auto: true }), AUTO_SAVE_DELAY);
+    const wait = Math.max(AUTO_SAVE_DELAY, autoSaveCooldownUntil - Date.now());
+    setStatus('Local changes · auto-save pending…', true);
+    autoSaveTimer = setTimeout(() => saveToGithub({ auto: true }), wait);
   }
 
   function token() {
@@ -1514,6 +1517,7 @@
         if (put.ok || put.status !== 409) break;
       }
       if (!put.ok) throw await githubHttpError(put, 'save write');
+      autoSaveCooldownUntil = Date.now() + AUTO_SAVE_COOLDOWN;
       if (JSON.stringify(state) === snapshotJSON) {
         state = merged;
         localStorage.setItem(KEY, JSON.stringify(state));
