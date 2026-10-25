@@ -1,5 +1,5 @@
 {
-  "updated": "Last updated · 2026-10-25",
+  "updated": "Last synced · 2026-10-25",
   "refsOpen": false,
   "references": [
     {
@@ -238,13 +238,7 @@
         {
           "id": "es-div-threats",
           "type": "divider",
-          "label": "Threats & Red-Teaming"
-        },
-        {
-          "id": "es3",
-          "title": "CyberSecEval: benchmark for LLM cybersecurity risks — Meta",
-          "url": "https://ai.meta.com/research/publications/cyberseceval-a-comprehensive-benchmark-for-evaluating-the-cybersecurity-risks-of-large-language-models/",
-          "note": "评测 LLM 网络安全风险(不安全代码生成、协助攻击)的 benchmark 设计与覆盖范围。"
+          "label": "Red Teaming"
         },
         {
           "id": "es6",
@@ -259,6 +253,17 @@
           "note": "第三方红队对内部 agent 监控系统的实测(2026-03)——监控/检测类 safety infra 怎么被绕过,直接关乎 harness 的盲区。"
         },
         {
+          "id": "es-div-gates",
+          "type": "divider",
+          "label": "Other"
+        },
+        {
+          "id": "es3",
+          "title": "CyberSecEval: benchmark for LLM cybersecurity risks — Meta",
+          "url": "https://ai.meta.com/research/publications/cyberseceval-a-comprehensive-benchmark-for-evaluating-the-cybersecurity-risks-of-large-language-models/",
+          "note": "评测 LLM 网络安全风险(不安全代码生成、协助攻击)的 benchmark 设计与覆盖范围。"
+        },
+        {
           "id": "es8",
           "title": "Securing the future of AI agents — Google DeepMind",
           "url": "https://deepmind.google/blog/securing-the-future-of-ai-agents/",
@@ -269,11 +274,6 @@
           "title": "When the Agent Is the Adversary: architectural requirements for agentic AI containment",
           "url": "https://arxiv.org/abs/2604.23425",
           "note": "⚠️ 标题为准(2026-04)。把 agent 当对手来设计 containment 架构——为 safety eval infra 提供威胁模型。"
-        },
-        {
-          "id": "es-div-gates",
-          "type": "divider",
-          "label": "Safety Gates & Monitoring"
         },
         {
           "id": "es4",

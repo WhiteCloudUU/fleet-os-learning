@@ -682,7 +682,7 @@
   </div>
 
   <div class="updated-row">
-    <div class="updated" id="updated" contenteditable="true">Last updated · 2026-06-20</div>
+    <div class="updated" id="updated">Last synced · 2026-06-20</div>
     <button class="refresh-date" id="refresh-date" type="button" title="load latest">↻</button>
     <div class="token-tools">
       <button class="token-toggle" id="set-token" type="button">Token</button>
@@ -696,6 +696,9 @@
 
   <div class="toolbar">
     <span class="sync-status" id="sync-status">Local draft</span>
+    <button class="btn" id="save-local" type="button">Save</button>
+    <button class="btn primary" id="sync-github" type="button">Sync</button>
+    <button class="btn" id="export" type="button">Export JSON</button>
   </div>
 
   <div class="refs">
@@ -721,7 +724,7 @@
 
 <script id="seed" type="application/json">
 {
-  "updated": "Last updated · 2026-06-20",
+  "updated": "Last synced · 2026-06-20",
   "refsOpen": false,
   "references": [
     {
@@ -876,13 +879,7 @@
         {
           "id": "es-div-threats",
           "type": "divider",
-          "label": "Threats & Red-Teaming"
-        },
-        {
-          "id": "es3",
-          "title": "CyberSecEval: benchmark for LLM cybersecurity risks — Meta",
-          "url": "https://ai.meta.com/research/publications/cyberseceval-a-comprehensive-benchmark-for-evaluating-the-cybersecurity-risks-of-large-language-models/",
-          "note": "评测 LLM 网络安全风险(不安全代码生成、协助攻击)的 benchmark 设计与覆盖范围。"
+          "label": "Red Teaming"
         },
         {
           "id": "es6",
@@ -897,6 +894,17 @@
           "note": "第三方红队对内部 agent 监控系统的实测(2026-03)——监控/检测类 safety infra 怎么被绕过,直接关乎 harness 的盲区。"
         },
         {
+          "id": "es-div-gates",
+          "type": "divider",
+          "label": "Other"
+        },
+        {
+          "id": "es3",
+          "title": "CyberSecEval: benchmark for LLM cybersecurity risks — Meta",
+          "url": "https://ai.meta.com/research/publications/cyberseceval-a-comprehensive-benchmark-for-evaluating-the-cybersecurity-risks-of-large-language-models/",
+          "note": "评测 LLM 网络安全风险(不安全代码生成、协助攻击)的 benchmark 设计与覆盖范围。"
+        },
+        {
           "id": "es8",
           "title": "Securing the future of AI agents — Google DeepMind",
           "url": "https://deepmind.google/blog/securing-the-future-of-ai-agents/",
@@ -907,11 +915,6 @@
           "title": "When the Agent Is the Adversary: architectural requirements for agentic AI containment",
           "url": "https://arxiv.org/abs/2604.23425",
           "note": "⚠️ 标题为准(2026-04)。把 agent 当对手来设计 containment 架构——为 safety eval infra 提供威胁模型。"
-        },
-        {
-          "id": "es-div-gates",
-          "type": "divider",
-          "label": "Safety Gates & Monitoring"
         },
         {
           "id": "es4",
@@ -1218,6 +1221,9 @@
   const $tabs = document.getElementById('pager-tabs');
   const $prevPage = document.getElementById('prev-page');
   const $nextPage = document.getElementById('next-page');
+  const $saveLocal = document.getElementById('save-local');
+  const $syncGithub = document.getElementById('sync-github');
+  const $export = document.getElementById('export');
   const $setToken = document.getElementById('set-token');
   const $tokenPanel = document.getElementById('token-panel');
   const $tokenInput = document.getElementById('token-input');
@@ -1244,12 +1250,7 @@
   let dragInfo = null; // { cardId, iid } while dragging a reading
   let dropSlot = null;
   let booted = false;
-  let autoSaveTimer = null;
-  let autoSaveInFlight = false;
-  let autoSaveQueued = false;
-  let autoSaveCooldownUntil = 0;
-  const AUTO_SAVE_DELAY = 8000;
-  const AUTO_SAVE_COOLDOWN = 10000;
+  let syncInFlight = false;
 
   function stripStatus(cards) {
     (cards || []).forEach((card) => {
@@ -1259,13 +1260,42 @@
     });
   }
 
+  function migrateSafetySections(card) {
+    if (!card || card.id !== 'd-eval-safety') return;
+    const labels = (card.items || []).filter((it) => it.type === 'divider').map((it) => it.label);
+    if (!labels.includes('Threats & Red-Teaming') && !labels.includes('Safety Gates & Monitoring')) return;
+    const groups = { basics: [], redTeam: [], other: [] };
+    let section = 'other';
+    (card.items || []).forEach((it) => {
+      if (it.type === 'divider') {
+        if (it.label === 'Safety Basics') section = 'basics';
+        else if (it.label === 'Threats & Red-Teaming') section = 'mixed';
+        else section = 'other';
+        return;
+      }
+      if (section === 'basics') groups.basics.push(it);
+      else if (section === 'mixed' && /red[- ]?team/i.test(it.title || '')) groups.redTeam.push(it);
+      else groups.other.push(it);
+    });
+    card.items = [
+      { id: 'es-div-basics', type: 'divider', label: 'Safety Basics' },
+      ...groups.basics,
+      { id: 'es-div-threats', type: 'divider', label: 'Red Teaming' },
+      ...groups.redTeam,
+      { id: 'es-div-gates', type: 'divider', label: 'Other' },
+      ...groups.other
+    ];
+  }
+
   function normalizeData(data) {
     const s = data || {};
     if (!s.weeklies) s.weeklies = [];
     if (!s.domains) s.domains = [];
     if (!s.references) s.references = [];
     if (typeof s.refsOpen !== 'boolean') s.refsOpen = false;
+    if (typeof s.updated === 'string') s.updated = s.updated.replace(/^Last updated/, 'Last synced');
     s.weeklies.forEach((w) => { if (w && w.dated) w.desc = ''; });
+    s.domains.forEach(migrateSafetySections);
     stripStatus(s.domains);
     stripStatus(s.weeklies);
     return s;
@@ -1297,6 +1327,7 @@
 
   function setDirty(isDirty) {
     document.body.classList.toggle('dirty', !!isDirty);
+    $syncGithub.classList.toggle('dirty', !!isDirty);
   }
 
   async function loadLatest(opts) {
@@ -1314,7 +1345,6 @@
         const loaded = await loadViaGithubApi();
         state = normalizeData(loaded.data);
       }
-      if (!opts.silent) state.updated = 'Last updated · ' + todayYMD();
       localStorage.setItem(KEY, JSON.stringify(state));
       localStorage.removeItem(DIRTY_KEY);
       setDirty(false);
@@ -1332,28 +1362,13 @@
     localStorage.setItem(KEY, JSON.stringify(state));
     localStorage.setItem(DIRTY_KEY, '1');
     setDirty(true);
-    if (booted) {
-      setStatus('Unsaved local changes', true);
-      scheduleAutoSave();
-    }
+    if (booted) setStatus('Local changes · not synced', true);
   }
 
-  function scheduleAutoSave() {
-    if (!booted) return;
-    clearTimeout(autoSaveTimer);
-    autoSaveTimer = null;
-    if (!token()) {
-      setStatus('Unsaved local changes · token needed for auto-save', true);
-      return;
-    }
-    if (autoSaveInFlight) {
-      autoSaveQueued = true;
-      setStatus('Auto-save queued…', true);
-      return;
-    }
-    const wait = Math.max(AUTO_SAVE_DELAY, autoSaveCooldownUntil - Date.now());
-    setStatus('Local changes · auto-save pending…', true);
-    autoSaveTimer = setTimeout(() => saveToGithub({ auto: true }), wait);
+  function saveLocal() {
+    localStorage.setItem(KEY, JSON.stringify(state));
+    const dirty = !!localStorage.getItem(DIRTY_KEY);
+    setStatus(dirty ? 'Saved locally · not synced' : 'Saved locally', dirty);
   }
 
   function token() {
@@ -1480,20 +1495,14 @@
     return new Error(action + ' failed: HTTP ' + res.status + detail);
   }
 
-  async function saveToGithub(opts) {
-    opts = opts || {};
-    clearTimeout(autoSaveTimer);
-    autoSaveTimer = null;
-    if (autoSaveInFlight) {
-      autoSaveQueued = true;
-      setStatus(opts.auto ? 'Auto-save queued…' : 'Save queued…', true);
-      return;
-    }
-    if (opts.auto && !localStorage.getItem(DIRTY_KEY)) return;
-    autoSaveInFlight = true;
+  async function syncToGithub() {
+    if (syncInFlight) return;
+    syncInFlight = true;
+    $syncGithub.disabled = true;
+    const stateAtStart = JSON.stringify(state);
     const snapshot = clone(state);
-    const snapshotJSON = JSON.stringify(snapshot);
-    setStatus(opts.auto ? 'Auto-saving to GitHub…' : 'Saving to GitHub…');
+    snapshot.updated = lastSyncedLabel();
+    setStatus('Syncing with GitHub…');
     try {
       let merged = null;
       let put = null;
@@ -1517,31 +1526,24 @@
         if (put.ok || put.status !== 409) break;
       }
       if (!put.ok) throw await githubHttpError(put, 'save write');
-      autoSaveCooldownUntil = Date.now() + AUTO_SAVE_COOLDOWN;
-      if (JSON.stringify(state) === snapshotJSON) {
+      if (JSON.stringify(state) === stateAtStart) {
         state = merged;
         localStorage.setItem(KEY, JSON.stringify(state));
         localStorage.removeItem(DIRTY_KEY);
         setDirty(false);
-        setStatus(opts.auto ? 'Auto-saved to GitHub' : 'Saved to GitHub');
-        if (JSON.stringify(merged) !== snapshotJSON) {
-          $updated.textContent = state.updated || '';
-          renderRefs(); renderDeck();
-        }
+        $updated.textContent = state.updated || '';
+        setStatus('Synced with GitHub');
+        renderRefs(); renderDeck();
       } else {
         localStorage.setItem(DIRTY_KEY, '1');
         setDirty(true);
-        autoSaveQueued = true;
-        setStatus('Auto-save queued…', true);
+        setStatus('Synced · newer local changes pending', true);
       }
     } catch (e) {
-      setStatus((opts.auto ? 'Auto-save failed: ' : '') + e.message, true);
+      setStatus('Sync failed: ' + e.message, true);
     } finally {
-      autoSaveInFlight = false;
-      if (autoSaveQueued) {
-        autoSaveQueued = false;
-        scheduleAutoSave();
-      }
+      syncInFlight = false;
+      $syncGithub.disabled = false;
     }
   }
   function uid() { return 'x' + Math.random().toString(36).slice(2, 9); }
@@ -1552,6 +1554,22 @@
   function todayYMD() {
     const dt = new Date();
     return dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
+  }
+
+  function lastSyncedLabel() {
+    const dt = new Date();
+    const time = String(dt.getHours()).padStart(2, '0') + ':' + String(dt.getMinutes()).padStart(2, '0');
+    return 'Last synced · ' + todayYMD() + ' ' + time;
+  }
+
+  function exportJSON() {
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'learning-roadmap.json';
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   function newItem() {
@@ -2132,12 +2150,14 @@
 
   // top-of-page init (bind once)
   $updated.textContent = state.updated || '';
-  bindEdit($updated, () => state, (o, v) => o.updated = v);
 
   $refsToggle.addEventListener('click', () => { state.refsOpen = !state.refsOpen; save(); renderRefs(); });
 
   $prevPage.addEventListener('click', () => goPage(-1));
   $nextPage.addEventListener('click', () => goPage(1));
+  $saveLocal.addEventListener('click', saveLocal);
+  $syncGithub.addEventListener('click', syncToGithub);
+  $export.addEventListener('click', exportJSON);
   $setToken.addEventListener('click', () => {
     if ($tokenPanel.hidden) showTokenPanel();
     else hideTokenPanel();
@@ -2168,7 +2188,7 @@
 
   booted = true;
   setDirty(!!localStorage.getItem(DIRTY_KEY));
-  setStatus(localStorage.getItem(DIRTY_KEY) ? 'Unsaved local draft' : 'Local draft', !!localStorage.getItem(DIRTY_KEY));
+  setStatus(localStorage.getItem(DIRTY_KEY) ? 'Local changes · not synced' : 'Saved locally', !!localStorage.getItem(DIRTY_KEY));
   renderRefs();
   renderDeck();
   loadLatest({ silent: true });

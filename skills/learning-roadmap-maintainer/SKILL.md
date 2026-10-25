@@ -79,8 +79,8 @@ Weekly cards are an inbox. Domain cards are curated favorites.
 
 `Eval Infra - Safety`
 - `Safety Basics`
-- `Threats & Red-Teaming`
-- `Safety Gates & Monitoring`
+- `Red Teaming`
+- `Other`
 
 `AI Frontier`
 - `General`
@@ -90,16 +90,17 @@ Weekly cards are an inbox. Domain cards are curated favorites.
 The HTML app supports:
 
 - `↻`: load latest remote `roadmap-data.json`.
-- `Save`: commit current state to GitHub using the GitHub Contents API.
+- `Save`: persist the current browser draft to `localStorage`.
+- `Sync`: fetch the latest remote data, merge the local draft, and commit it through the GitHub Contents API.
 - `Token`: store a GitHub fine-grained token in browser `localStorage`.
 - `Export JSON`: manual backup.
 
 Important:
 
 - Browser edits first save to localStorage as a local draft.
-- They are not persisted to GitHub until the user clicks `Save`.
-- If the user saves from the browser, local repo files become stale until `git pull`.
-- If `Load latest` or `Save` returns 404, likely causes are:
+- They are not persisted to GitHub until the user clicks `Sync`.
+- If the user syncs from the browser, local repo files become stale until `git pull`.
+- If `Load latest` or `Sync` returns 404, likely causes are:
   - repo is private,
   - GitHub Pages is not enabled,
   - token lacks access to `WhiteCloudUU/fleet-os-learning`,
