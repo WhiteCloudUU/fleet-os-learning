@@ -9,7 +9,7 @@ description: Maintain the Learning Roadmap repo and app. Use when updating weekl
 
 Maintain the `fleet-os-learning` roadmap app with the least possible operational friction.
 
-The app is a static HTML UI (`learning_roadmap.html`) backed by a shared data file (`roadmap-data.json`). The user edits/favorites/deletes items in the browser and saves state back to GitHub through the GitHub Contents API. Codex should update weekly cards by editing `roadmap-data.json`, not by editing embedded HTML seed data.
+The app is a static HTML UI (`learning_roadmap.html`) backed by a shared data file (`roadmap-data.json`). The user edits/favorites/deletes items in the browser, can persist the full state into the HTML's embedded seed through the File System Access API, and syncs state to GitHub through the GitHub Contents API. Codex should update weekly cards by editing `roadmap-data.json`; the connected page mirrors loaded state into the embedded HTML seed.
 
 ## Repository
 
@@ -22,7 +22,7 @@ The app is a static HTML UI (`learning_roadmap.html`) backed by a shared data fi
 ## Core Files
 
 - `roadmap-data.json`: source of truth for roadmap state.
-- `learning_roadmap.html`: static UI shell and fallback seed.
+- `learning_roadmap.html`: static UI shell, portable fallback seed, and optional self-persist target.
 - `learning_roadmap_instruction.md`: source of truth for weekly-card content rules, sources, lane labels, item shape, and prioritization.
 - `staff_os.md`: user strategy context and prioritization principles, read through `learning_roadmap_instruction.md` when weekly generation calls for it.
 
@@ -90,6 +90,7 @@ Weekly cards are an inbox. Domain cards are curated favorites.
 The HTML app supports:
 
 - Browser edits persist immediately to a `localStorage` draft.
+- `Connect HTML`: asks the user to select `learning_roadmap.html`, stores its file handle in IndexedDB, and writes browser state into that file's embedded seed after a 650 ms debounce.
 - `↻`: fetch the latest remote data, merge any local draft, and sync through the GitHub Contents API.
 - While the page remains open, the same sync runs automatically once per hour.
 - `Token`: store a GitHub fine-grained token in browser `localStorage`.
@@ -97,6 +98,9 @@ The HTML app supports:
 Important:
 
 - Browser edits first save to localStorage as a local draft.
+- When an HTML file is connected, only the `<script id="seed" type="application/json">` block is replaced; CSS and application JavaScript are preserved.
+- The selected file handle is stored in IndexedDB. If read/write permission is no longer granted, the UI shows `Reconnect HTML`; the user must explicitly restore access.
+- File System Access requires a supporting Chromium browser and a user gesture for the initial picker. If unavailable or a write fails, localStorage remains the fallback.
 - They are persisted to GitHub when the user clicks `↻` or the hourly page timer runs.
 - If the user syncs from the browser, local repo files become stale until `git pull`.
 - If sync returns 404, likely causes are:

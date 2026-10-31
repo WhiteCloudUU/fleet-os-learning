@@ -193,6 +193,7 @@
     margin-right: auto;
   }
   .sync-status.warn { color: var(--clay); }
+  .html-connect[disabled] { cursor: default; opacity: 0.55; }
   .token-tools {
     display: flex;
     align-items: center;
@@ -696,6 +697,7 @@
 
   <div class="toolbar">
     <span class="sync-status" id="sync-status">Local draft</span>
+    <button class="btn ghost html-connect" id="connect-html" type="button">Connect HTML</button>
   </div>
 
   <div class="refs">
@@ -1212,8 +1214,10 @@
   const RAW_DATA_URL = 'https://raw.githubusercontent.com/WhiteCloudUU/fleet-os-learning/main/roadmap-data.json';
   const GITHUB_API_URL = 'https://api.github.com/repos/WhiteCloudUU/fleet-os-learning/contents/roadmap-data.json';
   const GITHUB_BRANCH = 'main';
-  const LOCAL_SAVE_URL = '/api/local-save';
-  const LOCAL_SAVE_DELAY_MS = 500;
+  const HTML_SAVE_DELAY_MS = 650;
+  const HANDLE_DB = 'fleet-os.learning-roadmap.handles';
+  const HANDLE_STORE = 'files';
+  const HANDLE_KEY = 'roadmap-html';
   const FALLBACK_SEED = JSON.parse(document.getElementById('seed').textContent);
   const $deck = document.getElementById('deck');
   const $updated = document.getElementById('updated');
@@ -1226,6 +1230,7 @@
   const $saveToken = document.getElementById('save-token');
   const $clearToken = document.getElementById('clear-token');
   const $syncStatus = document.getElementById('sync-status');
+  const $connectHtml = document.getElementById('connect-html');
   const $refresh = document.getElementById('refresh-date');
   const $refsToggle = document.getElementById('refs-toggle');
   const $refsCaret = document.getElementById('refs-caret');
@@ -1247,12 +1252,11 @@
   let dropSlot = null;
   let booted = false;
   let syncInFlight = false;
-  let localSaveTimer = null;
-  let localSaveRevision = 0;
-  let localSaveQueue = Promise.resolve();
+  let htmlFileHandle = null;
+  let htmlSaveTimer = null;
+  let htmlSaveRevision = 0;
+  let htmlSaveQueue = Promise.resolve();
   const SYNC_INTERVAL_MS = 60 * 60 * 1000;
-  const IS_LOCAL_SERVER = location.protocol === 'http:' &&
-    (location.hostname === '127.0.0.1' || location.hostname === 'localhost' || location.hostname === '::1');
 
   function stripStatus(cards) {
     (cards || []).forEach((card) => {
@@ -1353,46 +1357,148 @@
       $updated.textContent = state.updated || '';
       setStatus('Loaded latest');
       renderRefs(); renderDeck();
+      queueHtmlSave();
     } catch (e) {
       if (!opts.silent) setStatus('Load failed: ' + e.message, true);
       else setStatus(localStorage.getItem(DIRTY_KEY) ? 'Unsaved local draft' : 'Local fallback', !!localStorage.getItem(DIRTY_KEY));
     }
   }
 
-  function queueLocalFileSave() {
-    if (!IS_LOCAL_SERVER) return;
-    const revision = ++localSaveRevision;
-    clearTimeout(localSaveTimer);
-    localSaveTimer = setTimeout(() => {
-      const payload = JSON.stringify(state);
-      localSaveQueue = localSaveQueue.then(async () => {
-        const res = await fetch(LOCAL_SAVE_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: payload
-        });
-        if (!res.ok) {
-          const detail = await res.text();
-          throw new Error(detail || ('HTTP ' + res.status));
-        }
-        const merged = normalizeData(await res.json());
-        if (revision === localSaveRevision) {
-          state = merged;
-          localStorage.setItem(KEY, JSON.stringify(state));
-          setStatus('Saved to local file · not synced', true);
+  function openHandleDb() {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(HANDLE_DB, 1);
+      request.onupgradeneeded = () => request.result.createObjectStore(HANDLE_STORE);
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  async function getStoredHtmlHandle() {
+    const db = await openHandleDb();
+    return new Promise((resolve, reject) => {
+      const request = db.transaction(HANDLE_STORE).objectStore(HANDLE_STORE).get(HANDLE_KEY);
+      request.onsuccess = () => { db.close(); resolve(request.result || null); };
+      request.onerror = () => { db.close(); reject(request.error); };
+    });
+  }
+
+  async function storeHtmlHandle(handle) {
+    const db = await openHandleDb();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(HANDLE_STORE, 'readwrite');
+      tx.objectStore(HANDLE_STORE).put(handle, HANDLE_KEY);
+      tx.oncomplete = () => { db.close(); resolve(); };
+      tx.onerror = () => { db.close(); reject(tx.error); };
+    });
+  }
+
+  async function hasHtmlPermission(handle, requestAccess) {
+    const options = { mode: 'readwrite' };
+    if ((await handle.queryPermission(options)) === 'granted') return true;
+    return !!requestAccess && (await handle.requestPermission(options)) === 'granted';
+  }
+
+  function updateHtmlConnectButton(mode) {
+    if (!('showOpenFilePicker' in window)) {
+      $connectHtml.textContent = 'HTML save unavailable';
+      $connectHtml.disabled = true;
+      $connectHtml.title = 'This browser does not support the File System Access API';
+      return;
+    }
+    $connectHtml.disabled = false;
+    $connectHtml.textContent = mode === 'connected' ? 'HTML connected' : mode === 'reconnect' ? 'Reconnect HTML' : 'Connect HTML';
+    $connectHtml.title = htmlFileHandle ? htmlFileHandle.name : 'connect the local roadmap HTML';
+  }
+
+  function seedBlock(data) {
+    const json = JSON.stringify(data, null, 2).replace(/</g, '\\u003c');
+    return '<scr' + 'ipt id="seed" type="application/json">\n' + json + '\n</scr' + 'ipt>';
+  }
+
+  async function writeStateToHtml(snapshot) {
+    if (!htmlFileHandle || !(await hasHtmlPermission(htmlFileHandle, false))) {
+      updateHtmlConnectButton(htmlFileHandle ? 'reconnect' : 'connect');
+      throw new Error('HTML permission required');
+    }
+    const file = await htmlFileHandle.getFile();
+    const html = await file.text();
+    const pattern = new RegExp('<scr' + 'ipt id="seed" type="application/json">[\\s\\S]*?</scr' + 'ipt>', 'g');
+    const matches = html.match(pattern) || [];
+    if (matches.length !== 1) throw new Error('expected exactly one seed JSON block');
+    const nextHtml = html.replace(pattern, seedBlock(snapshot));
+    const writable = await htmlFileHandle.createWritable();
+    try {
+      await writable.write(nextHtml);
+      await writable.close();
+    } catch (e) {
+      await writable.abort().catch(() => {});
+      throw e;
+    }
+  }
+
+  function queueHtmlSave() {
+    if (!htmlFileHandle) return;
+    const revision = ++htmlSaveRevision;
+    clearTimeout(htmlSaveTimer);
+    htmlSaveTimer = setTimeout(() => {
+      const snapshot = clone(state);
+      htmlSaveQueue = htmlSaveQueue.then(() => writeStateToHtml(snapshot)).then(() => {
+        if (revision === htmlSaveRevision) {
+          const dirty = !!localStorage.getItem(DIRTY_KEY);
+          setStatus(dirty ? 'Saved to HTML · not synced' : 'Saved to HTML', dirty);
         }
       }).catch((e) => {
-        if (revision === localSaveRevision) setStatus('Local file save failed: ' + e.message, true);
+        if (revision === htmlSaveRevision) {
+          updateHtmlConnectButton('reconnect');
+          setStatus('HTML save failed · local draft kept: ' + e.message, true);
+        }
       });
-    }, LOCAL_SAVE_DELAY_MS);
+    }, HTML_SAVE_DELAY_MS);
+  }
+
+  async function connectHtml() {
+    try {
+      if (htmlFileHandle && await hasHtmlPermission(htmlFileHandle, true)) {
+        updateHtmlConnectButton('connected');
+      } else {
+        const handles = await window.showOpenFilePicker({
+          multiple: false,
+          types: [{ description: 'Roadmap HTML', accept: { 'text/html': ['.html', '.htm'] } }]
+        });
+        htmlFileHandle = handles[0];
+        if (!(await hasHtmlPermission(htmlFileHandle, true))) throw new Error('write permission was not granted');
+        await storeHtmlHandle(htmlFileHandle);
+        updateHtmlConnectButton('connected');
+      }
+      await writeStateToHtml(clone(state));
+      setStatus('Connected · saved to HTML');
+    } catch (e) {
+      if (e && e.name === 'AbortError') return;
+      updateHtmlConnectButton(htmlFileHandle ? 'reconnect' : 'connect');
+      setStatus('HTML connection failed: ' + e.message, true);
+    }
+  }
+
+  async function restoreHtmlConnection() {
+    updateHtmlConnectButton('connect');
+    if (!('showOpenFilePicker' in window)) return;
+    try {
+      htmlFileHandle = await getStoredHtmlHandle();
+      if (!htmlFileHandle) return;
+      const connected = await hasHtmlPermission(htmlFileHandle, false);
+      updateHtmlConnectButton(connected ? 'connected' : 'reconnect');
+      if (connected) queueHtmlSave();
+    } catch (e) {
+      updateHtmlConnectButton('connect');
+    }
   }
 
   function save() {
     localStorage.setItem(KEY, JSON.stringify(state));
     localStorage.setItem(DIRTY_KEY, '1');
     setDirty(true);
-    queueLocalFileSave();
-    if (booted) setStatus(IS_LOCAL_SERVER ? 'Saving to local file…' : 'Local changes · not synced', true);
+    queueHtmlSave();
+    if (booted) setStatus(htmlFileHandle ? 'Saving to HTML…' : 'Local changes · not synced', true);
   }
 
   function token() {
@@ -1569,6 +1675,7 @@
         $updated.textContent = state.updated || '';
         setStatus(opts.auto ? 'Hourly sync complete' : 'Synced with GitHub');
         renderRefs(); renderDeck();
+        queueHtmlSave();
       } else {
         localStorage.setItem(DIRTY_KEY, '1');
         setDirty(true);
@@ -2184,6 +2291,7 @@
 
   $prevPage.addEventListener('click', () => goPage(-1));
   $nextPage.addEventListener('click', () => goPage(1));
+  $connectHtml.addEventListener('click', connectHtml);
   $setToken.addEventListener('click', () => {
     if ($tokenPanel.hidden) showTokenPanel();
     else hideTokenPanel();
@@ -2217,6 +2325,7 @@
   setStatus(localStorage.getItem(DIRTY_KEY) ? 'Local changes · not synced' : 'Saved locally', !!localStorage.getItem(DIRTY_KEY));
   renderRefs();
   renderDeck();
+  restoreHtmlConnection();
   loadLatest({ silent: true });
   setInterval(() => syncToGithub({ auto: true }), SYNC_INTERVAL_MS);
 })();
