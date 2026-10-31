@@ -683,7 +683,7 @@
 
   <div class="updated-row">
     <div class="updated" id="updated">Last synced · 2026-06-20</div>
-    <button class="refresh-date" id="refresh-date" type="button" title="load latest">↻</button>
+    <button class="refresh-date" id="refresh-date" type="button" title="sync with GitHub">↻</button>
     <div class="token-tools">
       <button class="token-toggle" id="set-token" type="button">Token</button>
       <div class="token-panel" id="token-panel" hidden>
@@ -696,9 +696,6 @@
 
   <div class="toolbar">
     <span class="sync-status" id="sync-status">Local draft</span>
-    <button class="btn" id="save-local" type="button">Save</button>
-    <button class="btn primary" id="sync-github" type="button">Sync</button>
-    <button class="btn" id="export" type="button">Export JSON</button>
   </div>
 
   <div class="refs">
@@ -1221,9 +1218,6 @@
   const $tabs = document.getElementById('pager-tabs');
   const $prevPage = document.getElementById('prev-page');
   const $nextPage = document.getElementById('next-page');
-  const $saveLocal = document.getElementById('save-local');
-  const $syncGithub = document.getElementById('sync-github');
-  const $export = document.getElementById('export');
   const $setToken = document.getElementById('set-token');
   const $tokenPanel = document.getElementById('token-panel');
   const $tokenInput = document.getElementById('token-input');
@@ -1251,6 +1245,7 @@
   let dropSlot = null;
   let booted = false;
   let syncInFlight = false;
+  const SYNC_INTERVAL_MS = 60 * 60 * 1000;
 
   function stripStatus(cards) {
     (cards || []).forEach((card) => {
@@ -1327,7 +1322,6 @@
 
   function setDirty(isDirty) {
     document.body.classList.toggle('dirty', !!isDirty);
-    $syncGithub.classList.toggle('dirty', !!isDirty);
   }
 
   async function loadLatest(opts) {
@@ -1363,12 +1357,6 @@
     localStorage.setItem(DIRTY_KEY, '1');
     setDirty(true);
     if (booted) setStatus('Local changes · not synced', true);
-  }
-
-  function saveLocal() {
-    localStorage.setItem(KEY, JSON.stringify(state));
-    const dirty = !!localStorage.getItem(DIRTY_KEY);
-    setStatus(dirty ? 'Saved locally · not synced' : 'Saved locally', dirty);
   }
 
   function token() {
@@ -1495,22 +1483,33 @@
     return new Error(action + ' failed: HTTP ' + res.status + detail);
   }
 
-  async function syncToGithub() {
+  async function syncToGithub(opts) {
+    opts = opts || {};
     if (syncInFlight) return;
+    if (opts.auto && !token()) {
+      if (localStorage.getItem(DIRTY_KEY)) setStatus('Local changes · hourly sync needs token', true);
+      return;
+    }
     syncInFlight = true;
-    $syncGithub.disabled = true;
     const stateAtStart = JSON.stringify(state);
+    const hadLocalChanges = !!localStorage.getItem(DIRTY_KEY);
     const snapshot = clone(state);
     snapshot.updated = lastSyncedLabel();
-    setStatus('Syncing with GitHub…');
+    setStatus(opts.auto ? 'Hourly sync…' : 'Syncing with GitHub…');
     try {
       let merged = null;
       let put = null;
-      for (let attempt = 0; attempt < 5; attempt++) {
+      const attempts = hadLocalChanges ? 5 : 1;
+      for (let attempt = 0; attempt < attempts; attempt++) {
         const get = await githubRequest(GITHUB_API_URL + '?ref=' + encodeURIComponent(GITHUB_BRANCH));
         if (!get.ok) throw await githubHttpError(get, attempt ? 'save retry read' : 'save read');
         const meta = await get.json();
         const remoteData = normalizeData(JSON.parse(fromBase64(meta.content)));
+        if (!hadLocalChanges) {
+          merged = remoteData;
+          merged.updated = snapshot.updated;
+          break;
+        }
         merged = mergeForGithubSave(remoteData, snapshot);
         const body = {
           message: 'Update roadmap data',
@@ -1525,14 +1524,14 @@
         });
         if (put.ok || put.status !== 409) break;
       }
-      if (!put.ok) throw await githubHttpError(put, 'save write');
+      if (hadLocalChanges && !put.ok) throw await githubHttpError(put, 'save write');
       if (JSON.stringify(state) === stateAtStart) {
         state = merged;
         localStorage.setItem(KEY, JSON.stringify(state));
         localStorage.removeItem(DIRTY_KEY);
         setDirty(false);
         $updated.textContent = state.updated || '';
-        setStatus('Synced with GitHub');
+        setStatus(opts.auto ? 'Hourly sync complete' : 'Synced with GitHub');
         renderRefs(); renderDeck();
       } else {
         localStorage.setItem(DIRTY_KEY, '1');
@@ -1540,10 +1539,9 @@
         setStatus('Synced · newer local changes pending', true);
       }
     } catch (e) {
-      setStatus('Sync failed: ' + e.message, true);
+      setStatus((opts.auto ? 'Hourly sync failed: ' : 'Sync failed: ') + e.message, true);
     } finally {
       syncInFlight = false;
-      $syncGithub.disabled = false;
     }
   }
   function uid() { return 'x' + Math.random().toString(36).slice(2, 9); }
@@ -1560,16 +1558,6 @@
     const dt = new Date();
     const time = String(dt.getHours()).padStart(2, '0') + ':' + String(dt.getMinutes()).padStart(2, '0');
     return 'Last synced · ' + todayYMD() + ' ' + time;
-  }
-
-  function exportJSON() {
-    const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'learning-roadmap.json';
-    a.click();
-    URL.revokeObjectURL(url);
   }
 
   function newItem() {
@@ -1771,6 +1759,11 @@
       e.preventDefault();
       const text = opts.multiline ? raw : raw.replace(/\s+/g, ' ');
       insertPlainText(text);
+    });
+    el.addEventListener('input', () => {
+      const value = opts.multiline ? el.innerText : el.textContent;
+      const obj = getter();
+      if (obj) { setter(obj, value); save(); }
     });
     el.addEventListener('blur', () => {
       const v = (opts.multiline ? el.innerText : el.textContent).trim();
@@ -2155,9 +2148,6 @@
 
   $prevPage.addEventListener('click', () => goPage(-1));
   $nextPage.addEventListener('click', () => goPage(1));
-  $saveLocal.addEventListener('click', saveLocal);
-  $syncGithub.addEventListener('click', syncToGithub);
-  $export.addEventListener('click', exportJSON);
   $setToken.addEventListener('click', () => {
     if ($tokenPanel.hidden) showTokenPanel();
     else hideTokenPanel();
@@ -2169,7 +2159,7 @@
     else if (e.key === 'Escape') hideTokenPanel();
   });
   $refresh.addEventListener('click', () => {
-    loadLatest();
+    syncToGithub();
   });
 
   document.addEventListener('keydown', (e) => {
@@ -2192,6 +2182,7 @@
   renderRefs();
   renderDeck();
   loadLatest({ silent: true });
+  setInterval(() => syncToGithub({ auto: true }), SYNC_INTERVAL_MS);
 })();
 </script>
 </body>

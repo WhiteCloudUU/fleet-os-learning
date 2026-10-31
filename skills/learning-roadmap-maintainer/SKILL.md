@@ -89,18 +89,17 @@ Weekly cards are an inbox. Domain cards are curated favorites.
 
 The HTML app supports:
 
-- `↻`: load latest remote `roadmap-data.json`.
-- `Save`: persist the current browser draft to `localStorage`.
-- `Sync`: fetch the latest remote data, merge the local draft, and commit it through the GitHub Contents API.
+- Browser edits persist immediately to a `localStorage` draft.
+- `↻`: fetch the latest remote data, merge any local draft, and sync through the GitHub Contents API.
+- While the page remains open, the same sync runs automatically once per hour.
 - `Token`: store a GitHub fine-grained token in browser `localStorage`.
-- `Export JSON`: manual backup.
 
 Important:
 
 - Browser edits first save to localStorage as a local draft.
-- They are not persisted to GitHub until the user clicks `Sync`.
+- They are persisted to GitHub when the user clicks `↻` or the hourly page timer runs.
 - If the user syncs from the browser, local repo files become stale until `git pull`.
-- If `Load latest` or `Sync` returns 404, likely causes are:
+- If sync returns 404, likely causes are:
   - repo is private,
   - GitHub Pages is not enabled,
   - token lacks access to `WhiteCloudUU/fleet-os-learning`,
