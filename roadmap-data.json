@@ -1304,6 +1304,84 @@
           "note": "小模型在 OSWorld、Terminal-Bench 和 agentic work 上显著提升并降价,会改变 subagent/router/eval budget 的默认配置。"
         }
       ]
+    },
+    {
+      "id": "d-week-20261031",
+      "dated": true,
+      "date": "2026-10-31",
+      "title": "📅 Weekly · 2026-10-31",
+      "desc": "",
+      "items": [
+        {
+          "id": "wk-20261031-ei",
+          "type": "divider",
+          "label": "Eval Infra"
+        },
+        {
+          "id": "wk-20261031-ei1",
+          "title": "Best agent skills for LLM evaluation — Braintrust",
+          "url": "https://www.braintrust.dev/articles/best-agent-skills-llm-evaluation",
+          "note": "把 dataset、scorer、experiment、failure discovery 和 release gate 拆成可复用 agent skills,适合将 eval workflow 标准化并保留可审查产物。"
+        },
+        {
+          "id": "wk-20261031-ei2",
+          "title": "5 pro tips for using the Braintrust CLI",
+          "url": "https://www.braintrust.dev/articles/braintrust-cli-pro-tips",
+          "note": "覆盖 watch-mode eval、可复现 smoke checks、production failure 转 regression case 和 scorer-as-code,是一条很具体的 trace-to-eval loop。"
+        },
+        {
+          "id": "wk-20261031-ei3",
+          "title": "Design and Cross-Domain Evaluation of an Agent Execution Harness",
+          "url": "https://arxiv.org/abs/2610.25568",
+          "note": "在 terminal、clinical、app-building 和 science 任务上同时评估完整 harness,并把 trajectory、review decision、latency 和 cost 一起纳入结果。"
+        },
+        {
+          "id": "wk-20261031-es",
+          "type": "divider",
+          "label": "Eval Infra - Safety"
+        },
+        {
+          "id": "wk-20261031-es1",
+          "title": "Scaling Misuse Detection with Self-Assessment — Anthropic",
+          "url": "https://safeguards.anthropic.com/2026/self-assessment/",
+          "note": "利用同一模型的 KV cache 做低成本 structured safety assessment,并明确讨论 1% FPR、privacy、collusion 和 on-policy monitoring 局限。"
+        },
+        {
+          "id": "wk-20261031-es2",
+          "title": "An update on independent evaluators — Anthropic",
+          "url": "https://www.anthropic.com/news/an-update-on-independent-evaluators",
+          "note": "METR 获得接近内部 risk team 的访问权限和独立发布权,展示 frontier safety eval 如何处理 access、保密、独立性和分层审计。"
+        },
+        {
+          "id": "wk-20261031-es3",
+          "title": "Securing our frontier model training environment — OpenAI",
+          "url": "https://openai.com/index/securing-our-frontier-model-training-environment/",
+          "note": "用高算力 agent red team 持续攻击 sandbox、network perimeter、monitoring 和 stopping systems,并把结果作为训练恢复的 safety case。"
+        },
+        {
+          "id": "wk-20261031-es4",
+          "title": "How we detect frontier model misalignment — OpenAI",
+          "url": "https://openai.com/index/how-we-detect-frontier-model-misalignment/",
+          "note": "给出从行为信号、自动调查、外部 telemetry 到 15 分钟 human response 的分层 monitoring pipeline,非常贴近 production safety gate。"
+        },
+        {
+          "id": "wk-20261031-af",
+          "type": "divider",
+          "label": "AI Frontier"
+        },
+        {
+          "id": "wk-20261031-af1",
+          "title": "LLMs are making formal software verification feasible at a much larger scale — Anthropic",
+          "url": "https://www.anthropic.com/research/formal-verification",
+          "note": "Claude 生成并验证真实软件的 machine-checkable proofs,显示 coding-agent eval 可能从测试通过进一步走向形式化保证。"
+        },
+        {
+          "id": "wk-20261031-af2",
+          "title": "Using thousands of AI agents to uncover new leads in biological data — OpenAI",
+          "url": "https://openai.com/index/scaling-ai-research-for-complex-biological-data/",
+          "note": "数千个并行 agent 用于大规模生物数据研究,是评估 multi-agent orchestration、结果聚合、成本与科学可验证性的现实 frontier case。"
+        }
+      ]
     }
   ]
 }
