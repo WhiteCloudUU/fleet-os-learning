@@ -1256,6 +1256,7 @@
   let htmlSaveTimer = null;
   let htmlSaveRevision = 0;
   let htmlSaveQueue = Promise.resolve();
+  let pickerInFlight = false;
   const SYNC_INTERVAL_MS = 60 * 60 * 1000;
 
   function stripStatus(cards) {
@@ -1457,6 +1458,13 @@
   }
 
   async function connectHtml() {
+    if (pickerInFlight) {
+      setStatus('File picker already open', true);
+      return;
+    }
+    pickerInFlight = true;
+    $connectHtml.disabled = true;
+    $connectHtml.textContent = 'Choose HTML…';
     try {
       if (htmlFileHandle && await hasHtmlPermission(htmlFileHandle, true)) {
         updateHtmlConnectButton('connected');
@@ -1475,7 +1483,13 @@
     } catch (e) {
       if (e && e.name === 'AbortError') return;
       updateHtmlConnectButton(htmlFileHandle ? 'reconnect' : 'connect');
-      setStatus('HTML connection failed: ' + e.message, true);
+      const pickerActive = /file picker already active/i.test(e && e.message || '');
+      setStatus(pickerActive ? 'Close the existing file picker, then click Reconnect HTML' : 'HTML connection failed: ' + e.message, true);
+    } finally {
+      pickerInFlight = false;
+      if ($connectHtml.textContent === 'Choose HTML…') {
+        updateHtmlConnectButton(htmlFileHandle ? 'reconnect' : 'connect');
+      }
     }
   }
 
