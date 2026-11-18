@@ -1382,6 +1382,72 @@
           "note": "数千个并行 agent 用于大规模生物数据研究,是评估 multi-agent orchestration、结果聚合、成本与科学可验证性的现实 frontier case。"
         }
       ]
+    },
+    {
+      "id": "d-week-20261118",
+      "dated": true,
+      "date": "2026-11-18",
+      "title": "📅 Weekly · 2026-11-18",
+      "desc": "",
+      "items": [
+        {
+          "id": "wk-20261118-ei",
+          "type": "divider",
+          "label": "Eval Infra"
+        },
+        {
+          "id": "wk-20261118-ei1",
+          "title": "Best evaluation tools for conversational AI and multi-turn agents (2026) — Braintrust",
+          "url": "https://www.braintrust.dev/articles/best-multi-turn-agent-evaluation-tools-2026",
+          "note": "聚焦 conversation grouping、whole-session scoring、human review 与 regression tests,适合把 multi-turn agent eval 从单轮 output 扩展到完整 session。"
+        },
+        {
+          "id": "wk-20261118-ei2",
+          "title": "LifeVal: Evaluating AI Model Performance on Personalized Agentic Consumer Tasks — OpenAI",
+          "url": "https://cdn.openai.com/pdf/lifeval.pdf",
+          "note": "用真实 memories、files 和 personal context 构造个性化 agent tasks 与 rubrics,为 stateful consumer agent 的 dataset design 和 end-to-end success scoring 提供参考。"
+        },
+        {
+          "id": "wk-20261118-es",
+          "type": "divider",
+          "label": "Eval Infra - Safety"
+        },
+        {
+          "id": "wk-20261118-es1",
+          "title": "Building strong safety evaluations — Anthropic",
+          "url": "https://www.anthropic.com/research/building-strong-safety-evaluations",
+          "note": "把 safety eval 拆成 design、run、report,并要求高风险 eval 在无网 sandbox 与 real-time monitoring 下执行,可直接转成 release-gate quality checklist。"
+        },
+        {
+          "id": "wk-20261118-es2",
+          "title": "Our first phase of embedded assessments — OpenAI",
+          "url": "https://openai.com/index/our-first-phase-of-embedded-assessments/",
+          "note": "让外部 assessor 接触 checkpoints、rollouts、monitors 和 safety-case evidence,为独立验证 eval coverage 与 monitoring effectiveness 提供模板。"
+        },
+        {
+          "id": "wk-20261118-es3",
+          "title": "GPT-6.2 System Card — OpenAI",
+          "url": "https://deploymentsafety.openai.com/gpt-6-2-astra-sol/internal-deployment-of-gpt-6.2-astra-and-gpt-6.2-sol",
+          "note": "Critical cyber 与 High bio thresholds 触发全量 tool-use harness monitoring 和 central stop control,是 capability threshold 到 deployment gate 的完整实例。"
+        },
+        {
+          "id": "wk-20261118-es4",
+          "title": "LEASH: Stay Safe in Agentic Robotics",
+          "url": "https://arxiv.org/abs/2611.14115",
+          "note": "用统一 policy 驱动 task、action、commit 三层 gate,在 closed-loop robot eval 中以较低开销降低 harm,很贴近可复用 safety plugin 架构。"
+        },
+        {
+          "id": "wk-20261118-af",
+          "type": "divider",
+          "label": "AI Frontier"
+        },
+        {
+          "id": "wk-20261118-af1",
+          "title": "Claude Fable 5.2 and Mythos 5.2 — Anthropic",
+          "url": "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+          "note": "新模型在 coding、reasoning、vision 与技术研究任务上继续前推,同时以不同 safeguards 区分通用和受验证访问,值得刷新 agentic eval baselines。"
+        }
+      ]
     }
   ]
 }
